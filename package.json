@@ -1,0 +1,39 @@
+{
+  "name": "@capsulajs/capsulahub-core",
+  "version": "0.0.1",
+  "description": "Core services for the CapsulaHub",
+  "main": "index.js",
+  "repository": "git@github.com:capsulajs/capsulahub-core.git",
+  "author": "MikeSquall <michael.arbib@om2.com>",
+  "license": "MIT",
+  "private": false,
+  "scripts": {
+    "bootstrap": "lerna bootstrap --npm-client=yarn",
+    "build": "lerna run build",
+    "lint": "lerna run lint",
+    "start": "lerna run start",
+    "test": "lerna run test --concurrency=1"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "pretty-quick --staged"
+    }
+  },
+  "workspaces": [
+    "packages/*"
+  ],
+  "homepage": "https://github.com/capsulajs/capsulahub-core",
+  "bugs": {
+    "url": "https://github.com/capsulajs/capsulahub-core/issues"
+  },
+  "dependencies": {
+    "lerna": "^3.13.4"
+  },
+  "devDependencies": {
+    "husky": "^2.2.0",
+    "prettier": "^1.17.0",
+    "pretty-quick": "^1.10.0",
+    "tslint": "^5.16.0",
+    "tslint-config-prettier": "^1.18.0"
+  }
+}
