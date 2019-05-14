@@ -1,4 +1,4 @@
-import { ServiceDefinition } from '@scalecube/scalecube-microservice/dist/esm/api/public';
+import { ServiceDefinition } from '@scalecube/scalecube-microservice/lib/api';
 
 export default interface Service {
   serviceName: string;

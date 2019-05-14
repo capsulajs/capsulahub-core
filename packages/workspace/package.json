@@ -19,6 +19,6 @@
   },
   "dependencies": {
     "@capsulajs/capsulajs-configuration-service": "^0.1.6",
-    "@scalecube/scalecube-microservice": "^0.1.2"
+    "@scalecube/scalecube-microservice": "next"
   }
 }
