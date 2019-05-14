@@ -13,7 +13,7 @@ interface Component {
   config: { [key: string]: any };
 }
 
-interface WorkspaceConfig {
+export interface WorkspaceConfig {
   name: string;
   services: Service[];
   components: {
