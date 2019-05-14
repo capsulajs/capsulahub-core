@@ -13,7 +13,7 @@ Scenario: Call createWorkspace with a token with invalid configuration is reject
 Scenario: Call createWorkspace with a token with invalid format is rejected with error
    Given WorkspaceFactory instance with createWorkspace method
    When  I call createWorkspace with invalid <token> values
-         |token     |
+         |<token>   |
          |' '       |
          |{}        |
          |{ test: 'test' }|
@@ -55,7 +55,6 @@ Scenario: An error with registering a component occurs after calling createWorks
     When I run createWorkspace method with token 123
     And  An error with registering a component occurs
     Then I expect to receive an error
-
 
 Scenario: Call services method returns a map of promises to each service loaded in Workspace
     Given WorkspaceFactory instance with createWorkspace method
