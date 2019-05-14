@@ -1,6 +1,6 @@
 import { ServiceDefinition } from '@scalecube/scalecube-microservice/lib/api';
 
- export default interface Service {
+export default interface Service {
   serviceName: string;
   path: string;
   definition: ServiceDefinition;
