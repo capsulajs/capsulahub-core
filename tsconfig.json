@@ -11,6 +11,5 @@
     "moduleResolution": "node",
     "baseUrl": "./src",
     "esModuleInterop": true
-  },
-  "include": ["src/**/*", "tests/**/*"]
+  }
 }
