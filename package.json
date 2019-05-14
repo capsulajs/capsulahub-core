@@ -4,7 +4,7 @@
   "description": "Core services for the CapsulaHub",
   "main": "index.js",
   "repository": "git@github.com:capsulajs/capsulahub-core.git",
-  "author": "MikeSquall <michael.arbib@om2.com>",
+  "author": "CapsulaJS",
   "license": "MIT",
   "private": true,
   "scripts": {

@@ -1,0 +1,33 @@
+sudo: true
+language: node_js
+node_js:
+  - '10'
+
+branches:
+  only:
+    - /.*/
+
+before_install:
+  - echo "//registry.npmjs.org/:_authToken=\${NPM_TOKEN}" > ~/.npmrc
+
+install:
+  - yarn install --production=false
+  - pip install --user awscli
+
+before_script:
+  - yarn bootstrap
+  - yarn link
+  - git remote set-url origin https://${GT_ACCESS_TOKEN}@github.com/${TRAVIS_REPO_SLUG}
+
+script:
+  - echo "Travis initiated !"
+#  - capsula cmd lint
+#  - capsula cmd addEnv
+#  - yarn build
+#  - capsula cmd test
+#  - capsula cmd doc
+#  - 'if [ "$TRAVIS_PULL_REQUEST" != "false" ]; then capsula cmd deploy; fi'
+
+notifications:
+  email:
+    on_failure: always
