@@ -1,8 +1,7 @@
 import Service from './Service';
 import Component from './Component';
 
-// @ts-ignore
-interface WorkspaceConfig {
+export default interface WorkspaceConfig {
   name: string;
   services: Service[];
   components: {

@@ -1,4 +1,3 @@
-import Service from './Service';
-import Component from './Component';
+import WorkspaceConfig from './WorkspaceConfig';
 
-export { Service, Component };
+export { WorkspaceConfig };
