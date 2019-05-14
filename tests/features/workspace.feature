@@ -78,8 +78,8 @@ Scenario: Call components method returns a map of promises to each component loa
     Then  I expect to receive a map of promises to component 1 and 2 with the following <property>s
           |<property>   |
           |componentName|
-          |path         |
-          |config       |
+          |nodeId       |
+          |reference    |
 
 Scenario: Call registerService method registers the provided service in the Workspace
     Given WorkspaceFactory instance with createWorkspace method
