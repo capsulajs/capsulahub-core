@@ -1,0 +1,20 @@
+{
+  "name": "@capsulajs/capsulahub-core-template",
+  "version": "0.0.1",
+  "description": "A template package for CapsulaHub core services",
+  "main": "lib/index.js",
+  "license": "MIT",
+  "private": false,
+  "scripts": {
+    "build": "yarn build:cjs && yarn build:es",
+    "build:cjs": "rimraf lib && tsc --module commonjs --target es2015 --outDir lib",
+    "build:es": "rimraf es && tsc --module esnext --target es2015 --outDir es",
+    "clean": "rimraf lib es",
+    "doc": "typedoc ./src/api --out ./doc --mode file --hideGenerator",
+    "test": "jest --maxWorkers=4 --env=jsdom",
+    "lint": "yarn lint:md && yarn lint:ts",
+    "lint:md": "remark . --rc-path ../../.remarkrc --output",
+    "lint:ts": "tslint '{src,tests}/**/*.{ts,tsx}' --fix",
+    "prettier": "prettier --write '{src,tests}/**/*.{ts,tsx}'"
+  }
+}
