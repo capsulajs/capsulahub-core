@@ -1,4 +1,5 @@
 import RenderLayoutsRequest from './RenderLayoutsRequest';
 import RenderItemsRequest from './RenderItemsRequest';
+import RenderItemRequest from './RenderItemRequest';
 
-export { RenderLayoutsRequest, RenderItemsRequest };
+export { RenderLayoutsRequest, RenderItemsRequest, RenderItemRequest };
