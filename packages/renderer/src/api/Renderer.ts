@@ -1,7 +1,7 @@
-export default interface Renderer {
-  randomPrefix: string;
+import { RenderLayoutsRequest, RenderItemsRequest } from './methods';
 
-  renderLayouts(): void;
-  renderItems(): void;
+export default interface Renderer {
+  renderLayouts(renderLayoutsRequest: RenderLayoutsRequest): void;
+  renderItems(renderItemsRequest: RenderItemsRequest): void;
   renderItem(nodeId: string): void;
 }
