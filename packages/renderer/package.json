@@ -16,5 +16,8 @@
     "lint:md": "remark . --rc-path ../../.remarkrc --output",
     "lint:ts": "tslint '{src,tests}/**/*.{ts,tsx}' --fix",
     "prettier": "prettier --write '{src,tests}/**/*.{ts,tsx}'"
+  },
+  "dependencies": {
+    "@capsulajs/capsulahub-core-workspace": ">=0.0.1"
   }
 }

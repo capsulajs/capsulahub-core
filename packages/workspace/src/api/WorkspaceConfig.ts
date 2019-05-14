@@ -1,4 +1,4 @@
-import { ServiceDefinition } from '@scalecube/scalecube-microservice/lib/api';
+import { ServiceDefinition } from '@scalecube/scalecube-microservice/dist/esm/api/public';
 
 interface Service {
   serviceName: string;
@@ -13,6 +13,7 @@ interface Component {
   config: { [key: string]: any };
 }
 
+// @ts-ignore
 interface WorkspaceConfig {
   name: string;
   services: Service[];
