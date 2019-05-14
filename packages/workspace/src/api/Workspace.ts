@@ -9,7 +9,7 @@ import { ComponentsMap, ComponentsRequest } from './methods/components';
  * - Getting their own configuration (CONFIG)
  * Workspace need to be instantiated with a configuration service
  */
-export default interface Workspace {
+export interface Workspace {
   /**
    * Getting a map of promises to each service that has been loaded in the workspace
    * Reject in case :
