@@ -8,7 +8,7 @@ export default [
     value: [
       {
         serviceName: 'ServiceA',
-        path: 'localhost:8000/serviceA',
+        path: 'http://localhost:3000/services/serviceA.js',
         definition: {
           serviceName: 'ServiceA',
           methods: {
@@ -22,7 +22,7 @@ export default [
       },
       {
         serviceName: 'ServiceB',
-        path: 'localhost:8000/serviceB',
+        path: 'http://localhost:3000/services/serviceB',
         definition: {
           serviceName: 'ServiceB',
           methods: {

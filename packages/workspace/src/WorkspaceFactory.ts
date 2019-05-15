@@ -1,9 +1,14 @@
 import { WorkspaceFactory as IWorkspaceFactory } from './api/WorkspaceFactory';
 import { Workspace } from './Workspace';
-import { getConfigurationService } from './helpers/utils';
+import { getConfigurationService, getModuleDynamically } from './helpers/utils';
 import { CreateWorkspaceRequest } from './api/methods/createWorkspace';
-import { configRepositoryName, configWrongFormatError, createWorkspaceWrongRequestError } from './helpers/const';
-import { WorkspaceConfig } from './api/WorkspaceConfig';
+import {
+  bootstrapServiceError,
+  configRepositoryName,
+  configWrongFormatError,
+  createWorkspaceWrongRequestError,
+} from './helpers/const';
+import { Service, WorkspaceConfig } from './api/WorkspaceConfig';
 import { Entity } from '@capsulajs/capsulajs-configuration-service/lib/api/Entity';
 import { validateCreateWorkspaceRequest, validateWorkspaceConfig } from './helpers/validators';
 
@@ -31,14 +36,30 @@ export class WorkspaceFactory implements IWorkspaceFactory {
           return reject(new Error(configWrongFormatError));
         }
 
-        resolve(new Workspace(formattedConfiguration));
+        const workspace = new Workspace(formattedConfiguration);
+
+        const servicesPromises = formattedConfiguration.services.map((service) => {
+          return getModuleDynamically(service.path)
+            .then((bootstrap: (workspace: Workspace, service: Service) => Promise<object>) =>
+              bootstrap(workspace, service)
+            )
+            .then((serviceInstance) => ({
+              reference: serviceInstance,
+              definition: service.definition,
+            }));
+        });
+
+        try {
+          const services = await Promise.all(servicesPromises);
+          console.log('GOOD SCENARIO services', services);
+          resolve(workspace);
+        } catch (error) {
+          console.log('services ERROR', error);
+          return reject(new Error(bootstrapServiceError));
+        }
       } catch (error) {
         return reject(error);
       }
-
-      resolve({} as Workspace);
-
-      // resolve(new Workspace(configuration.entries));
     });
   }
 }
