@@ -10,6 +10,7 @@
     "noUnusedParameters": true,
     "moduleResolution": "node",
     "baseUrl": "./src",
-    "esModuleInterop": true
+    "esModuleInterop": true,
+    "jsx": "preserve"
   }
 }

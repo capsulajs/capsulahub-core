@@ -1,7 +1,11 @@
 import { Renderer, RenderItemRequest } from './api';
 
 export default class RendererService implements Renderer {
-  renderLayouts() {
+  async renderLayouts() {
+    const components = await CAPSULAHUB_WORKSPACE.components({});
+
+    console.log(components);
+
     return Promise.resolve();
   }
 

@@ -7,4 +7,5 @@ module.exports = {
   moduleFileExtensions: ['ts', 'js'],
   moduleDirectories: ['src', 'node_modules'],
   testEnvironment: 'node',
+  roots: ['packages/'],
 };

@@ -1,6 +1,9 @@
 import React from 'react';
 import { mount } from 'enzyme';
-import { layouts, items } from './helpers/mocks';
+import { RendererService } from '../../src';
+import { components } from './helpers/mocks';
+
+console.log(new RendererService());
 
 class Page extends React.Component {
   render() {
@@ -10,7 +13,7 @@ class Page extends React.Component {
 
 const mock = jest.fn();
 CAPSULAHUB_WORKSPACE.components = mock;
-mock.mockResolvedValueOnce({ layouts, items });
+mock.mockResolvedValueOnce(components);
 
 test('Calling renderLayouts renders the layouts from configuration', () => {
   const component = mount(<Page />);
