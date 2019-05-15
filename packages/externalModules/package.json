@@ -7,12 +7,19 @@
   "private": false,
   "scripts": {
     "start": "node server.js",
+    "build:serviceA": "parcel build src/services/serviceA.js --out-dir public/services --no-minify --no-source-maps --no-cache",
+    "build:serviceB": "parcel build src/services/serviceB.js --out-dir public/services --no-minify --no-source-maps --no-cache",
     "lint": "yarn lint:md && yarn lint:ts",
     "lint:md": "remark . --rc-path ../../.remarkrc --output",
     "lint:ts": "tslint 'src/**/*.{ts,tsx}' --fix",
     "prettier": "prettier --write 'src/**/*.{ts,tsx}'"
   },
   "dependencies": {
-    "express": "^4.16.4"
+    "@babel/polyfill": "^7.4.4",
+    "express": "^4.16.4",
+    "parcel-bundler": "^1.12.3"
+  },
+  "devDependencies": {
+    "parcel-plugin-wrapper": "^0.2.2"
   }
 }
