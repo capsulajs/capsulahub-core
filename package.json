@@ -12,7 +12,7 @@
     "build": "lerna run build",
     "lint": "lerna run lint",
     "start": "lerna run start",
-    "test": "lerna run test --concurrency=1",
+    "test": "lerna run test --concurrency=1  --passWithNoTests",
     "deploy": "lerna run deploy"
   },
   "husky": {
