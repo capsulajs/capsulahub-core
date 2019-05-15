@@ -22,8 +22,8 @@ before_script:
 script:
   - echo "Travis initiated !"
   - yarn lint
-  - yarn test
   - yarn build
+  - yarn test --passWithNoTests
   - 'if [ "$TRAVIS_PULL_REQUEST" != "false" ]; then yarn deploy; fi'
 
 notifications:

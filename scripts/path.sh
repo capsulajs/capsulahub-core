@@ -17,7 +17,10 @@ fi;
 
 SERVICE_PATH="services/$VERSION_PATH$SERVICE/"
 
-echo "$SLUG$SERVICE_PATH"
+echo "--------------------------------------------"
+echo "  path: $SLUG$SERVICE_PATH                  "
+echo "--------------------------------------------"
+#echo "path: $SLUG$SERVICE_PATH"
 
 if [[ "$SLUG" == "/error/" ]]; then
     exit 1
