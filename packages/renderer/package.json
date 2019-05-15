@@ -17,7 +17,20 @@
     "lint:ts": "tslint '{src,tests}/**/*.{ts,tsx}' --fix",
     "prettier": "prettier --write '{src,tests}/**/*.{ts,tsx}'"
   },
+  "jest": {
+    "setupFiles": [
+      "./tests/setup.js"
+    ]
+  },
   "dependencies": {
-    "@capsulajs/capsulahub-core-workspace": ">=0.0.1"
+    "@capsulajs/capsulahub-core-workspace": ">=0.0.1",
+    "react": "^16.8.6",
+    "react-dom": "^16.8.6"
+  },
+  "devDependencies": {
+    "@babel/preset-env": "^7.4.4",
+    "@babel/preset-react": "^7.0.0",
+    "enzyme": "^3.9.0",
+    "enzyme-adapter-react-16": "^1.13.0"
   }
 }
