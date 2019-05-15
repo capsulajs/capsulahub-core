@@ -18,6 +18,7 @@
     "prettier": "prettier --write '{src,tests}/**/*.{ts,tsx}'"
   },
   "dependencies": {
-    "@capsulajs/capsulajs-configuration-service": "^0.1.6"
+    "@capsulajs/capsulajs-configuration-service": "^0.1.6",
+    "rxjs": "^6.5.2"
   }
 }
