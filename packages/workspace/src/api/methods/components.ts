@@ -8,5 +8,10 @@ export interface Component {
 
 export interface ComponentsMap {
   /** Each promise will be resolved when the corresponding component will be registered */
-  [componentName: string]: Promise<Component>;
+  [nodeId: string]: Promise<Component>;
+}
+
+export interface ComponentsResponse {
+  layouts: ComponentsMap;
+  items: ComponentsMap;
 }
