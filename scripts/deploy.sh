@@ -2,8 +2,6 @@
 S3_PATH="s3://$S3_BUCKET"
 SERVICE=$1
 
-echo "*********************\n$SERVICE\n*******************"
-
 define_path() {
     SLUG="/error/"
 
@@ -21,7 +19,7 @@ define_path() {
         exit 1
     fi;
 
-    return "$SERVICE/$SLUG"
+    echo "$SERVICE$SLUG"
 }
 
 SERVICE_PATH=$(define_path)
