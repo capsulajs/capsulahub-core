@@ -21,12 +21,10 @@ before_script:
 
 script:
   - echo "Travis initiated !"
-#  - capsula cmd lint
-#  - capsula cmd addEnv
-#  - yarn build
-#  - capsula cmd test
-#  - capsula cmd doc
-#  - 'if [ "$TRAVIS_PULL_REQUEST" != "false" ]; then capsula cmd deploy; fi'
+  - yarn lint
+  - yarn test
+  - yarn build
+  - 'if [ "$TRAVIS_PULL_REQUEST" != "false" ]; then yarn deploy; fi'
 
 notifications:
   email:
