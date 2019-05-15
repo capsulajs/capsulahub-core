@@ -5,7 +5,7 @@ import * as api from './api';
 declare global {
   interface Window {
     CAPSULAHUB_WORKSPACE: Workspace;
-    CAPSULAHUB_CONFIG: RendererConfig;
+    SERVICE_CONFIG: RendererConfig;
   }
 }
 
