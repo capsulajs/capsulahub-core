@@ -13,7 +13,7 @@ comment(){
     </TABLE>"""
 
     echo "$COMMENT_TEXT"
-    curl -d '{"body":"'"$COMMENT_TEXT"'"}' -u "$GH_USER:$GT_ACCESS_TOKEN" -X POST https://api.github.com/repos/$TRAVIS_REPO_SLUG/issues/$TRAVIS_PULL_REQUEST/comments
+    curl -d '{"body":"'"$COMMENT_TEXT"'"}' -u "$GH_USER:$GH_ACCESS_TOKEN" -X POST https://api.github.com/repos/$TRAVIS_REPO_SLUG/issues/$TRAVIS_PULL_REQUEST/comments
     echo "done."
 }
 
