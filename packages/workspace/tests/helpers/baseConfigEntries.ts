@@ -46,7 +46,7 @@ export default [
       items: [
         {
           ['request-form']: {
-            componentName: 'web-request-form',
+            componentName: 'web-grid',
             nodeId: 'request-form',
             path: 'http://localhost:3000/components/RequestForm',
             config: { title: 'Base Request Form' },

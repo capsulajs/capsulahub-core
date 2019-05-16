@@ -1,6 +1,6 @@
 import { WorkspaceFactory as IWorkspaceFactory } from './api/WorkspaceFactory';
 import { Workspace } from './Workspace';
-import { getConfigurationService, getModuleDynamically } from './helpers/utils';
+import { bootstrapComponent, getConfigurationService, getModuleDynamically } from './helpers/utils';
 import { CreateWorkspaceRequest } from './api/methods/createWorkspace';
 import {
   bootstrapComponentError,
@@ -55,17 +55,13 @@ export class WorkspaceFactory implements IWorkspaceFactory {
         } catch (error) {
           return reject(error);
         }
-        console.log('GOOD SCENARIO services');
 
-        const bootstrapComponent = (nodeId: string, type: 'layouts' | 'items'): Promise<void> => {
+        const initComponent = (nodeId: string, type: 'layouts' | 'items'): Promise<void> => {
           const componentData = formattedConfiguration.components[type][nodeId];
           return getModuleDynamically(componentData.path)
             .then((bootstrap: any) => bootstrap(workspace, componentData))
             .then((WebComponent) => {
-              customElements.define(componentData.componentName, WebComponent);
-              const webComponent = new WebComponent();
-              typeof webComponent.setProps === 'function' && webComponent.setProps();
-              return webComponent;
+              return bootstrapComponent(componentData.componentName, WebComponent);
             })
             .then((webComponent) => {
               return workspace.registerComponent({
@@ -77,9 +73,8 @@ export class WorkspaceFactory implements IWorkspaceFactory {
         };
 
         // Bootstrap components
-        console.log('formattedConfiguration.components', formattedConfiguration.components);
         const layoutComponentsPromises = Object.keys(formattedConfiguration.components.layouts).map((nodeId: string) =>
-          bootstrapComponent(nodeId, 'layouts')
+          initComponent(nodeId, 'layouts').catch((error) => console.log('error bootstrap component', error))
         );
         try {
           await Promise.all(layoutComponentsPromises);
@@ -87,7 +82,7 @@ export class WorkspaceFactory implements IWorkspaceFactory {
           return reject(new Error(bootstrapComponentError));
         }
         const itemsComponentsPromises = Object.keys(formattedConfiguration.components.items).map((nodeId: string) =>
-          bootstrapComponent(nodeId, 'items')
+          initComponent(nodeId, 'items')
         );
         try {
           await Promise.all(itemsComponentsPromises);

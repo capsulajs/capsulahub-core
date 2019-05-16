@@ -6,6 +6,7 @@ import('http://localhost:3000/components/Grid.js')
   })
   .then((WebComponent) => {
     customElements.define('web-grid', WebComponent);
+    customElements.define('web-grid', WebComponent);
     const webComponent = new WebComponent();
     document.getElementById('root').appendChild(webComponent);
     // typeof webComponent.setProps === 'function' && webComponent.setProps();

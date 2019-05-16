@@ -5,7 +5,7 @@ import serviceABootstrap from '@capsulajs/capsulahub-core-external-modules/src/s
 // @ts-ignore
 import serviceBBootstrap from '@capsulajs/capsulahub-core-external-modules/src/services/serviceB';
 // @ts-ignore
-// import gridComponentBootstrap from '@capsulajs/capsulahub-core-external-modules/src/components/Grid';
+import gridComponentBootstrap from '@capsulajs/capsulahub-core-external-modules/src/components/Grid';
 // @ts-ignore
 import requestFormComponentBootstrap from '@capsulajs/capsulahub-core-external-modules/src/components/RequestForm';
 import { WorkspaceFactory } from '../../src/WorkspaceFactory';
@@ -16,7 +16,7 @@ import {
   configWrongFormatError,
   createWorkspaceWrongRequestError,
 } from '../../src/helpers/const';
-import { mockConfigurationService, mockGetModuleDynamically } from '../helpers/mocks';
+import { mockBootstrapComponent, mockConfigurationService, mockGetModuleDynamically } from '../helpers/mocks';
 import baseConfigEntries from '../helpers/baseConfigEntries';
 import { Workspace } from '../../src/Workspace';
 
@@ -94,8 +94,7 @@ describe('Workspace tests', () => {
     return expect(workspaceFactory.createWorkspace({ token: '123' })).rejects.toEqual(new Error(bootstrapServiceError));
   });
 
-  // TODO
-  it.only('An error with importing a component occurs after calling createWorkspace', async () => {
+  it('An error with importing a component occurs after calling createWorkspace', async () => {
     expect.assertions(1);
     const configurationServiceMock = {
       entries: () => Promise.resolve({ entries: baseConfigEntries }),
@@ -115,19 +114,24 @@ describe('Workspace tests', () => {
   });
 
   // TODO
-  it('An error with registering a component occurs after calling createWorkspace', async () => {
+  it.only('An error with registering a component occurs after calling createWorkspace', async () => {
     expect.assertions(1);
     const configurationServiceMock = {
       entries: () => Promise.resolve({ entries: baseConfigEntries }),
     };
     mockConfigurationService(configurationServiceMock);
     mockGetModuleDynamically([
-      Promise.reject('Module can not be found'),
-      Promise.resolve((): any => Promise.resolve({})),
+      Promise.resolve(serviceABootstrap),
+      Promise.resolve(serviceBBootstrap),
+      Promise.reject(gridComponentBootstrap),
+      Promise.resolve(requestFormComponentBootstrap),
     ]);
+    mockBootstrapComponent(true);
 
     const workspaceFactory = new WorkspaceFactory();
-    return expect(workspaceFactory.createWorkspace({ token: '123' })).rejects.toEqual(new Error(bootstrapServiceError));
+    return expect(workspaceFactory.createWorkspace({ token: '123' })).rejects.toEqual(
+      new Error(bootstrapComponentError)
+    );
   });
 
   it('Call services method returns a map of promises to each service loaded in Workspace', async (done) => {
