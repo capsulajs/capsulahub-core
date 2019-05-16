@@ -6,7 +6,7 @@
   "license": "MIT",
   "private": false,
   "scripts": {
-    "build": "yarn build:cjs && yarn build:es",
+    "build_": "yarn build:cjs && yarn build:es",
     "build:cjs": "rimraf lib && tsc --module commonjs --target es2015 --outDir lib",
     "build:es": "rimraf es && tsc --module esnext --target es2015 --outDir es",
     "clean": "rimraf lib es",

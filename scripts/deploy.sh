@@ -19,7 +19,7 @@ define_path() {
         exit 1
     fi;
 
-    echo "/$SERVICE$SLUG"
+    echo "/core/$SERVICE$SLUG"
 }
 
 SERVICE_PATH=$(define_path)
