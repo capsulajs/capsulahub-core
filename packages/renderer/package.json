@@ -11,7 +11,7 @@
     "build:es": "rimraf es && tsc --module esnext --target es2015 --outDir es",
     "clean": "rimraf lib es",
     "doc": "typedoc ./src/api --out ./doc --mode file --hideGenerator",
-    "test": "jest --maxWorkers=4 --env=jsdom",
+    "test": "jest --maxWorkers=4 --env=jsdom --passWithNoTests",
     "lint": "yarn lint:md && yarn lint:ts",
     "lint:md": "remark . --rc-path ../../.remarkrc --output",
     "lint:ts": "tslint '{src,tests}/**/*.{ts,tsx}' --fix",
