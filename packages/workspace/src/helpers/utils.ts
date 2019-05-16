@@ -1,5 +1,7 @@
 import { ConfigurationService, ConfigurationServiceHttp } from '@capsulajs/capsulajs-configuration-service';
 import WorkspaceConfig from '../api/WorkspaceConfig';
+import Component from '../api/Component';
+import { Workspace } from '../api/Workspace';
 
 export const getConfigurationService = (token: string): ConfigurationService<WorkspaceConfig> =>
   new ConfigurationServiceHttp(token);
@@ -11,4 +13,27 @@ export const bootstrapComponent = (componentName: string, WebComponent: any) => 
   const webComponent = new WebComponent();
   typeof webComponent.setProps === 'function' && webComponent.setProps();
   return webComponent;
+};
+
+export const initComponent = (
+  nodeId: string,
+  componentsConfig: { [nodeId: string]: Component },
+  workspace: Workspace
+): Promise<void> => {
+  const componentData = componentsConfig[nodeId];
+
+  console.log('componentData', componentData);
+
+  return getModuleDynamically(componentData.path)
+    .then((bootstrap: any) => bootstrap(workspace, componentData))
+    .then((WebComponent) => {
+      return bootstrapComponent(componentData.componentName, WebComponent);
+    })
+    .then((webComponent) => {
+      return workspace.registerComponent({
+        nodeId,
+        componentName: componentData.componentName,
+        reference: webComponent,
+      });
+    });
 };

@@ -1,6 +1,6 @@
 import { WorkspaceFactory as IWorkspaceFactory } from './api/WorkspaceFactory';
 import { Workspace } from './Workspace';
-import { bootstrapComponent, getConfigurationService, getModuleDynamically } from './helpers/utils';
+import { getConfigurationService, getModuleDynamically, initComponent } from './helpers/utils';
 import { CreateWorkspaceRequest } from './api/methods/createWorkspace';
 import {
   bootstrapComponentError,
@@ -16,85 +16,71 @@ import { validateCreateWorkspaceRequest, validateWorkspaceConfig } from './helpe
 
 export class WorkspaceFactory implements IWorkspaceFactory {
   createWorkspace(createWorkspaceRequest: CreateWorkspaceRequest): Promise<Workspace> {
-    return new Promise(async (resolve, reject) => {
+    return new Promise((resolve, reject) => {
+      if (!validateCreateWorkspaceRequest(createWorkspaceRequest)) {
+        return reject(new Error(createWorkspaceWrongRequestError));
+      }
+
+      let configurationService;
       try {
-        if (!validateCreateWorkspaceRequest(createWorkspaceRequest)) {
-          return reject(new Error(createWorkspaceWrongRequestError));
-        }
-
-        const configurationService = getConfigurationService(createWorkspaceRequest.token);
-        const configuration = await configurationService.entries({ repository: configRepositoryName });
-        const formattedConfiguration = configuration.entries.reduce(
-          (acc: WorkspaceConfig, configEntity: Entity) => {
-            return {
-              ...acc,
-              [configEntity.key]: configEntity.value,
-            };
-          },
-          {} as WorkspaceConfig
-        );
-
-        if (!validateWorkspaceConfig(formattedConfiguration)) {
-          return reject(new Error(configWrongFormatError));
-        }
-
-        const workspace = new Workspace(formattedConfiguration);
-
-        const servicesPromises = formattedConfiguration.services.map((service) => {
-          return getModuleDynamically(service.path).then(
-            (bootstrap: (workspace: Workspace, service: Service) => Promise<object>) => bootstrap(workspace, service)
-          );
-          // .then((serviceInstance) => ({
-          //   reference: serviceInstance,
-          //   definition: service.definition,
-          // }));
-        });
-
-        try {
-          await Promise.all(servicesPromises);
-        } catch (error) {
-          return reject(error);
-        }
-
-        const initComponent = (nodeId: string, type: 'layouts' | 'items'): Promise<void> => {
-          const componentData = formattedConfiguration.components[type][nodeId];
-          return getModuleDynamically(componentData.path)
-            .then((bootstrap: any) => bootstrap(workspace, componentData))
-            .then((WebComponent) => {
-              return bootstrapComponent(componentData.componentName, WebComponent);
-            })
-            .then((webComponent) => {
-              return workspace.registerComponent({
-                nodeId,
-                componentName: componentData.componentName,
-                reference: webComponent,
-              });
-            });
-        };
-
-        // Bootstrap components
-        const layoutComponentsPromises = Object.keys(formattedConfiguration.components.layouts).map((nodeId: string) =>
-          initComponent(nodeId, 'layouts').catch((error) => console.log('error bootstrap component', error))
-        );
-        try {
-          await Promise.all(layoutComponentsPromises);
-        } catch (error) {
-          return reject(new Error(bootstrapComponentError));
-        }
-        const itemsComponentsPromises = Object.keys(formattedConfiguration.components.items).map((nodeId: string) =>
-          initComponent(nodeId, 'items')
-        );
-        try {
-          await Promise.all(itemsComponentsPromises);
-        } catch (error) {
-          return reject(new Error(bootstrapComponentError));
-        }
-
-        resolve(workspace);
+        configurationService = getConfigurationService(createWorkspaceRequest.token);
       } catch (error) {
-        console.log('services ERROR', error);
         return reject(new Error(bootstrapServiceError));
       }
+
+      let formattedConfiguration: WorkspaceConfig;
+      let workspace: Workspace;
+      return configurationService
+        .entries({ repository: configRepositoryName })
+        .then(
+          (configuration: any): any => {
+            formattedConfiguration = configuration.entries.reduce(
+              (acc: WorkspaceConfig, configEntity: Entity) => {
+                return {
+                  ...acc,
+                  [configEntity.key]: configEntity.value,
+                };
+              },
+              {} as WorkspaceConfig
+            );
+            if (!validateWorkspaceConfig(formattedConfiguration)) {
+              return reject(new Error(configWrongFormatError));
+            }
+
+            workspace = new Workspace(formattedConfiguration);
+
+            const servicesPromises = formattedConfiguration.services.map((service) => {
+              return getModuleDynamically(service.path).then(
+                (bootstrap: (workspace: Workspace, service: Service) => Promise<object>) =>
+                  bootstrap(workspace, service)
+              );
+            });
+
+            return Promise.all(servicesPromises).catch(() => {
+              reject(new Error(bootstrapServiceError));
+            });
+          }
+        )
+        .then(() => {
+          const layoutComponentsPromises = Object.keys(formattedConfiguration.components.layouts).map(
+            (nodeId: string) => initComponent(nodeId, formattedConfiguration.components.layouts, workspace)
+          );
+          return Promise.all(layoutComponentsPromises).catch(() => {
+            reject(new Error(bootstrapComponentError));
+          });
+        })
+        .then(() => {
+          const itemsComponentsPromises = Object.keys(formattedConfiguration.components.items).map((nodeId: string) =>
+            initComponent(nodeId, formattedConfiguration.components.items, workspace)
+          );
+          return Promise.all(itemsComponentsPromises).catch(() => {
+            reject(new Error(bootstrapComponentError));
+          });
+        })
+        .then(() => {
+          return resolve(workspace);
+        })
+        .catch((error) => reject(error));
     });
   }
 }

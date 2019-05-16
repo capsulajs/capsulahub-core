@@ -6,7 +6,7 @@ import serviceABootstrap from '@capsulajs/capsulahub-core-external-modules/src/s
 import serviceBBootstrap from '@capsulajs/capsulahub-core-external-modules/src/services/serviceB';
 // @ts-ignore
 import gridComponentBootstrap from '@capsulajs/capsulahub-core-external-modules/src/components/Grid';
-// @ts-ignore
+// // @ts-ignore
 import requestFormComponentBootstrap from '@capsulajs/capsulahub-core-external-modules/src/components/RequestForm';
 import { WorkspaceFactory } from '../../src/WorkspaceFactory';
 import {
@@ -70,6 +70,17 @@ describe('Workspace tests', () => {
       entries: () => Promise.resolve({ entries: baseConfigEntries }),
     };
     mockConfigurationService(configurationServiceMock);
+    mockGetModuleDynamically([
+      Promise.resolve(serviceABootstrap),
+      Promise.resolve(serviceBBootstrap),
+      Promise.resolve(gridComponentBootstrap),
+      Promise.resolve(requestFormComponentBootstrap),
+      Promise.resolve(serviceABootstrap),
+      Promise.resolve(serviceBBootstrap),
+      Promise.resolve(gridComponentBootstrap),
+      Promise.resolve(requestFormComponentBootstrap),
+    ]);
+    mockBootstrapComponent();
 
     const workspaceFactory = new WorkspaceFactory();
     const workspace1 = await workspaceFactory.createWorkspace({ token: '123' });
@@ -88,6 +99,8 @@ describe('Workspace tests', () => {
     mockGetModuleDynamically([
       Promise.reject('Module can not be found'),
       Promise.resolve((): any => Promise.resolve({})),
+      Promise.resolve(gridComponentBootstrap),
+      Promise.resolve(requestFormComponentBootstrap),
     ]);
 
     const workspaceFactory = new WorkspaceFactory();
@@ -113,8 +126,7 @@ describe('Workspace tests', () => {
     );
   });
 
-  // TODO
-  it.only('An error with registering a component occurs after calling createWorkspace', async () => {
+  it('An error with registering a component occurs after calling createWorkspace', async () => {
     expect.assertions(1);
     const configurationServiceMock = {
       entries: () => Promise.resolve({ entries: baseConfigEntries }),
@@ -140,7 +152,13 @@ describe('Workspace tests', () => {
       entries: () => Promise.resolve({ entries: baseConfigEntries }),
     };
     mockConfigurationService(configurationServiceMock);
-    mockGetModuleDynamically([Promise.resolve(serviceABootstrap), Promise.resolve(serviceBBootstrap)]);
+    mockGetModuleDynamically([
+      Promise.resolve(serviceABootstrap),
+      Promise.resolve(serviceBBootstrap),
+      Promise.resolve(gridComponentBootstrap),
+      Promise.resolve(requestFormComponentBootstrap),
+    ]);
+    mockBootstrapComponent();
 
     const workspaceFactory = new WorkspaceFactory();
     const workspace = await workspaceFactory.createWorkspace({ token: '123' });

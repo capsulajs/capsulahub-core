@@ -33,26 +33,22 @@ export default [
   {
     key: 'components',
     value: {
-      layouts: [
-        {
-          grid: {
-            componentName: 'web-grid',
-            nodeId: 'root',
-            path: 'http://localhost:3000/components/Grid',
-            config: { title: 'Base Grid' },
-          },
+      layouts: {
+        grid: {
+          componentName: 'web-grid',
+          nodeId: 'root',
+          path: 'http://localhost:3000/components/Grid',
+          config: { title: 'Base Grid' },
         },
-      ],
-      items: [
-        {
-          ['request-form']: {
-            componentName: 'web-grid',
-            nodeId: 'request-form',
-            path: 'http://localhost:3000/components/RequestForm',
-            config: { title: 'Base Request Form' },
-          },
+      },
+      items: {
+        ['request-form']: {
+          componentName: 'web-request-form',
+          nodeId: 'request-form',
+          path: 'http://localhost:3000/components/RequestForm',
+          config: { title: 'Base Request Form' },
         },
-      ],
+      },
     },
   },
 ];

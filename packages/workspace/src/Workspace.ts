@@ -17,7 +17,7 @@ export class Workspace implements IWorkspace {
     this.configuration = configuration;
     this.serviceRegistry = {} as ServiceRegistry;
     this.componentRegistry = {} as ComponentRegistry;
-    console.log('this.configuration', this.configuration);
+    // console.log('this.configuration', this.configuration);
   }
 
   services(servicesRequest: ServicesRequest): Promise<ServicesMap> {
@@ -66,6 +66,9 @@ export class Workspace implements IWorkspace {
   registerComponent(registerComponentRequest: RegisterComponentRequest): Promise<void> {
     return new Promise((resolve, reject) => {
       const component = this.componentRegistry[registerComponentRequest.nodeId];
+
+      console.log('this.componentRegistry', this.componentRegistry);
+      console.log('registerComponentRequest', registerComponentRequest);
 
       if (!!component) {
         reject('Component already registered');
