@@ -4,7 +4,7 @@
   "description": "Core services for the CapsulaHub",
   "main": "index.js",
   "repository": "git@github.com:capsulajs/capsulahub-core.git",
-  "author": "MikeSquall <michael.arbib@om2.com>",
+  "author": "CapsulaJS",
   "license": "MIT",
   "private": true,
   "scripts": {
@@ -12,7 +12,8 @@
     "build": "lerna run build",
     "lint": "lerna run lint",
     "start": "lerna run start",
-    "test": "lerna run test --concurrency=1"
+    "test": "lerna run test --concurrency=1",
+    "deploy": "lerna run deploy"
   },
   "husky": {
     "hooks": {

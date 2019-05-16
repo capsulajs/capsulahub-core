@@ -1,4 +1,4 @@
-export default (WORKSPACE: any, SERVICE_CONFIG: any) => {
+const bootstrap = (WORKSPACE: any, SERVICE_CONFIG: any) => {
   return new Promise(async (resolve) => {
     class ServiceA {
       private message: string;
@@ -25,3 +25,11 @@ export default (WORKSPACE: any, SERVICE_CONFIG: any) => {
     resolve();
   });
 };
+
+// @ts-ignore
+if (typeof publicExports !== 'undefined') {
+  // @ts-ignore
+  publicExports = bootstrap;
+}
+
+export default bootstrap;

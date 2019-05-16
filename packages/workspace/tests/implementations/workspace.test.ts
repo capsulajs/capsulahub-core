@@ -4,8 +4,13 @@ import { take } from 'rxjs/operators';
 import serviceABootstrap from '@capsulajs/capsulahub-core-external-modules/src/services/serviceA';
 // @ts-ignore
 import serviceBBootstrap from '@capsulajs/capsulahub-core-external-modules/src/services/serviceB';
+// @ts-ignore
+// import gridComponentBootstrap from '@capsulajs/capsulahub-core-external-modules/src/components/Grid';
+// @ts-ignore
+import requestFormComponentBootstrap from '@capsulajs/capsulahub-core-external-modules/src/components/RequestForm';
 import { WorkspaceFactory } from '../../src/WorkspaceFactory';
 import {
+  bootstrapComponentError,
   bootstrapServiceError,
   configRepositoryName,
   configWrongFormatError,
@@ -90,19 +95,23 @@ describe('Workspace tests', () => {
   });
 
   // TODO
-  it('An error with importing a component occurs after calling createWorkspace', async () => {
+  it.only('An error with importing a component occurs after calling createWorkspace', async () => {
     expect.assertions(1);
     const configurationServiceMock = {
       entries: () => Promise.resolve({ entries: baseConfigEntries }),
     };
     mockConfigurationService(configurationServiceMock);
     mockGetModuleDynamically([
+      Promise.resolve(serviceABootstrap),
+      Promise.resolve(serviceBBootstrap),
       Promise.reject('Module can not be found'),
-      Promise.resolve((): any => Promise.resolve({})),
+      Promise.resolve(requestFormComponentBootstrap),
     ]);
 
     const workspaceFactory = new WorkspaceFactory();
-    return expect(workspaceFactory.createWorkspace({ token: '123' })).rejects.toEqual(new Error(bootstrapServiceError));
+    return expect(workspaceFactory.createWorkspace({ token: '123' })).rejects.toEqual(
+      new Error(bootstrapComponentError)
+    );
   });
 
   // TODO
@@ -121,7 +130,7 @@ describe('Workspace tests', () => {
     return expect(workspaceFactory.createWorkspace({ token: '123' })).rejects.toEqual(new Error(bootstrapServiceError));
   });
 
-  it.only('Call services method returns a map of promises to each service loaded in Workspace', async (done) => {
+  it('Call services method returns a map of promises to each service loaded in Workspace', async (done) => {
     expect.assertions(6);
     const configurationServiceMock = {
       entries: () => Promise.resolve({ entries: baseConfigEntries }),

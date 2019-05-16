@@ -33,7 +33,7 @@ export default [
   {
     key: 'components',
     value: {
-      layout: [
+      layouts: [
         {
           grid: {
             componentName: 'web-grid',
