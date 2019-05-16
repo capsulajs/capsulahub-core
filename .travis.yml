@@ -20,7 +20,6 @@ before_script:
   - git remote set-url origin https://${GT_ACCESS_TOKEN}@github.com/${TRAVIS_REPO_SLUG}
 
 script:
-  - echo "Travis initiated !"
   - yarn lint
   - yarn build
   - yarn test
