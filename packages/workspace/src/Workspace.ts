@@ -45,9 +45,16 @@ export class Workspace implements IWorkspace {
     );
   }
 
-  components(componentsRequest: ComponentsRequest) {
+  components(componentsRequest: ComponentsRequest): Promise<ComponentsMap> {
     console.log('componentsRequest', componentsRequest);
-    return Promise.resolve({} as ComponentsMap);
+    return Promise.resolve(
+      Object.values(this.componentRegistry).reduce((componentsMap, component) => {
+        return {
+          ...componentsMap,
+          [component.nodeId]: Promise.resolve(component),
+        };
+      }, {})
+    );
   }
 
   registerService(registerServiceRequest: RegisterServiceRequest): Promise<void> {
@@ -66,9 +73,6 @@ export class Workspace implements IWorkspace {
   registerComponent(registerComponentRequest: RegisterComponentRequest): Promise<void> {
     return new Promise((resolve, reject) => {
       const component = this.componentRegistry[registerComponentRequest.nodeId];
-
-      console.log('this.componentRegistry', this.componentRegistry);
-      console.log('registerComponentRequest', registerComponentRequest);
 
       if (!!component) {
         reject('Component already registered');

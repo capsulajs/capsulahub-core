@@ -184,4 +184,38 @@ describe('Workspace tests', () => {
         }
       });
   });
+
+  it.only('Call components method returns a map of promises to each component loaded in Workspace', async () => {
+    expect.assertions(9);
+    const configurationServiceMock = {
+      entries: () => Promise.resolve({ entries: baseConfigEntries }),
+    };
+    mockConfigurationService(configurationServiceMock);
+    mockGetModuleDynamically([
+      Promise.resolve(serviceABootstrap),
+      Promise.resolve(serviceBBootstrap),
+      Promise.resolve(gridComponentBootstrap),
+      Promise.resolve(requestFormComponentBootstrap),
+    ]);
+    mockBootstrapComponent();
+
+    const workspaceFactory = new WorkspaceFactory();
+    const workspace = await workspaceFactory.createWorkspace({ token: '123' });
+    const components = await workspace.components({});
+    expect(Object.keys(components)).toEqual(['grid', 'request-form']);
+
+    const gridComponentData = await components.grid;
+    expect(gridComponentData.componentName).toEqual('web-grid');
+    expect(gridComponentData.nodeId).toEqual('grid');
+    // Jest limitation of using HTMLElement
+    expect(gridComponentData.reference).toEqual({});
+    expect(gridComponentData.type).toEqual('layout');
+
+    const requestFormComponentData = await components['request-form'];
+    expect(requestFormComponentData.componentName).toEqual('web-request-form');
+    expect(requestFormComponentData.nodeId).toEqual('request-form');
+    // Jest limitation of using HTMLElement
+    expect(requestFormComponentData.reference).toEqual({});
+    expect(requestFormComponentData.type).toEqual('item');
+  });
 });

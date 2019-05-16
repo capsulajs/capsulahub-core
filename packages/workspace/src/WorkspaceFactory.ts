@@ -63,7 +63,7 @@ export class WorkspaceFactory implements IWorkspaceFactory {
         )
         .then(() => {
           const layoutComponentsPromises = Object.keys(formattedConfiguration.components.layouts).map(
-            (nodeId: string) => initComponent(nodeId, formattedConfiguration.components.layouts, workspace)
+            (nodeId: string) => initComponent(nodeId, formattedConfiguration.components.layouts, workspace, 'layout')
           );
           return Promise.all(layoutComponentsPromises).catch(() => {
             reject(new Error(bootstrapComponentError));
@@ -71,7 +71,7 @@ export class WorkspaceFactory implements IWorkspaceFactory {
         })
         .then(() => {
           const itemsComponentsPromises = Object.keys(formattedConfiguration.components.items).map((nodeId: string) =>
-            initComponent(nodeId, formattedConfiguration.components.items, workspace)
+            initComponent(nodeId, formattedConfiguration.components.items, workspace, 'item')
           );
           return Promise.all(itemsComponentsPromises).catch(() => {
             reject(new Error(bootstrapComponentError));

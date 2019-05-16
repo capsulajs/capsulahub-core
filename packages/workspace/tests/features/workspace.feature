@@ -42,7 +42,6 @@ Scenario: An error with importing a service occurs after calling createWorkspace
     And  An error with importing a service occurs
     Then I expect to receive an error
 
-// TODO
 Scenario: An error with importing a component occurs after calling createWorkspace
     Given WorkspaceFactory instance with createWorkspace method
     And  Configuration for token 123 that includes service A and B and components 1 and 2
@@ -50,7 +49,6 @@ Scenario: An error with importing a component occurs after calling createWorkspa
     And  An error with importing a component occurs
     Then I expect to receive an error
 
-// TODO
 Scenario: An error with registering a component occurs after calling createWorkspace
     Given WorkspaceFactory instance with createWorkspace method
     And  Configuration for token 123 that includes service A and B and components 1 and 2

@@ -1,10 +1,10 @@
 import { RegisteredService } from '../api/methods/registerService';
-import { RegisteredComponent } from '../api/methods/registerComponent';
+import { Component } from '../api/methods/components';
 
 export interface ServiceRegistry {
   [serviceName: string]: RegisteredService;
 }
 
 export interface ComponentRegistry {
-  [nodeId: string]: RegisteredComponent;
+  [nodeId: string]: Component;
 }
