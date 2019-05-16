@@ -18,7 +18,9 @@
     "prettier": "prettier --write '{src,tests}/**/*.{ts,tsx}'"
   },
   "dependencies": {
+    "@capsulajs/capsulahub-core-external-modules": "^0.0.1",
     "@capsulajs/capsulajs-configuration-service": "^0.1.6",
+    "@scalecube/scalecube-microservice": "0.1.3-alpha.10",
     "rxjs": "^6.5.2"
   }
 }

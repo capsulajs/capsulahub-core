@@ -12,10 +12,7 @@ export default [
         definition: {
           serviceName: 'ServiceA',
           methods: {
-            input: { asyncModel: 'RequestResponse' },
-            output$: { asyncModel: 'RequestStream' },
-            select: { asyncModel: 'RequestResponse' },
-            selected$: { asyncModel: 'RequestStream' },
+            greet: { asyncModel: 'requestResponse' },
           },
         },
         config: { name: 'serviceA' },
@@ -26,10 +23,7 @@ export default [
         definition: {
           serviceName: 'ServiceB',
           methods: {
-            input: { asyncModel: 'RequestResponse' },
-            output$: { asyncModel: 'RequestStream' },
-            select: { asyncModel: 'RequestResponse' },
-            selected$: { asyncModel: 'RequestStream' },
+            getRandomNumbers: { asyncModel: 'requestStream' },
           },
         },
         config: { name: 'serviceB' },

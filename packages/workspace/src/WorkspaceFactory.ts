@@ -39,19 +39,18 @@ export class WorkspaceFactory implements IWorkspaceFactory {
         const workspace = new Workspace(formattedConfiguration);
 
         const servicesPromises = formattedConfiguration.services.map((service) => {
-          return getModuleDynamically(service.path)
-            .then((bootstrap: (workspace: Workspace, service: Service) => Promise<object>) =>
-              bootstrap(workspace, service)
-            )
-            .then((serviceInstance) => ({
-              reference: serviceInstance,
-              definition: service.definition,
-            }));
+          return getModuleDynamically(service.path).then(
+            (bootstrap: (workspace: Workspace, service: Service) => Promise<object>) => bootstrap(workspace, service)
+          );
+          // .then((serviceInstance) => ({
+          //   reference: serviceInstance,
+          //   definition: service.definition,
+          // }));
         });
 
         try {
-          const services = await Promise.all(servicesPromises);
-          console.log('GOOD SCENARIO services', services);
+          await Promise.all(servicesPromises);
+          console.log('GOOD SCENARIO services');
           resolve(workspace);
         } catch (error) {
           console.log('services ERROR', error);
