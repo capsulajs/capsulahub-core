@@ -15,7 +15,7 @@ export default [
             greet: { asyncModel: 'requestResponse' },
           },
         },
-        config: { name: 'serviceA' },
+        config: { name: 'serviceA', message: 'what pill would you choose: red or blue?' },
       },
       {
         serviceName: 'ServiceB',

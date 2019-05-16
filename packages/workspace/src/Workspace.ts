@@ -21,18 +21,8 @@ export class Workspace implements IWorkspace {
     console.log('servicesRequest', servicesRequest);
     const services = Object.values(this.serviceRegistry);
     if (!this.microservice) {
-      console.log(
-        'Object.values(this.serviceRegistry)',
-        Object.values(this.serviceRegistry).map((service: RegisteredService) => ({
-          definition: service.definition,
-          reference: service.reference,
-        }))[0].reference.greet
-      );
       this.microservice = Microservices.create({
-        services: Object.values(this.serviceRegistry).map((service: RegisteredService) => ({
-          definition: service.definition,
-          reference: service.reference,
-        })),
+        services: Object.values(this.serviceRegistry),
       });
     }
 

@@ -1,3 +1,5 @@
+import { take } from 'rxjs/operators';
+
 // @ts-ignore
 import serviceABootstrap from '@capsulajs/capsulahub-core-external-modules/src/services/serviceA';
 // @ts-ignore
@@ -120,7 +122,7 @@ describe('Workspace tests', () => {
   });
 
   it.only('Call services method returns a map of promises to each service loaded in Workspace', async (done) => {
-    // expect.assertions(1);
+    expect.assertions(6);
     const configurationServiceMock = {
       entries: () => Promise.resolve({ entries: baseConfigEntries }),
     };
@@ -129,8 +131,26 @@ describe('Workspace tests', () => {
 
     const workspaceFactory = new WorkspaceFactory();
     const workspace = await workspaceFactory.createWorkspace({ token: '123' });
-    const services = workspace.services({});
-    console.log('services', services);
-    done();
+    const services = await workspace.services({});
+    expect(Object.keys(services)).toEqual(['ServiceA', 'ServiceB']);
+
+    const serviceA = await services.ServiceA;
+    expect(serviceA.serviceName).toEqual('ServiceA');
+    const greetRes = await serviceA.proxy.greet('Stephane');
+    expect(greetRes).toEqual('Dear Stephane, what pill would you choose: red or blue?');
+    const serviceB = await services.ServiceB;
+    expect(serviceB.serviceName).toEqual('ServiceB');
+
+    let updates = 0;
+    serviceB.proxy
+      .getRandomNumbers()
+      .pipe(take(2))
+      .subscribe((num: number) => {
+        expect(typeof num === 'number').toBeTruthy();
+        updates++;
+        if (updates === 2) {
+          done();
+        }
+      });
   });
 });
