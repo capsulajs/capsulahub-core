@@ -36,8 +36,9 @@ export default [
       layout: [
         {
           grid: {
-            componentName: 'grid',
-            path: 'localhost:8000/grid-component',
+            componentName: 'web-grid',
+            nodeId: 'root',
+            path: 'http://localhost:3000/components/Grid',
             config: { title: 'Base Grid' },
           },
         },
@@ -45,8 +46,9 @@ export default [
       items: [
         {
           ['request-form']: {
-            componentName: 'request-form',
-            path: 'localhost:8000/request-form-component',
+            componentName: 'web-request-form',
+            nodeId: 'request-form',
+            path: 'http://localhost:3000/components/RequestForm',
             config: { title: 'Base Request Form' },
           },
         },

@@ -10,10 +10,12 @@ import { ServiceRegistry } from './helpers/types';
 export class Workspace implements IWorkspace {
   private configuration: WorkspaceConfig;
   private serviceRegistry: ServiceRegistry;
+  private componentRegistry: ServiceRegistry;
   private microservice?: Api.Microservice;
   constructor(configuration: WorkspaceConfig) {
     this.configuration = configuration;
     this.serviceRegistry = {} as ServiceRegistry;
+    this.componentRegistry = {} as ServiceRegistry;
     console.log('this.configuration', this.configuration);
   }
 
@@ -48,6 +50,19 @@ export class Workspace implements IWorkspace {
   }
 
   registerService(registerServiceRequest: RegisterServiceRequest): Promise<void> {
+    return new Promise((resolve, reject) => {
+      const service = this.serviceRegistry[registerServiceRequest.serviceName];
+
+      if (!!service) {
+        reject('Service already registered');
+      } else {
+        this.serviceRegistry[registerServiceRequest.serviceName] = { ...registerServiceRequest };
+        resolve();
+      }
+    });
+  }
+
+  registerComponent(registerComponentRequest: RegisterServiceRequest): Promise<void> {
     return new Promise((resolve, reject) => {
       const service = this.serviceRegistry[registerServiceRequest.serviceName];
 

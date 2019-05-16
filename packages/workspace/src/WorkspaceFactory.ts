@@ -51,6 +51,48 @@ export class WorkspaceFactory implements IWorkspaceFactory {
         try {
           await Promise.all(servicesPromises);
           console.log('GOOD SCENARIO services');
+
+          const bootstrapComponent = (nodeId: string, type: 'layouts' | 'items') => {
+            const componentData = formattedConfiguration.components[type][nodeId];
+            return getModuleDynamically(componentData.path)
+              .then((bootstrap: any) => bootstrap(workspace, componentData))
+              .then((WebComponent) => {
+                customElements.define(componentData.componentName, WebComponent);
+                const webComponent = new WebComponent();
+                typeof webComponent.setProps === 'function' && webComponent.setProps();
+                return webComponent;
+              })
+              .then((webComponent) => {});
+          };
+
+          const layoutComponentsPromises = Object.keys(formattedConfiguration.components.layouts).map(
+            (nodeId: string) => {
+              const componentData = formattedConfiguration.components.layouts[nodeId];
+              return getModuleDynamically(componentData.path)
+                .then((bootstrap: any) => bootstrap(workspace, componentData))
+                .then((WebComponent) => {
+                  customElements.define(componentData.componentName, WebComponent);
+                  const webComponent = new WebComponent();
+                  typeof webComponent.setProps === 'function' && webComponent.setProps();
+                  return webComponent;
+                });
+            }
+          );
+          await Promise.all(layoutComponentsPromises);
+
+          const itemsComponentsPromises = Object.keys(formattedConfiguration.components.items).map((nodeId: string) => {
+            const componentData = formattedConfiguration.components.items[nodeId];
+            return getModuleDynamically(componentData.path)
+              .then((bootstrap: any) => bootstrap(workspace, componentData))
+              .then((WebComponent) => {
+                customElements.define(componentData.componentName, WebComponent);
+                const webComponent = new WebComponent();
+                typeof webComponent.setProps === 'function' && webComponent.setProps();
+                return webComponent;
+              });
+          });
+          await Promise.all(itemsComponentsPromises);
+
           resolve(workspace);
         } catch (error) {
           console.log('services ERROR', error);
