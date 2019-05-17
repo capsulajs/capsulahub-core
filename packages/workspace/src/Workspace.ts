@@ -7,6 +7,7 @@ import WorkspaceConfig from './api/WorkspaceConfig';
 import { RegisteredService, RegisterServiceRequest } from './api/methods/registerService';
 import { ComponentRegistry, ServiceRegistry } from './helpers/types';
 import { RegisterComponentRequest } from './api/methods/registerComponent';
+import { serviceAlreadyRegisteredError } from './helpers/const';
 
 export class Workspace implements IWorkspace {
   private configuration: WorkspaceConfig;
@@ -61,7 +62,7 @@ export class Workspace implements IWorkspace {
       const service = this.serviceRegistry[registerServiceRequest.serviceName];
 
       if (!!service) {
-        reject('Service already registered');
+        reject(new Error(serviceAlreadyRegisteredError));
       } else {
         this.serviceRegistry[registerServiceRequest.serviceName] = { ...registerServiceRequest };
         resolve();
@@ -69,12 +70,12 @@ export class Workspace implements IWorkspace {
     });
   }
 
-  registerComponent(registerComponentRequest: RegisterComponentRequest): Promise<void> {
+  private registerComponent(registerComponentRequest: RegisterComponentRequest): Promise<void> {
     return new Promise((resolve, reject) => {
       const component = this.componentRegistry[registerComponentRequest.nodeId];
 
       if (!!component) {
-        reject('Component already registered');
+        reject(new Error('Component already registered'));
       } else {
         this.componentRegistry[registerComponentRequest.nodeId] = { ...registerComponentRequest };
         resolve();

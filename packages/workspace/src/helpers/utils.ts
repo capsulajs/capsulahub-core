@@ -5,6 +5,7 @@ import { Workspace as IWorkspace, Workspace } from '../api/Workspace';
 import { ComponentsMap, ComponentType } from '../api/methods/components';
 import Service from '../api/Service';
 import { bootstrapComponentError, bootstrapServiceError } from './const';
+import { FullWorkspace } from './types';
 
 export const getConfigurationService = (token: string): ConfigurationService<WorkspaceConfig> =>
   new ConfigurationServiceHttp(token);
@@ -21,7 +22,7 @@ export const bootstrapComponent = (componentName: string, WebComponent: any) => 
 export const initComponent = (
   nodeId: string,
   componentsConfig: { [nodeId: string]: Component },
-  workspace: Workspace,
+  workspace: FullWorkspace,
   type: ComponentType
 ): Promise<void> => {
   const componentData = componentsConfig[nodeId];
@@ -44,7 +45,7 @@ export const initComponent = (
     });
 };
 
-export const bootstrapServices = (workspace: IWorkspace, servicesConfig: Service[]): Promise<any[]> => {
+export const bootstrapServices = (workspace: FullWorkspace, servicesConfig: Service[]): Promise<any[]> => {
   return Promise.all(
     servicesConfig.map((service) => {
       return getModuleDynamically(service.path).then(
@@ -57,7 +58,7 @@ export const bootstrapServices = (workspace: IWorkspace, servicesConfig: Service
 };
 
 export const initComponents = (
-  workspace: IWorkspace,
+  workspace: FullWorkspace,
   componentsConfig: { [nodeId: string]: Component },
   type: ComponentType
 ) => {

@@ -18,9 +18,10 @@ import {
   configRepositoryName,
   configWrongFormatError,
   createWorkspaceWrongRequestError,
+  serviceAlreadyRegisteredError,
 } from '../../src/helpers/const';
 import { mockBootstrapComponent, mockConfigurationService, mockGetModuleDynamically } from '../helpers/mocks';
-import baseConfigEntries from '../helpers/baseConfigEntries';
+import baseConfigEntries, { serviceAConfig } from '../helpers/baseConfigEntries';
 import { Workspace } from '../../src/Workspace';
 
 const repositoryNotFoundError = `Configuration repository ${configRepositoryName} not found`;
@@ -225,7 +226,6 @@ describe('Workspace tests', () => {
 
   it('Call registerService method registers the provided service in the Workspace', async () => {
     expect.assertions(3);
-    const configurationMock = [...baseConfigEntries];
     const serviceCConfig = {
       serviceName: 'ServiceC',
       path: 'http://localhost:3000/services/serviceC.js',
@@ -237,8 +237,15 @@ describe('Workspace tests', () => {
       },
       config: {},
     };
-    // @ts-ignore
-    configurationMock[1].value = (configurationMock[1].value as object[]).concat(serviceCConfig);
+
+    const configurationMock = [
+      baseConfigEntries[0],
+      {
+        key: 'services',
+        value: [...(baseConfigEntries[1] as any).value, serviceCConfig],
+      },
+      baseConfigEntries[2],
+    ];
 
     const configurationServiceMock = {
       entries: () => Promise.resolve({ entries: configurationMock }),
@@ -269,5 +276,30 @@ describe('Workspace tests', () => {
     const serviceC = await updatedServices.ServiceC;
     expect(serviceC.serviceName).toEqual('ServiceC');
     return expect(serviceC.proxy.hello('Stephane')).resolves.toEqual('Hello, Stephane');
+  });
+
+  it('Call registerService method with a service already registered is rejected with error', async () => {
+    expect.assertions(1);
+    const configurationServiceMock = {
+      entries: () => Promise.resolve({ entries: baseConfigEntries }),
+    };
+    mockConfigurationService(configurationServiceMock);
+    mockGetModuleDynamically([
+      Promise.resolve(serviceABootstrap),
+      Promise.resolve(serviceBBootstrap),
+      Promise.resolve(gridComponentBootstrap),
+      Promise.resolve(requestFormComponentBootstrap),
+    ]);
+    mockBootstrapComponent();
+
+    const workspaceFactory = new WorkspaceFactory();
+    const workspace = await workspaceFactory.createWorkspace({ token: '123' });
+    return expect(
+      workspace.registerService({
+        serviceName: serviceAConfig.serviceName,
+        definition: serviceAConfig.definition,
+        reference: {},
+      })
+    ).rejects.toEqual(new Error(serviceAlreadyRegisteredError));
   });
 });

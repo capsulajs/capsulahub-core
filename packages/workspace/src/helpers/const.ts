@@ -7,3 +7,5 @@ export const createWorkspaceWrongRequestError = 'createWorkspace has been called
 export const bootstrapServiceError = 'Something is wrong while bootstrapping a service';
 
 export const bootstrapComponentError = 'Something is wrong while bootstrapping a component';
+
+export const serviceAlreadyRegisteredError = 'Service has been already registered';

@@ -36,14 +36,4 @@ export interface Workspace {
    * @param registerServiceRequest
    */
   registerService(registerServiceRequest: RegisterServiceRequest): Promise<void>;
-
-  /**
-   * Register a component in the workspace.
-   * Reject in case :
-   * - Invalid request
-   * - Component specified in request doesn't exist in workspace configuration
-   * - Component specified in request already registered
-   * @param registerComponentRequest
-   */
-  registerComponent(registerComponentRequest: RegisterComponentRequest): Promise<void>;
 }

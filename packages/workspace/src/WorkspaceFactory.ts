@@ -1,3 +1,5 @@
+import omit from 'lodash/omit';
+
 import { WorkspaceFactory as IWorkspaceFactory } from './api/WorkspaceFactory';
 import { Workspace } from './Workspace';
 import { Workspace as IWorkspace } from './api/Workspace';
@@ -21,6 +23,7 @@ import Service from './api/Service';
 import { Entity } from '@capsulajs/capsulajs-configuration-service/lib/api/Entity';
 import { validateCreateWorkspaceRequest, validateWorkspaceConfig } from './helpers/validators';
 import { Microservices, Api } from '@scalecube/scalecube-microservice';
+import { FullWorkspace } from './helpers/types';
 
 export class WorkspaceFactory implements IWorkspaceFactory {
   createWorkspace(createWorkspaceRequest: CreateWorkspaceRequest): Promise<Workspace> {
@@ -61,7 +64,7 @@ export class WorkspaceFactory implements IWorkspaceFactory {
 
             let initPromise: Promise<{ workspace: IWorkspace; microservice: Api.Microservice }>;
 
-            const createInitPromise = (workspace: IWorkspace) => {
+            const createInitPromise = (workspace: FullWorkspace) => {
               initPromise = new Promise((resolve, reject) => {
                 let microservice: Api.Microservice;
 
@@ -76,7 +79,7 @@ export class WorkspaceFactory implements IWorkspaceFactory {
                     return initComponents(workspace, formattedConfiguration.components.items, 'item');
                   })
                   .then(() => {
-                    return resolve({ workspace, microservice });
+                    return resolve({ workspace: workspace, microservice });
                   })
                   .catch((error) => reject(error));
               });
@@ -85,7 +88,7 @@ export class WorkspaceFactory implements IWorkspaceFactory {
             };
 
             const init = (
-              workspace: IWorkspace
+              workspace: FullWorkspace
             ): Promise<{ workspace: IWorkspace; microservice: Api.Microservice }> => {
               return createInitPromise(workspace);
             };
