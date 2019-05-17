@@ -21,8 +21,9 @@ export class Workspace implements IWorkspace {
   }
 
   services(servicesRequest: ServicesRequest): Promise<ServicesMap> {
-    console.log('servicesRequest', servicesRequest);
     const services = Object.values(this.serviceRegistry);
+    console.log('services', services);
+
     if (!this.microservice) {
       this.microservice = Microservices.create({
         services: Object.values(this.serviceRegistry),

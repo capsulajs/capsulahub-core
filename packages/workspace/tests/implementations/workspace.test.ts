@@ -1,9 +1,12 @@
 import { take } from 'rxjs/operators';
+import { Api } from '@scalecube/scalecube-microservice';
 
 // @ts-ignore
 import serviceABootstrap from '@capsulajs/capsulahub-core-external-modules/src/services/serviceA';
 // @ts-ignore
 import serviceBBootstrap from '@capsulajs/capsulahub-core-external-modules/src/services/serviceB';
+// @ts-ignore
+import serviceCBootstrap from '@capsulajs/capsulahub-core-external-modules/src/services/serviceC';
 // @ts-ignore
 import gridComponentBootstrap from '@capsulajs/capsulahub-core-external-modules/src/components/Grid';
 // // @ts-ignore
@@ -185,7 +188,7 @@ describe('Workspace tests', () => {
       });
   });
 
-  it.only('Call components method returns a map of promises to each component loaded in Workspace', async () => {
+  it('Call components method returns a map of promises to each component loaded in Workspace', async () => {
     expect.assertions(9);
     const configurationServiceMock = {
       entries: () => Promise.resolve({ entries: baseConfigEntries }),
@@ -217,5 +220,55 @@ describe('Workspace tests', () => {
     // Jest limitation of using HTMLElement
     expect(requestFormComponentData.reference).toEqual({});
     expect(requestFormComponentData.type).toEqual('item');
+  });
+
+  it.only('Call registerService method registers the provided service in the Workspace', async () => {
+    expect.assertions(2);
+    const configurationMock = [...baseConfigEntries];
+    const serviceCConfig = {
+      serviceName: 'ServiceC',
+      path: 'http://localhost:3000/services/serviceC.js',
+      definition: {
+        serviceName: 'ServiceC',
+        methods: {
+          hello: { asyncModel: 'requestResponse' as Api.AsyncModel },
+        },
+      },
+      config: {},
+    };
+    // @ts-ignore
+    configurationMock[1].value = (configurationMock[1].value as object[]).concat(serviceCConfig);
+
+    const configurationServiceMock = {
+      entries: () => Promise.resolve({ entries: configurationMock }),
+    };
+    mockConfigurationService(configurationServiceMock);
+    mockGetModuleDynamically([
+      Promise.resolve(serviceABootstrap),
+      Promise.resolve(serviceBBootstrap),
+      Promise.resolve(serviceCBootstrap),
+      Promise.resolve(gridComponentBootstrap),
+      Promise.resolve(requestFormComponentBootstrap),
+    ]);
+    mockBootstrapComponent();
+
+    const workspaceFactory = new WorkspaceFactory();
+    const workspace = await workspaceFactory.createWorkspace({ token: '123' });
+    const services = await workspace.services({});
+    expect(services.ServiceC).toBeUndefined();
+
+    const serviceCReference = await serviceCBootstrap(workspace, serviceCConfig);
+
+    console.log('serviceCReference', (serviceCReference as any).hello);
+
+    await workspace.registerService({
+      serviceName: serviceCConfig.serviceName,
+      definition: serviceCConfig.definition,
+      reference: serviceCReference,
+    });
+    const updatedServices = await workspace.services({});
+    const serviceC = await updatedServices.ServiceC;
+    expect(serviceC.serviceName).toEqual('ServiceC');
+    return expect(serviceC.proxy.hello('Stephane')).resolves.toEqual('Hello, Stephane');
   });
 });

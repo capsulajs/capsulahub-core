@@ -22,7 +22,7 @@ const bootstrap = (WORKSPACE: any, SERVICE_CONFIG: any) => {
       definition: SERVICE_CONFIG.definition,
       reference: serviceA,
     });
-    resolve();
+    resolve(serviceA);
   });
 };
 

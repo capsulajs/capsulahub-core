@@ -1,3 +1,5 @@
+import { Api } from '@scalecube/scalecube-microservice';
+
 export default [
   {
     key: 'name',
@@ -27,6 +29,17 @@ export default [
           },
         },
         config: { name: 'serviceB' },
+      },
+      {
+        serviceName: 'ServiceC',
+        path: 'http://localhost:3000/services/serviceC.js',
+        definition: {
+          serviceName: 'ServiceC',
+          methods: {
+            hello: { asyncModel: 'requestResponse' as Api.AsyncModel },
+          },
+        },
+        config: {},
       },
     ],
   },

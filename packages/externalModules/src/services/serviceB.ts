@@ -16,7 +16,7 @@ const bootstrap = (WORKSPACE: any, SERVICE_CONFIG: any) => {
       definition: SERVICE_CONFIG.definition,
       reference: serviceB,
     });
-    resolve();
+    resolve(serviceB);
   });
 };
 
