@@ -1,13 +1,19 @@
+import { Component, ComponentType } from '@capsulajs/capsulahub-core-workspace/lib/api/methods/components';
 import { Renderer, RenderItemRequest } from './api';
 
 export default class RendererService implements Renderer {
   async renderLayouts() {
-    // @ts-ignore
-    const components = await CAPSULAHUB_WORKSPACE.components({});
+    const layouts = await this.components('layout');
 
-    console.log(components);
+    layouts.forEach((layout: Component) => {
+      const node = document.getElementById(layout.nodeId);
 
-    return Promise.resolve();
+      if (node) {
+        console.log('INSERT');
+
+        node.appendChild(layout.reference);
+      }
+    });
   }
 
   renderItems() {
@@ -20,5 +26,11 @@ export default class RendererService implements Renderer {
     }
 
     return Promise.resolve();
+  }
+
+  private async components(type: ComponentType) {
+    const componentsMap = await CAPSULAHUB_WORKSPACE.components({});
+    const components = await Promise.all(Object.keys(componentsMap).map((key) => componentsMap[key]));
+    return components.filter((component: Component) => component.type === type);
   }
 }

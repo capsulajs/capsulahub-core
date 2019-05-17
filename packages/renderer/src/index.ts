@@ -1,4 +1,4 @@
-import { Workspace } from '@capsulajs/capsulahub-core-workspace/lib/api';
+import { Workspace } from '@capsulajs/capsulahub-core-workspace/lib/api/Workspace';
 import RendererConfig from './api/RendererConfig';
 import RendererService from './RendererService';
 import * as api from './api';

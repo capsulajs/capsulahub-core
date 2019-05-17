@@ -17,10 +17,10 @@ global.CAPSULAHUB_WORKSPACE = {
 
 mock.mockResolvedValueOnce({
   LayoutA: Promise.resolve({
-    nodeId: 'LayoutA',
+    nodeId: 'layout-a',
     type: 'layout',
     componentName: 'layout-a',
-    reference: LayoutA,
+    reference: new LayoutA(),
   }),
 });
 
