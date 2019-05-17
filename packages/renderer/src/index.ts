@@ -3,9 +3,9 @@ import { RendererConfig } from './api';
 import RendererService from './RendererService';
 import * as api from './api';
 
-declare global {
-  let CAPSULAHUB_WORKSPACE: Workspace;
-  let SERVICE_CONFIG: RendererConfig;
+interface Global extends NodeJS.Global {
+  CAPSULAHUB_WORKSPACE: Workspace;
+  SERVICE_CONFIG: RendererConfig;
 }
 
-export { api, RendererService };
+export { api, RendererService, Global };

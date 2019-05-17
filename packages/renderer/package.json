@@ -41,9 +41,10 @@
     "react-dom": "^16.8.6"
   },
   "devDependencies": {
+    "@types/enzyme": "^3.9.2",
     "@types/enzyme-adapter-react-16": "^1.0.5",
     "@types/jsdom": "^12.2.3",
-    "@types/enzyme": "^3.9.2",
+    "@types/node": "^12.0.2",
     "@webcomponents/custom-elements": "^1.2.4",
     "enzyme": "^3.9.0",
     "enzyme-adapter-react-16": "^1.13.0"

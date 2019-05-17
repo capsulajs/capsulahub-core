@@ -12,7 +12,10 @@ class Page extends React.Component {
 }
 
 const mock = jest.fn();
-CAPSULAHUB_WORKSPACE.components = mock;
+global.CAPSULAHUB_WORKSPACE = {
+  components: mock,
+};
+
 mock.mockResolvedValueOnce(components);
 
 test('Calling renderLayouts renders the layouts from configuration', () => {
