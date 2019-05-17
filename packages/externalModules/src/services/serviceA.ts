@@ -17,12 +17,15 @@ const bootstrap = (WORKSPACE: any, SERVICE_CONFIG: any) => {
     }
 
     const serviceA = new ServiceA(SERVICE_CONFIG.config.message);
-    await WORKSPACE.registerService({
+
+    const registerServiceData = {
       serviceName: SERVICE_CONFIG.serviceName,
       definition: SERVICE_CONFIG.definition,
       reference: serviceA,
-    });
-    resolve(serviceA);
+    };
+
+    await WORKSPACE.registerService(registerServiceData);
+    resolve(registerServiceData);
   });
 };
 

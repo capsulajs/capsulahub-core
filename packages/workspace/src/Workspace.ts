@@ -13,22 +13,21 @@ export class Workspace implements IWorkspace {
   private serviceRegistry: ServiceRegistry;
   private componentRegistry: ComponentRegistry;
   private microservice?: Api.Microservice;
-  constructor(configuration: WorkspaceConfig) {
+
+  constructor(configuration: WorkspaceConfig, init: (arg: any) => Promise<any>) {
     this.configuration = configuration;
     this.serviceRegistry = {} as ServiceRegistry;
     this.componentRegistry = {} as ComponentRegistry;
-    // console.log('this.configuration', this.configuration);
+
+    init(this)
+      .then((data) => {
+        this.microservice = data.microservice;
+      })
+      .catch(() => {});
   }
 
   services(servicesRequest: ServicesRequest): Promise<ServicesMap> {
     const services = Object.values(this.serviceRegistry);
-    console.log('services', services);
-
-    if (!this.microservice) {
-      this.microservice = Microservices.create({
-        services: Object.values(this.serviceRegistry),
-      });
-    }
 
     return Promise.resolve(
       services.reduce(
@@ -47,7 +46,6 @@ export class Workspace implements IWorkspace {
   }
 
   components(componentsRequest: ComponentsRequest): Promise<ComponentsMap> {
-    console.log('componentsRequest', componentsRequest);
     return Promise.resolve(
       Object.values(this.componentRegistry).reduce((componentsMap, component) => {
         return {

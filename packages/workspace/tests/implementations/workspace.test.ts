@@ -124,6 +124,7 @@ describe('Workspace tests', () => {
     ]);
 
     const workspaceFactory = new WorkspaceFactory();
+
     return expect(workspaceFactory.createWorkspace({ token: '123' })).rejects.toEqual(
       new Error(bootstrapComponentError)
     );
@@ -138,7 +139,7 @@ describe('Workspace tests', () => {
     mockGetModuleDynamically([
       Promise.resolve(serviceABootstrap),
       Promise.resolve(serviceBBootstrap),
-      Promise.reject(gridComponentBootstrap),
+      Promise.resolve(gridComponentBootstrap),
       Promise.resolve(requestFormComponentBootstrap),
     ]);
     mockBootstrapComponent(true);
@@ -222,8 +223,8 @@ describe('Workspace tests', () => {
     expect(requestFormComponentData.type).toEqual('item');
   });
 
-  it.only('Call registerService method registers the provided service in the Workspace', async () => {
-    expect.assertions(2);
+  it('Call registerService method registers the provided service in the Workspace', async () => {
+    expect.assertions(3);
     const configurationMock = [...baseConfigEntries];
     const serviceCConfig = {
       serviceName: 'ServiceC',
@@ -258,8 +259,6 @@ describe('Workspace tests', () => {
     expect(services.ServiceC).toBeUndefined();
 
     const serviceCReference = await serviceCBootstrap(workspace, serviceCConfig);
-
-    console.log('serviceCReference', (serviceCReference as any).hello);
 
     await workspace.registerService({
       serviceName: serviceCConfig.serviceName,

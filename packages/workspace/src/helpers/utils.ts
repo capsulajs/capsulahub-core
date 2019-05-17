@@ -1,8 +1,10 @@
 import { ConfigurationService, ConfigurationServiceHttp } from '@capsulajs/capsulajs-configuration-service';
 import WorkspaceConfig from '../api/WorkspaceConfig';
 import Component from '../api/Component';
-import { Workspace } from '../api/Workspace';
-import { ComponentType } from '../api/methods/components';
+import { Workspace as IWorkspace, Workspace } from '../api/Workspace';
+import { ComponentsMap, ComponentType } from '../api/methods/components';
+import Service from '../api/Service';
+import { bootstrapComponentError, bootstrapServiceError } from './const';
 
 export const getConfigurationService = (token: string): ConfigurationService<WorkspaceConfig> =>
   new ConfigurationServiceHttp(token);
@@ -24,8 +26,6 @@ export const initComponent = (
 ): Promise<void> => {
   const componentData = componentsConfig[nodeId];
 
-  console.log('componentData', componentData);
-
   return getModuleDynamically(componentData.path)
     .then((bootstrap: any) => bootstrap(workspace, componentData))
     .then((WebComponent) => {
@@ -38,5 +38,32 @@ export const initComponent = (
         componentName: componentData.componentName,
         reference: webComponent,
       });
+    })
+    .catch((error) => {
+      throw new Error(error);
     });
+};
+
+export const bootstrapServices = (workspace: IWorkspace, servicesConfig: Service[]): Promise<any[]> => {
+  return Promise.all(
+    servicesConfig.map((service) => {
+      return getModuleDynamically(service.path).then(
+        (bootstrap: (workspace: IWorkspace, service: Service) => Promise<object>) => bootstrap(workspace, service)
+      );
+    })
+  ).catch(() => {
+    throw new Error(bootstrapServiceError);
+  });
+};
+
+export const initComponents = (
+  workspace: IWorkspace,
+  componentsConfig: { [nodeId: string]: Component },
+  type: ComponentType
+) => {
+  return Promise.all(
+    Object.keys(componentsConfig).map((nodeId: string) => initComponent(nodeId, componentsConfig, workspace, type))
+  ).catch((error) => {
+    throw new Error(bootstrapComponentError);
+  });
 };

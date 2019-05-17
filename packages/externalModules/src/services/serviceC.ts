@@ -12,7 +12,13 @@ const bootstrap = (WORKSPACE: any, SERVICE_CONFIG: any) => {
     }
 
     const serviceC = new ServiceC();
-    resolve(serviceC);
+    const registerServiceData = {
+      serviceName: SERVICE_CONFIG.serviceName,
+      definition: SERVICE_CONFIG.definition,
+      reference: serviceC,
+    };
+
+    resolve(registerServiceData);
   });
 };
 
