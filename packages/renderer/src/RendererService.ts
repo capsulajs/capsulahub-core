@@ -1,13 +1,9 @@
 import { Renderer, RenderItemRequest } from './api';
-import { Global } from './index';
-
-const globalNode: Global = {
-  ...global,
-};
 
 export default class RendererService implements Renderer {
   async renderLayouts() {
-    const components = await globalNode.CAPSULAHUB_WORKSPACE.components({});
+    // @ts-ignore
+    const components = await CAPSULAHUB_WORKSPACE.components({});
 
     console.log(components);
 

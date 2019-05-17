@@ -1,9 +1,7 @@
 import React from 'react';
 import { mount } from 'enzyme';
 import { RendererService } from '../../src';
-import { components } from './helpers/mocks';
-
-console.log(new RendererService());
+import { LayoutA } from './helpers/web-components';
 
 class Page extends React.Component {
   render() {
@@ -12,16 +10,27 @@ class Page extends React.Component {
 }
 
 const mock = jest.fn();
+// @ts-ignore
 global.CAPSULAHUB_WORKSPACE = {
   components: mock,
 };
 
-mock.mockResolvedValueOnce(components);
+mock.mockResolvedValueOnce({
+  LayoutA: Promise.resolve({
+    nodeId: 'LayoutA',
+    type: 'layout',
+    componentName: 'layout-a',
+    reference: LayoutA,
+  }),
+});
 
-test('Calling renderLayouts renders the layouts from configuration', () => {
-  const component = mount(<Page />);
+test('Calling renderLayouts renders the layouts from configuration', async () => {
+  const page = mount(<Page />);
+  const renderService = new RendererService();
 
-  console.log(component);
+  console.log(page.html());
+  await renderService.renderLayouts();
+  console.log(page.html());
 
-  component.unmount();
+  page.unmount();
 });

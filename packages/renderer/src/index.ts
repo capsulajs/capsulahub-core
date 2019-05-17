@@ -1,11 +1,11 @@
 import { Workspace } from '@capsulajs/capsulahub-core-workspace/lib/api';
-import { RendererConfig } from './api';
+import RendererConfig from './api/RendererConfig';
 import RendererService from './RendererService';
 import * as api from './api';
 
-interface Global extends NodeJS.Global {
-  CAPSULAHUB_WORKSPACE: Workspace;
-  SERVICE_CONFIG: RendererConfig;
+declare global {
+  let CAPSULAHUB_WORKSPACE: Workspace;
+  let SERVICE_CONFIG: RendererConfig;
 }
 
-export { api, RendererService, Global };
+export { api, RendererService };
