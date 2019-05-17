@@ -1,7 +1,5 @@
 export class LayoutA extends HTMLElement {
-  constructor() {
-    super();
-
+  connectedCallback() {
     this.innerHTML = `<div id="layout-a">
       <div id="item-a"></div>
       <div id="item-b"></div>

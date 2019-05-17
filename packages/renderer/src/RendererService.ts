@@ -3,34 +3,45 @@ import { Renderer, RenderItemRequest } from './api';
 
 export default class RendererService implements Renderer {
   async renderLayouts() {
-    const layouts = await this.components('layout');
-
-    layouts.forEach((layout: Component) => {
-      const node = document.getElementById(layout.nodeId);
+    (await this.components('layout')).forEach((component: Component) => {
+      const node = document.getElementById(component.nodeId);
 
       if (node) {
-        console.log('INSERT');
-
-        node.appendChild(layout.reference);
+        node.appendChild(component.reference);
       }
     });
   }
 
-  renderItems() {
-    return Promise.resolve();
+  async renderItems() {
+    (await this.components('item')).forEach((component: Component) => {
+      const node = document.getElementById(component.nodeId);
+
+      if (node) {
+        node.appendChild(component.reference);
+      }
+    });
   }
 
-  renderItem(renderItemRequest: RenderItemRequest) {
+  async renderItem(renderItemRequest: RenderItemRequest) {
     if (!renderItemRequest.nodeId) {
       return Promise.reject(new Error('Invalid node Id'));
     }
 
-    return Promise.resolve();
+    const components = await this.components();
+    const component = components.find((component: Component) => component.nodeId === renderItemRequest.nodeId);
+
+    if (component) {
+      const node = document.getElementById(component.nodeId);
+
+      if (node) {
+        node.innerHTML = component.reference;
+      }
+    }
   }
 
-  private async components(type: ComponentType) {
+  private async components(type?: ComponentType) {
     const componentsMap = await CAPSULAHUB_WORKSPACE.components({});
     const components = await Promise.all(Object.keys(componentsMap).map((key) => componentsMap[key]));
-    return components.filter((component: Component) => component.type === type);
+    return type ? components.filter((component: Component) => component.type === type) : components;
   }
 }
