@@ -9,9 +9,10 @@ template.innerHTML = `
 export class LayoutA extends HTMLElement {
   constructor() {
     super();
-    this._shadowRoot = this.attachShadow({ mode: 'open' });
-    this._shadowRoot.appendChild(template.content.cloneNode(true));
+
+    const shadowRoot = this.attachShadow({ mode: 'open' });
+    shadowRoot.appendChild(template.content.cloneNode(true));
   }
 }
 
-window.customElements.define('layout-a', LayoutA);
+customElements.define('layout-a', LayoutA);

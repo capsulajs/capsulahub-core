@@ -38,6 +38,8 @@
   "dependencies": {
     "@capsulajs/capsulahub-core-workspace": ">=0.0.1",
     "@types/enzyme-adapter-react-16": "^1.0.5",
+    "@types/jsdom": "^12.2.3",
+    "@webcomponents/custom-elements": "^1.2.4",
     "react": "^16.8.6",
     "react-dom": "^16.8.6"
   },

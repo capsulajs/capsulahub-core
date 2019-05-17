@@ -8,7 +8,4 @@ declare global {
   let SERVICE_CONFIG: RendererConfig;
 }
 
-export default {
-  api,
-  RendererService,
-};
+export { api, RendererService };

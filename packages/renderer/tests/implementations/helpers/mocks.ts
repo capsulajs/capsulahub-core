@@ -1,14 +1,11 @@
-import { registerComponent } from './utils';
 import { LayoutA } from './web-components';
 
-//document.getElementById(name)!.appendChild(webComponent);
-
 export const components = {
-  LayoutA: registerComponent({
+  LayoutA: Promise.resolve({
     nodeId: 'LayoutA',
     type: 'layout',
-    name: 'layout-a',
-    module: LayoutA,
+    componentName: 'layout-a',
+    reference: LayoutA,
   }),
   // ItemA: {
   //   nodeId: 'ItemA'

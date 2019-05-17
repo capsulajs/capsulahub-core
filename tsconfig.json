@@ -11,6 +11,6 @@
     "moduleResolution": "node",
     "baseUrl": "./src",
     "esModuleInterop": true,
-    "jsx": "preserve"
+    "jsx": "react"
   }
 }
