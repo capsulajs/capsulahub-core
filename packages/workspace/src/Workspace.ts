@@ -7,7 +7,8 @@ import WorkspaceConfig from './api/WorkspaceConfig';
 import { RegisteredService, RegisterServiceRequest } from './api/methods/registerService';
 import { ComponentRegistry, ServiceRegistry } from './helpers/types';
 import { RegisterComponentRequest } from './api/methods/registerComponent';
-import { serviceAlreadyRegisteredError } from './helpers/const';
+import { invalidSegisterServiceRequestError, serviceAlreadyRegisteredError } from './helpers/const';
+import { validateRegisterServiceRequest } from './helpers/validators';
 
 export class Workspace implements IWorkspace {
   private configuration: WorkspaceConfig;
@@ -59,13 +60,17 @@ export class Workspace implements IWorkspace {
 
   registerService(registerServiceRequest: RegisterServiceRequest): Promise<void> {
     return new Promise((resolve, reject) => {
+      if (!validateRegisterServiceRequest(registerServiceRequest)) {
+        return reject(new Error(invalidSegisterServiceRequestError));
+      }
+
       const service = this.serviceRegistry[registerServiceRequest.serviceName];
 
       if (!!service) {
-        reject(new Error(serviceAlreadyRegisteredError));
+        return reject(new Error(serviceAlreadyRegisteredError));
       } else {
         this.serviceRegistry[registerServiceRequest.serviceName] = { ...registerServiceRequest };
-        resolve();
+        return resolve();
       }
     });
   }

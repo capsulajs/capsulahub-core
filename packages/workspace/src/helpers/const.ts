@@ -9,3 +9,5 @@ export const bootstrapServiceError = 'Something is wrong while bootstrapping a s
 export const bootstrapComponentError = 'Something is wrong while bootstrapping a component';
 
 export const serviceAlreadyRegisteredError = 'Service has been already registered';
+
+export const invalidSegisterServiceRequestError = 'registerService has been called with invalid serviceName';

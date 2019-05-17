@@ -18,6 +18,7 @@ import {
   configRepositoryName,
   configWrongFormatError,
   createWorkspaceWrongRequestError,
+  invalidSegisterServiceRequestError,
   serviceAlreadyRegisteredError,
 } from '../../src/helpers/const';
 import { mockBootstrapComponent, mockConfigurationService, mockGetModuleDynamically } from '../helpers/mocks';
@@ -302,4 +303,34 @@ describe('Workspace tests', () => {
       })
     ).rejects.toEqual(new Error(serviceAlreadyRegisteredError));
   });
+
+  const invalidServiceName = [' ', {}, { test: 'test' }, [], ['test'], null, undefined, true, false, 0, -1];
+  test.each(invalidServiceName)(
+    'Call registerService method with an invalid serviceName is rejected with error',
+    async (invalidServiceName) => {
+      expect.assertions(1);
+      const configurationServiceMock = {
+        entries: () => Promise.resolve({ entries: baseConfigEntries }),
+      };
+      mockConfigurationService(configurationServiceMock);
+      mockGetModuleDynamically([
+        Promise.resolve(serviceABootstrap),
+        Promise.resolve(serviceBBootstrap),
+        Promise.resolve(gridComponentBootstrap),
+        Promise.resolve(requestFormComponentBootstrap),
+      ]);
+      mockBootstrapComponent();
+
+      const workspaceFactory = new WorkspaceFactory();
+      const workspace = await workspaceFactory.createWorkspace({ token: '123' });
+      return expect(
+        workspace.registerService({
+          // @ts-ignore
+          serviceName: invalidServiceName,
+          definition: serviceAConfig.definition,
+          reference: {},
+        })
+      ).rejects.toEqual(new Error(invalidSegisterServiceRequestError));
+    }
+  );
 });

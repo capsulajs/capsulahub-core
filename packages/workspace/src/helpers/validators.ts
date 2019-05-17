@@ -11,3 +11,11 @@ export const validateCreateWorkspaceRequest = (createWorkspaceRequest: any) => {
     !createWorkspaceRequest.token.trim()
   );
 };
+
+export const validateRegisterServiceRequest = (registerServiceRequest: any) => {
+  return !(
+    !registerServiceRequest.serviceName ||
+    typeof registerServiceRequest.serviceName !== 'string' ||
+    !registerServiceRequest.serviceName.trim()
+  );
+};
