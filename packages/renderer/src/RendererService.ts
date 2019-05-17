@@ -1,9 +1,23 @@
 import { Component, ComponentType } from '@capsulajs/capsulahub-core-workspace/lib/api/methods/components';
 import { Renderer, RenderItemRequest } from './api';
+import {
+  noLayoutsAvailable,
+  noItemsAvailable,
+  callRenderLayoutsBefore,
+  invalidNodeId,
+  notFoundNodeId,
+} from './helpers/const';
 
 export default class RendererService implements Renderer {
+  private renderedLayouts: boolean = false;
+
   async renderLayouts() {
-    (await this.components('layout')).forEach((component: Component) => {
+    const components = await this.components('layout');
+    if (!components.length) {
+      return Promise.reject(new Error(noLayoutsAvailable));
+    }
+
+    components.forEach((component: Component) => {
       const node = document.getElementById(component.nodeId);
 
       if (node) {
@@ -13,18 +27,32 @@ export default class RendererService implements Renderer {
   }
 
   async renderItems() {
-    (await this.components('item')).forEach((component: Component) => {
-      const node = document.getElementById(component.nodeId);
+    if (!this.renderedLayouts) {
+      return Promise.reject(new Error(callRenderLayoutsBefore));
+    }
 
-      if (node) {
-        node.appendChild(component.reference);
+    const components = await this.components('item');
+    if (!components.length) {
+      return Promise.reject(new Error(noItemsAvailable));
+    }
+
+    components.forEach((component: Component) => {
+      const node = document.getElementById(component.nodeId);
+      if (!node) {
+        return Promise.reject(new Error(notFoundNodeId));
       }
+
+      node.appendChild(component.reference);
     });
   }
 
   async renderItem(renderItemRequest: RenderItemRequest) {
-    if (!renderItemRequest.nodeId) {
-      return Promise.reject(new Error('Invalid node Id'));
+    if (!this.renderedLayouts) {
+      return Promise.reject(new Error(callRenderLayoutsBefore));
+    }
+
+    if (typeof renderItemRequest.nodeId !== 'string') {
+      return Promise.reject(new Error(invalidNodeId));
     }
 
     const components = await this.components();
@@ -32,10 +60,11 @@ export default class RendererService implements Renderer {
 
     if (component) {
       const node = document.getElementById(component.nodeId);
-
-      if (node) {
-        node.innerHTML = component.reference;
+      if (!node) {
+        return Promise.reject(new Error(notFoundNodeId));
       }
+
+      node.innerHTML = component.reference;
     }
   }
 

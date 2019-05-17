@@ -11,12 +11,6 @@ Scenario: Calling renderLayouts when no layouts available in configuration
   When  I call renderLayouts method with a valid request
   Then  an error is returned
 
-Scenario: Calling renderLayouts when layout has wrong format is rejected with error
-  Given Renderer service with renderLayouts method
-  And   the layout has a configuration with wrong format
-  When  I call renderLayouts method with a valid request
-  Then  an error is returned
-
 Scenario: Calling renderItems renders items from configuration
   Given Renderer service with renderItems method
   And   layout is rendered
