@@ -18,8 +18,9 @@ import {
   configRepositoryName,
   configWrongFormatError,
   createWorkspaceWrongRequestError,
-  invalidSegisterServiceRequestError,
+  invalidRegisterServiceRequestError,
   serviceAlreadyRegisteredError,
+  serviceToRegisterMissingInConfigurationError,
 } from '../../src/helpers/const';
 import { mockBootstrapComponent, mockConfigurationService, mockGetModuleDynamically } from '../helpers/mocks';
 import baseConfigEntries, { serviceAConfig } from '../helpers/baseConfigEntries';
@@ -330,7 +331,37 @@ describe('Workspace tests', () => {
           definition: serviceAConfig.definition,
           reference: {},
         })
-      ).rejects.toEqual(new Error(invalidSegisterServiceRequestError));
+      ).rejects.toEqual(new Error(invalidRegisterServiceRequestError));
     }
   );
+
+  it("Call registerService method with a service that doesnt's exist in configuration is rejected with error", async () => {
+    expect.assertions(1);
+    const configurationServiceMock = {
+      entries: () => Promise.resolve({ entries: baseConfigEntries }),
+    };
+    mockConfigurationService(configurationServiceMock);
+    mockGetModuleDynamically([
+      Promise.resolve(serviceABootstrap),
+      Promise.resolve(serviceBBootstrap),
+      Promise.resolve(gridComponentBootstrap),
+      Promise.resolve(requestFormComponentBootstrap),
+    ]);
+    mockBootstrapComponent();
+
+    const workspaceFactory = new WorkspaceFactory();
+    const workspace = await workspaceFactory.createWorkspace({ token: '123' });
+    return expect(
+      workspace.registerService({
+        serviceName: 'MissingService',
+        definition: {
+          serviceName: 'MissingService',
+          methods: {
+            interval$: { asyncModel: 'requestStream' },
+          },
+        },
+        reference: {},
+      })
+    ).rejects.toEqual(new Error(serviceToRegisterMissingInConfigurationError));
+  });
 });

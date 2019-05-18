@@ -10,4 +10,10 @@ export const bootstrapComponentError = 'Something is wrong while bootstrapping a
 
 export const serviceAlreadyRegisteredError = 'Service has been already registered';
 
-export const invalidSegisterServiceRequestError = 'registerService has been called with invalid serviceName';
+export const invalidRegisterServiceRequestError = 'registerService has been called with invalid serviceName';
+
+export const serviceToRegisterMissingInConfigurationError =
+  'Service that should be registered does not exist in the Workspace config';
+
+export const componentToRegisterMissingInConfigurationError =
+  'Component that should be registered does not exist in the Workspace config';

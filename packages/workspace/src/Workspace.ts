@@ -1,4 +1,4 @@
-import { Microservices, Api } from '@scalecube/scalecube-microservice';
+import { Api } from '@scalecube/scalecube-microservice';
 
 import { Workspace as IWorkspace } from './api/Workspace';
 import { ServicesMap, ServicesRequest } from './api/methods/services';
@@ -7,8 +7,17 @@ import WorkspaceConfig from './api/WorkspaceConfig';
 import { RegisteredService, RegisterServiceRequest } from './api/methods/registerService';
 import { ComponentRegistry, ServiceRegistry } from './helpers/types';
 import { RegisterComponentRequest } from './api/methods/registerComponent';
-import { invalidSegisterServiceRequestError, serviceAlreadyRegisteredError } from './helpers/const';
-import { validateRegisterServiceRequest } from './helpers/validators';
+import {
+  componentToRegisterMissingInConfigurationError,
+  invalidRegisterServiceRequestError,
+  serviceAlreadyRegisteredError,
+  serviceToRegisterMissingInConfigurationError,
+} from './helpers/const';
+import {
+  validateComponentInConfig,
+  validateRegisterServiceRequest,
+  validateServiceInConfig,
+} from './helpers/validators';
 
 export class Workspace implements IWorkspace {
   private configuration: WorkspaceConfig;
@@ -61,7 +70,11 @@ export class Workspace implements IWorkspace {
   registerService(registerServiceRequest: RegisterServiceRequest): Promise<void> {
     return new Promise((resolve, reject) => {
       if (!validateRegisterServiceRequest(registerServiceRequest)) {
-        return reject(new Error(invalidSegisterServiceRequestError));
+        return reject(new Error(invalidRegisterServiceRequestError));
+      }
+
+      if (!validateServiceInConfig(this.configuration, registerServiceRequest)) {
+        return reject(new Error(serviceToRegisterMissingInConfigurationError));
       }
 
       const service = this.serviceRegistry[registerServiceRequest.serviceName];
@@ -77,6 +90,9 @@ export class Workspace implements IWorkspace {
 
   private registerComponent(registerComponentRequest: RegisterComponentRequest): Promise<void> {
     return new Promise((resolve, reject) => {
+      if (!validateComponentInConfig(this.configuration, registerComponentRequest)) {
+        reject(new Error(componentToRegisterMissingInConfigurationError));
+      }
       const component = this.componentRegistry[registerComponentRequest.nodeId];
 
       if (!!component) {
