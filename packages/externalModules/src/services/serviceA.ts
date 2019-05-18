@@ -29,9 +29,9 @@ const bootstrap = (WORKSPACE: any, SERVICE_CONFIG: any) => {
 };
 
 // @ts-ignore
-if (typeof publicExports !== 'undefined') {
-  // @ts-ignore
-  publicExports = bootstrap;
-}
+// if (typeof publicExports !== 'undefined') {
+//   // @ts-ignore
+publicExports = bootstrap;
+// }
 
 export default bootstrap;

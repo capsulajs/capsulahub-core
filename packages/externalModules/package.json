@@ -8,8 +8,8 @@
   "private": false,
   "scripts": {
     "start": "node server.js",
-    "build:serviceA": "parcel build src/services/serviceA.ts --out-dir public/services --no-source-maps --no-cache",
-    "build:serviceB": "parcel build src/services/serviceB.ts --out-dir public/services --no-source-maps --no-cache",
+    "build:serviceA": "parcel build src/services/serviceA.ts --out-dir public/services --no-source-maps --no-cache --no-minify",
+    "build:serviceB": "parcel build src/services/serviceB.ts --out-dir public/services --no-source-maps --no-cache --no-minify",
     "build:Grid": "parcel build src/components/Grid.tsx --out-dir public/components --no-source-maps --no-cache",
     "build:RequestForm": "parcel build src/components/RequestForm.tsx --out-dir public/components --no-source-maps --no-cache",
     "build": "yarn build:serviceA && yarn build:serviceB && yarn build:Grid && yarn build:RequestForm",
