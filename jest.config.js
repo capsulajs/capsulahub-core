@@ -1,5 +1,3 @@
-console.log('--rootDir ./packages/workspace');
-
 module.exports = {
   setupFiles: [],
   transform: {

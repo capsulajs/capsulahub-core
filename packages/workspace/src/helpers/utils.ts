@@ -1,8 +1,8 @@
 import { ConfigurationService, ConfigurationServiceHttp } from '@capsulajs/capsulajs-configuration-service';
 import WorkspaceConfig from '../api/WorkspaceConfig';
 import Component from '../api/Component';
-import { Workspace as IWorkspace, Workspace } from '../api/Workspace';
-import { ComponentsMap, ComponentType } from '../api/methods/components';
+import { Workspace as IWorkspace } from '../api/Workspace';
+import { ComponentType } from '../api/methods/components';
 import Service from '../api/Service';
 import { bootstrapComponentError, bootstrapServiceError } from './const';
 import { FullWorkspace } from './types';

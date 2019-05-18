@@ -1,25 +1,15 @@
-import omit from 'lodash/omit';
-
 import { WorkspaceFactory as IWorkspaceFactory } from './api/WorkspaceFactory';
 import { Workspace } from './Workspace';
 import { Workspace as IWorkspace } from './api/Workspace';
-import {
-  bootstrapServices,
-  getConfigurationService,
-  getModuleDynamically,
-  initComponent,
-  initComponents,
-} from './helpers/utils';
+import { bootstrapServices, getConfigurationService, initComponents } from './helpers/utils';
 import { CreateWorkspaceRequest } from './api/methods/createWorkspace';
 import {
-  bootstrapComponentError,
   bootstrapServiceError,
   configRepositoryName,
   configWrongFormatError,
   createWorkspaceWrongRequestError,
 } from './helpers/const';
 import WorkspaceConfig from './api/WorkspaceConfig';
-import Service from './api/Service';
 import { Entity } from '@capsulajs/capsulajs-configuration-service/lib/api/Entity';
 import { validateCreateWorkspaceRequest, validateWorkspaceConfig } from './helpers/validators';
 import { Microservices, Api } from '@scalecube/scalecube-microservice';

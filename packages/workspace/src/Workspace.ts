@@ -2,11 +2,10 @@ import { Api } from '@scalecube/scalecube-microservice';
 
 import { Workspace as IWorkspace } from './api/Workspace';
 import { ServicesMap, ServicesRequest } from './api/methods/services';
-import { ComponentsMap, ComponentsRequest } from './api/methods/components';
+import { ComponentsMap, ComponentsRequest, Component } from './api/methods/components';
 import WorkspaceConfig from './api/WorkspaceConfig';
 import { RegisteredService, RegisterServiceRequest } from './api/methods/registerService';
 import { ComponentRegistry, ServiceRegistry } from './helpers/types';
-import { RegisterComponentRequest } from './api/methods/registerComponent';
 import {
   componentToRegisterMissingInConfigurationError,
   invalidRegisterServiceRequestError,
@@ -88,7 +87,7 @@ export class Workspace implements IWorkspace {
     });
   }
 
-  private registerComponent(registerComponentRequest: RegisterComponentRequest): Promise<void> {
+  private registerComponent(registerComponentRequest: Component): Promise<void> {
     return new Promise((resolve, reject) => {
       if (!validateComponentInConfig(this.configuration, registerComponentRequest)) {
         reject(new Error(componentToRegisterMissingInConfigurationError));

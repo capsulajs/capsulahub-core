@@ -1,6 +1,6 @@
 import WorkspaceConfig from '../api/WorkspaceConfig';
 import { RegisterServiceRequest } from '../api/methods/registerService';
-import { RegisterComponentRequest } from '../api/methods/registerComponent';
+import { Component } from '../api/methods/components';
 
 export const validateWorkspaceConfig = (workspaceConfig: any) => {
   const requiredKeys = ['name', 'services', 'components'];
@@ -33,7 +33,7 @@ export const validateServiceInConfig = (
 
 export const validateComponentInConfig = (
   workspaceConfig: WorkspaceConfig,
-  registerComponentRequest: RegisterComponentRequest
+  registerComponentRequest: Component
 ): boolean => {
   return !!workspaceConfig.components[registerComponentRequest.type === 'layout' ? 'layouts' : 'items'][
     registerComponentRequest.nodeId

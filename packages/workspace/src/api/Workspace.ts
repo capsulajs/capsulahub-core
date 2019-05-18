@@ -1,7 +1,6 @@
 import { ServicesMap, ServicesRequest } from './methods/services';
 import { RegisterServiceRequest } from './methods/registerService';
 import { ComponentsMap, ComponentsRequest } from './methods/components';
-import { RegisterComponentRequest } from './methods/registerComponent';
 
 /**
  * Workspace is the core service of Capsula Hub, it is responsible for :

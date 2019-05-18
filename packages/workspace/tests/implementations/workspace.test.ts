@@ -267,12 +267,9 @@ describe('Workspace tests', () => {
     const services = await workspace.services({});
     expect(services.ServiceC).toBeUndefined();
 
-    const serviceCReference = await serviceCBootstrap(workspace, serviceCConfig);
-
     await workspace.registerService({
       serviceName: serviceCConfig.serviceName,
       definition: serviceCConfig.definition,
-      reference: serviceCReference,
     });
     const updatedServices = await workspace.services({});
     const serviceC = await updatedServices.ServiceC;
@@ -300,7 +297,6 @@ describe('Workspace tests', () => {
       workspace.registerService({
         serviceName: serviceAConfig.serviceName,
         definition: serviceAConfig.definition,
-        reference: {},
       })
     ).rejects.toEqual(new Error(serviceAlreadyRegisteredError));
   });
@@ -329,7 +325,6 @@ describe('Workspace tests', () => {
           // @ts-ignore
           serviceName: invalidServiceName,
           definition: serviceAConfig.definition,
-          reference: {},
         })
       ).rejects.toEqual(new Error(invalidRegisterServiceRequestError));
     }
@@ -360,7 +355,6 @@ describe('Workspace tests', () => {
             interval$: { asyncModel: 'requestStream' },
           },
         },
-        reference: {},
       })
     ).rejects.toEqual(new Error(serviceToRegisterMissingInConfigurationError));
   });
