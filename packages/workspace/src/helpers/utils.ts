@@ -46,7 +46,6 @@ export const initComponent = (
 };
 
 export const bootstrapServices = (workspace: FullWorkspace, servicesConfig: Service[]): Promise<any[]> => {
-  console.log('servicesConfig', servicesConfig);
   return Promise.all(
     servicesConfig.map((service) => {
       return getModuleDynamically(service.path).then(

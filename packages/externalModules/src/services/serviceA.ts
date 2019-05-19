@@ -20,7 +20,7 @@ const bootstrap = (WORKSPACE: any, SERVICE_CONFIG: any) => {
 
     const registerServiceData = {
       serviceName: SERVICE_CONFIG.serviceName,
-      definition: SERVICE_CONFIG.definition,
+      reference: serviceA,
     };
 
     await WORKSPACE.registerService(registerServiceData);
@@ -29,9 +29,9 @@ const bootstrap = (WORKSPACE: any, SERVICE_CONFIG: any) => {
 };
 
 // @ts-ignore
-// if (typeof publicExports !== 'undefined') {
-//   // @ts-ignore
-publicExports = bootstrap;
-// }
+if (typeof publicExports !== 'undefined') {
+  // @ts-ignore
+  publicExports = bootstrap;
+}
 
 export default bootstrap;

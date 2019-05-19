@@ -25,10 +25,15 @@ import {
 import { mockBootstrapComponent, mockConfigurationService, mockGetModuleDynamically } from '../helpers/mocks';
 import baseConfigEntries, { serviceAConfig } from '../helpers/baseConfigEntries';
 import { Workspace } from '../../src/Workspace';
+import { applyPostMessagePolyfill } from '../helpers/polyfills/PostMessageWithTransferPolyfill';
+import { applyMessageChannelPolyfill } from '../helpers/polyfills/MessageChannelPolyfill';
 
 const repositoryNotFoundError = `Configuration repository ${configRepositoryName} not found`;
 
 describe('Workspace tests', () => {
+  applyPostMessagePolyfill();
+  applyMessageChannelPolyfill();
+
   it('Call createWorkspace with a token with no configuration available is rejected with error', () => {
     expect.assertions(1);
     const configurationServiceMock = {
@@ -269,7 +274,7 @@ describe('Workspace tests', () => {
 
     await workspace.registerService({
       serviceName: serviceCConfig.serviceName,
-      definition: serviceCConfig.definition,
+      reference: {},
     });
     const updatedServices = await workspace.services({});
     const serviceC = await updatedServices.ServiceC;
@@ -296,7 +301,7 @@ describe('Workspace tests', () => {
     return expect(
       workspace.registerService({
         serviceName: serviceAConfig.serviceName,
-        definition: serviceAConfig.definition,
+        reference: {},
       })
     ).rejects.toEqual(new Error(serviceAlreadyRegisteredError));
   });
@@ -324,7 +329,7 @@ describe('Workspace tests', () => {
         workspace.registerService({
           // @ts-ignore
           serviceName: invalidServiceName,
-          definition: serviceAConfig.definition,
+          reference: {},
         })
       ).rejects.toEqual(new Error(invalidRegisterServiceRequestError));
     }
@@ -349,12 +354,7 @@ describe('Workspace tests', () => {
     return expect(
       workspace.registerService({
         serviceName: 'MissingService',
-        definition: {
-          serviceName: 'MissingService',
-          methods: {
-            interval$: { asyncModel: 'requestStream' },
-          },
-        },
+        reference: {},
       })
     ).rejects.toEqual(new Error(serviceToRegisterMissingInConfigurationError));
   });

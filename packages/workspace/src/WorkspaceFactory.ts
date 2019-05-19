@@ -60,9 +60,9 @@ export class WorkspaceFactory implements IWorkspaceFactory {
 
                 bootstrapServices(workspace, formattedConfiguration.services)
                   .then((services: any[]) => {
-                    microservice = Microservices.create({
-                      services,
-                    });
+                    // microservice = Microservices.create({
+                    //   services,
+                    // });
                     return initComponents(workspace, formattedConfiguration.components.layouts, 'layout');
                   })
                   .then(() => {

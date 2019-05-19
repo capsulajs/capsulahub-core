@@ -1,4 +1,4 @@
-import { Api } from '@scalecube/scalecube-microservice';
+import { Api, Microservices } from '@scalecube/scalecube-microservice';
 
 import { Workspace as IWorkspace } from './api/Workspace';
 import { ServicesMap, ServicesRequest } from './api/methods/services';
@@ -29,11 +29,7 @@ export class Workspace implements IWorkspace {
     this.serviceRegistry = {} as ServiceRegistry;
     this.componentRegistry = {} as ComponentRegistry;
 
-    init(this)
-      .then((data) => {
-        this.microservice = data.microservice;
-      })
-      .catch(() => {});
+    init(this).catch(() => {});
   }
 
   services(servicesRequest: ServicesRequest): Promise<ServicesMap> {
@@ -42,11 +38,14 @@ export class Workspace implements IWorkspace {
     return Promise.resolve(
       services.reduce(
         (servicesMap: ServicesMap, service: RegisteredService) => {
+          const serviceDefinition = this.configuration.services.find(
+            (serviceConfig) => serviceConfig.serviceName === service.serviceName
+          )!.definition;
           return {
             ...servicesMap,
             [service.serviceName]: Promise.resolve({
               serviceName: service.serviceName,
-              proxy: this.microservice!.createProxy({ serviceDefinition: service.definition }),
+              proxy: this.microservice!.createProxy({ serviceDefinition: serviceDefinition }),
             }),
           };
         },
@@ -81,6 +80,14 @@ export class Workspace implements IWorkspace {
       if (!!service) {
         return reject(new Error(serviceAlreadyRegisteredError));
       } else {
+        const serviceConfig = this.configuration.services.find(
+          (service) => service.serviceName === registerServiceRequest.serviceName
+        );
+        this.microservice = Microservices.create({
+          services: [{ definition: serviceConfig!.definition, reference: registerServiceRequest.reference }],
+          seedAddress: 'testCluster',
+        });
+
         this.serviceRegistry[registerServiceRequest.serviceName] = { ...registerServiceRequest };
         return resolve();
       }
