@@ -4,8 +4,8 @@ import { Workspace as IWorkspace } from './api/Workspace';
 import { ServicesMap, ServicesRequest } from './api/methods/services';
 import { ComponentsMap, ComponentsRequest, Component } from './api/methods/components';
 import WorkspaceConfig from './api/WorkspaceConfig';
-import { RegisteredService, RegisterServiceRequest } from './api/methods/registerService';
-import { ComponentRegistry, ServiceRegistry } from './helpers/types';
+import { RegisterServiceRequest } from './api/methods/registerService';
+import { ComponentRegistry, EventListeners, FullWorkspace, ServiceRegistry } from './helpers/types';
 import {
   componentToRegisterMissingInConfigurationError,
   invalidRegisterServiceRequestError,
@@ -23,35 +23,41 @@ export class Workspace implements IWorkspace {
   private serviceRegistry: ServiceRegistry;
   private componentRegistry: ComponentRegistry;
   private microservice?: Api.Microservice;
+  private servicesMap: ServicesMap;
+  private listeners: EventListeners;
 
-  constructor(configuration: WorkspaceConfig, init: (arg: any) => Promise<any>) {
+  constructor(configuration: WorkspaceConfig, init: (arg: any) => Promise<IWorkspace>) {
     this.configuration = configuration;
     this.serviceRegistry = {} as ServiceRegistry;
     this.componentRegistry = {} as ComponentRegistry;
+    this.listeners = {};
+    this.servicesMap = this.configuration.services.reduce((servicesMap, serviceConfig) => {
+      const servicePromise = new Promise((resolve) => {
+        const listenerHandler = () => {
+          resolve({
+            serviceName: serviceConfig.serviceName,
+            proxy: this.microservice!.createProxy({ serviceDefinition: serviceConfig.definition }),
+          });
+        };
+        const eventType = `${serviceConfig.serviceName}Registered`;
+        document.addEventListener(eventType, listenerHandler, { once: true });
+        this.listeners[eventType] = (this.listeners[eventType] || []).concat(listenerHandler);
+      });
+      return {
+        ...servicesMap,
+        [serviceConfig.serviceName]: servicePromise,
+      };
+    }, {});
 
-    init(this).catch(() => {});
+    init(this).catch(() => {
+      this.cleanEventListeners();
+    });
   }
 
   services(servicesRequest: ServicesRequest): Promise<ServicesMap> {
-    const services = Object.values(this.serviceRegistry);
-
-    return Promise.resolve(
-      services.reduce(
-        (servicesMap: ServicesMap, service: RegisteredService) => {
-          const serviceDefinition = this.configuration.services.find(
-            (serviceConfig) => serviceConfig.serviceName === service.serviceName
-          )!.definition;
-          return {
-            ...servicesMap,
-            [service.serviceName]: Promise.resolve({
-              serviceName: service.serviceName,
-              proxy: this.microservice!.createProxy({ serviceDefinition: serviceDefinition }),
-            }),
-          };
-        },
-        {} as ServicesMap
-      )
-    );
+    return new Promise((resolve) => {
+      return resolve(this.servicesMap);
+    });
   }
 
   components(componentsRequest: ComponentsRequest): Promise<ComponentsMap> {
@@ -83,12 +89,17 @@ export class Workspace implements IWorkspace {
         const serviceConfig = this.configuration.services.find(
           (service) => service.serviceName === registerServiceRequest.serviceName
         );
-        this.microservice = Microservices.create({
-          services: [{ definition: serviceConfig!.definition, reference: registerServiceRequest.reference }],
-          seedAddress: 'testCluster',
-        });
+        try {
+          this.microservice = Microservices.create({
+            services: [{ definition: serviceConfig!.definition, reference: registerServiceRequest.reference }],
+            seedAddress: 'testCluster',
+          });
+        } catch (error) {
+          console.log('error', error);
+        }
 
         this.serviceRegistry[registerServiceRequest.serviceName] = { ...registerServiceRequest };
+        document.dispatchEvent(new CustomEvent(`${registerServiceRequest.serviceName}Registered`));
         return resolve();
       }
     });
@@ -108,5 +119,12 @@ export class Workspace implements IWorkspace {
         resolve();
       }
     });
+  }
+
+  private cleanEventListeners(): void {
+    Object.keys(this.listeners).forEach((eventType) => {
+      this.listeners[eventType].forEach((eventCallback) => document.removeEventListener(eventType, eventCallback));
+    });
+    this.listeners = {};
   }
 }

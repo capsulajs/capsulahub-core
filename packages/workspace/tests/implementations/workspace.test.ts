@@ -232,7 +232,7 @@ describe('Workspace tests', () => {
   });
 
   it('Call registerService method registers the provided service in the Workspace', async () => {
-    expect.assertions(3);
+    expect.assertions(2);
     const serviceCConfig = {
       serviceName: 'ServiceC',
       path: 'http://localhost:3000/services/serviceC.js',
@@ -270,14 +270,14 @@ describe('Workspace tests', () => {
     const workspaceFactory = new WorkspaceFactory();
     const workspace = await workspaceFactory.createWorkspace({ token: '123' });
     const services = await workspace.services({});
-    expect(services.ServiceC).toBeUndefined();
+
+    const serviceCData = await serviceCBootstrap(workspace, serviceCConfig);
 
     await workspace.registerService({
       serviceName: serviceCConfig.serviceName,
-      reference: {},
+      reference: (serviceCData as any).reference,
     });
-    const updatedServices = await workspace.services({});
-    const serviceC = await updatedServices.ServiceC;
+    const serviceC = await services.ServiceC;
     expect(serviceC.serviceName).toEqual('ServiceC');
     return expect(serviceC.proxy.hello('Stephane')).resolves.toEqual('Hello, Stephane');
   });

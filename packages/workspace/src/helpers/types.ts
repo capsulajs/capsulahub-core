@@ -13,3 +13,9 @@ export interface ComponentRegistry {
 export interface FullWorkspace extends Workspace {
   registerComponent(registerComponentRequest: Component): Promise<void>;
 }
+
+type EventHandler = (event: Event) => any;
+
+export interface EventListeners {
+  [eventType: string]: EventHandler[];
+}
