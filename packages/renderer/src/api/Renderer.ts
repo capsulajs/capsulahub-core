@@ -2,17 +2,33 @@ import { RenderLayoutsRequest, RenderItemsRequest, RenderItemRequest } from './m
 
 /**
  * Renderer is the core service of Capsula Hub, it is responsible for :
- * - Rendering layouts according to the configuration (CONFIG)
- * - Rendering items according to the configuration (CONFIG)
- * - Rendering item according to the nodeId correlative with (CONFIG)
+ * - Rendering in the DOM all layouts registered in the Workspace
+ * - Rendering in the DOM all items registered in the Workspace
+ * - Rendering in the DOM item registered in the Workspace
  */
 export default interface Renderer {
+  /**
+   * Rendering in the DOM all layouts registered in the Workspace
+   * Reject in case :
+   * - DOM node not exist
+   * @param renderLayoutsRequest
+   */
   renderLayouts(renderLayoutsRequest: RenderLayoutsRequest): Promise<void>;
+  /**
+   * Rendering in the DOM all items registered in the Workspace
+   * Reject in case :
+   * - Call before render layouts
+   * - DOM node not exist
+   * @param renderLayoutsRequest
+   */
   renderItems(renderItemsRequest: RenderItemsRequest): Promise<void>;
   /**
-   * Rerender item accoarding to the nodeId
+   * Rendering in the DOM item registered in the Workspace
    * Reject in case :
    * - Invalid request
+   * - Call before render layouts
+   * - Component not found
+   * - DOM node not exist
    * @param renderItemRequest
    */
   renderItem(renderItemRequest: RenderItemRequest): Promise<void>;
