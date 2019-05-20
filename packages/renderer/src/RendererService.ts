@@ -3,6 +3,7 @@ import { Workspace } from '@capsulajs/capsulahub-core-workspace/lib/api/Workspac
 import { Component, ComponentType } from '@capsulajs/capsulahub-core-workspace/lib/api/methods/components';
 import RendererConfig from './api/RendererConfig';
 import { Renderer, RenderItemRequest } from './api';
+// @ts-ignore
 import { callRenderLayoutsBefore, invalidNodeId, notFoundComponent, notFoundNode } from './helpers/const';
 
 const bootstrap = (WORKSPACE: Workspace, SERVICE_CONFIG: RendererConfig) => {
@@ -10,7 +11,7 @@ const bootstrap = (WORKSPACE: Workspace, SERVICE_CONFIG: RendererConfig) => {
     class RendererService implements Renderer {
       private renderedLayouts: boolean = false;
 
-      async renderLayouts() {
+      public async renderLayouts() {
         this.renderedLayouts = true;
 
         (await this.components('layout')).forEach((component: Component) => {
@@ -18,7 +19,7 @@ const bootstrap = (WORKSPACE: Workspace, SERVICE_CONFIG: RendererConfig) => {
         });
       }
 
-      async renderItems() {
+      public async renderItems() {
         if (!this.renderedLayouts) {
           throw new Error(callRenderLayoutsBefore);
         }
@@ -28,18 +29,17 @@ const bootstrap = (WORKSPACE: Workspace, SERVICE_CONFIG: RendererConfig) => {
         });
       }
 
-      async renderItem(renderItemRequest: RenderItemRequest) {
-        if (!this.renderedLayouts) {
-          throw new Error(callRenderLayoutsBefore);
-        }
-
+      public async renderItem(renderItemRequest: RenderItemRequest) {
         if (typeof renderItemRequest.nodeId !== 'string') {
           throw new Error(invalidNodeId);
         }
 
-        const component = (await this.components()).find(
-          (component: Component) => component.nodeId === renderItemRequest.nodeId
-        );
+        if (!this.renderedLayouts) {
+          throw new Error(callRenderLayoutsBefore);
+        }
+
+        const component = (await this.components()).find((c: Component) => c.nodeId === renderItemRequest.nodeId);
+
         if (!component) {
           throw new Error(notFoundComponent);
         }
@@ -48,7 +48,7 @@ const bootstrap = (WORKSPACE: Workspace, SERVICE_CONFIG: RendererConfig) => {
       }
 
       private renderComponent(component: Component) {
-        const node = document.getElementById(component.nodeId);
+        const node = document && document.getElementById(component.nodeId);
         if (!node) {
           throw new Error(notFoundNode);
         }
