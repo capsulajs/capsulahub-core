@@ -1,5 +1,5 @@
 import '@babel/polyfill';
-import { WorkspaceFactory } from '../es/src/WorkspaceFactory';
+import { WorkspaceFactory } from '../es/src';
 
 const workspaceFactory = new WorkspaceFactory();
 workspaceFactory

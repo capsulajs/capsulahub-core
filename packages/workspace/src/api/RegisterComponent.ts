@@ -1,4 +1,4 @@
-import { Component } from './methods/components';
+import { Component } from '.';
 
 type RegisterComponent = (registerComponent: Component) => Promise<void>;
 
