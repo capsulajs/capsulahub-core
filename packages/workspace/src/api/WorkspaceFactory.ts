@@ -1,5 +1,4 @@
-import { CreateWorkspaceRequest } from './methods/createWorkspace';
-import { Workspace } from './Workspace';
+import { CreateWorkspaceRequest, Workspace } from '.';
 
 export default interface WorkspaceFactory {
   /**

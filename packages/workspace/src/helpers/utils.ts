@@ -1,9 +1,5 @@
 import { ConfigurationService, ConfigurationServiceHttp } from '@capsulajs/capsulajs-configuration-service';
-import WorkspaceConfig from '../api/WorkspaceConfig';
-import ComponentConfig from '../api/ComponentConfig';
-import { Component as RegisteredComponent } from '../api/methods/components';
-import { Workspace as IWorkspace } from '../api/Workspace';
-import { ComponentType } from '../api/methods/components';
+import { WorkspaceConfig, ComponentConfig, Workspace as IWorkspace, ComponentType } from '../api';
 import ServiceConfig from '../api/ServiceConfig';
 import { bootstrapComponentError, bootstrapServiceError } from './const';
 import { InternalWorkspace } from './types';

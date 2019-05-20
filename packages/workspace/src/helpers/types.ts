@@ -1,6 +1,4 @@
-import { RegisteredService } from '../api/methods/registerService';
-import { Component } from '../api/methods/components';
-import { Workspace } from '../api/Workspace';
+import { RegisteredService, Component, Workspace } from '../api';
 
 export interface ServiceRegistry {
   [serviceName: string]: RegisteredService;

@@ -1,5 +1,4 @@
-import ServiceConfig from './ServiceConfig';
-import ComponentConfig from './ComponentConfig';
+import { ServiceConfig, ComponentConfig } from '.';
 
 export default interface WorkspaceConfig {
   name: string;

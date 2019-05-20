@@ -1,11 +1,16 @@
 import uuidv4 from 'uuid/v4';
 import { Api as ScalecubeApi, Microservices } from '@scalecube/scalecube-microservice';
 
-import { Workspace as IWorkspace } from './api/Workspace';
-import { ServicesMap, ServicesRequest } from './api/methods/services';
-import { ComponentsMap, ComponentsRequest, Component } from './api/methods/components';
-import WorkspaceConfig from './api/WorkspaceConfig';
-import { RegisterServiceRequest } from './api/methods/registerService';
+import {
+  ComponentsMap,
+  ComponentsRequest,
+  Component,
+  ServicesMap,
+  ServicesRequest,
+  Workspace as IWorkspace,
+  WorkspaceConfig,
+  RegisterServiceRequest,
+} from './api';
 import { ComponentRegistry, EventListeners, ServiceRegistry } from './helpers/types';
 import {
   componentToRegisterMissingInConfigurationError,
@@ -101,7 +106,7 @@ export class Workspace implements IWorkspace {
         return reject(new Error(serviceAlreadyRegisteredError));
       } else {
         const serviceConfig = this.configuration.services.find(
-          (service) => service.serviceName === registerServiceRequest.serviceName
+          (serviceConfiguration) => serviceConfiguration.serviceName === registerServiceRequest.serviceName
         );
         try {
           this.microservice = Microservices.create({
@@ -109,7 +114,11 @@ export class Workspace implements IWorkspace {
             seedAddress: 'testCluster',
           });
         } catch (error) {
-          console.error('error', error);
+          reject(
+            new Error(
+              `Error while serviceRegister has happened while creating scalecube microservice: ${error.message}`
+            )
+          );
         }
 
         this.serviceRegistry[registerServiceRequest.serviceName] = { ...registerServiceRequest };

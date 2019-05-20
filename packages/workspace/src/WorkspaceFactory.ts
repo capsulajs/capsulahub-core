@@ -1,18 +1,16 @@
-import { WorkspaceFactory as IWorkspaceFactory } from './api';
+import { Entity } from '@capsulajs/capsulajs-configuration-service/lib/api/Entity';
+import { WorkspaceFactory as IWorkspaceFactory, CreateWorkspaceRequest, WorkspaceConfig } from './api';
 import { Workspace } from './Workspace';
 import { bootstrapServices, getConfigurationService, initComponents } from './helpers/utils';
-import { CreateWorkspaceRequest } from './api/methods/createWorkspace';
 import {
   bootstrapServiceError,
   configRepositoryName,
   configWrongFormatError,
   createWorkspaceWrongRequestError,
 } from './helpers/const';
-import WorkspaceConfig from './api/WorkspaceConfig';
-import { Entity } from '@capsulajs/capsulajs-configuration-service/lib/api/Entity';
 import { validateCreateWorkspaceRequest, validateWorkspaceConfig } from './helpers/validators';
 
-export class WorkspaceFactory implements IWorkspaceFactory {
+export default class WorkspaceFactory implements IWorkspaceFactory {
   public createWorkspace(createWorkspaceRequest: CreateWorkspaceRequest): Promise<Workspace> {
     return new Promise((resolve, reject) => {
       // createWorkspaceRequest validation

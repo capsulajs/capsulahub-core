@@ -1,6 +1,4 @@
 import { take } from 'rxjs/operators';
-import { Api } from '@scalecube/scalecube-microservice';
-
 // @ts-ignore
 import serviceABootstrap from '@capsulajs/capsulahub-core-external-modules/src/services/serviceA';
 // @ts-ignore
@@ -11,7 +9,7 @@ import serviceCBootstrap from '@capsulajs/capsulahub-core-external-modules/src/s
 import gridComponentBootstrap from '@capsulajs/capsulahub-core-external-modules/src/components/Grid';
 // // @ts-ignore
 import requestFormComponentBootstrap from '@capsulajs/capsulahub-core-external-modules/src/components/RequestForm';
-import { WorkspaceFactory } from '../../src/WorkspaceFactory';
+import WorkspaceFactory from '../../src/WorkspaceFactory';
 import {
   bootstrapComponentError,
   bootstrapServiceError,
@@ -28,7 +26,6 @@ import baseConfigEntries, {
   serviceAConfig,
   serviceCConfig,
 } from '../helpers/baseConfigEntries';
-import { Workspace } from '../../src/Workspace';
 import { applyPostMessagePolyfill } from '../helpers/polyfills/PostMessageWithTransferPolyfill';
 import { applyMessageChannelPolyfill } from '../helpers/polyfills/MessageChannelPolyfill';
 

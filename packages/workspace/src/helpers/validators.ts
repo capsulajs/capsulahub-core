@@ -1,6 +1,4 @@
-import WorkspaceConfig from '../api/WorkspaceConfig';
-import { RegisterServiceRequest } from '../api/methods/registerService';
-import { Component } from '../api/methods/components';
+import { WorkspaceConfig, RegisterServiceRequest, Component } from '../api';
 
 export const validateWorkspaceConfig = (workspaceConfig: any) => {
   const requiredKeys = ['name', 'services', 'components'];
