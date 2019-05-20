@@ -17,7 +17,7 @@ import { FullWorkspace } from './helpers/types';
 import { Component } from './api/methods/components';
 
 export class WorkspaceFactory implements IWorkspaceFactory {
-  createWorkspace(createWorkspaceRequest: CreateWorkspaceRequest): Promise<Workspace> {
+  public createWorkspace(createWorkspaceRequest: CreateWorkspaceRequest): Promise<Workspace> {
     return new Promise((resolve, reject) => {
       // createWorkspaceRequest validation
       if (!validateCreateWorkspaceRequest(createWorkspaceRequest)) {
@@ -80,7 +80,7 @@ export class WorkspaceFactory implements IWorkspaceFactory {
                     );
                   })
                   .then(() => {
-                    return resolve({ workspace: workspace, microservice });
+                    return resolve({ workspace, microservice });
                   })
                   .catch((error) => reject(error));
               });

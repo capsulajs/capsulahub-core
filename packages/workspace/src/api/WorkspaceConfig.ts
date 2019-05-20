@@ -1,11 +1,11 @@
-import Service from './Service';
-import Component from './Component';
+import ServiceConfig from './ServiceConfig';
+import ComponentConfig from './ComponentConfig';
 
 export default interface WorkspaceConfig {
   name: string;
-  services: Service[];
+  services: ServiceConfig[];
   components: {
-    layouts: { [nodeId: string]: Component };
-    items: { [nodeId: string]: Component };
+    layouts: { [nodeId: string]: ComponentConfig };
+    items: { [nodeId: string]: ComponentConfig };
   };
 }

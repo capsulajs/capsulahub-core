@@ -1,11 +1,11 @@
-import { Api, Microservices } from '@scalecube/scalecube-microservice';
+import { Api as ScalecubeApi, Microservices } from '@scalecube/scalecube-microservice';
 
 import { Workspace as IWorkspace } from './api/Workspace';
 import { ServicesMap, ServicesRequest } from './api/methods/services';
 import { ComponentsMap, ComponentsRequest, Component } from './api/methods/components';
 import WorkspaceConfig from './api/WorkspaceConfig';
 import { RegisterServiceRequest } from './api/methods/registerService';
-import { ComponentRegistry, EventListeners, FullWorkspace, ServiceRegistry } from './helpers/types';
+import { ComponentRegistry, EventListeners, ServiceRegistry } from './helpers/types';
 import {
   componentToRegisterMissingInConfigurationError,
   invalidRegisterServiceRequestError,
@@ -22,7 +22,7 @@ export class Workspace implements IWorkspace {
   private configuration: WorkspaceConfig;
   private serviceRegistry: ServiceRegistry;
   private componentRegistry: ComponentRegistry;
-  private microservice?: Api.Microservice;
+  private microservice?: ScalecubeApi.Microservice;
   private servicesMap: ServicesMap;
   private listeners: EventListeners;
 
@@ -52,18 +52,18 @@ export class Workspace implements IWorkspace {
       };
     }, {});
 
-    init(this, this.registerComponent).catch(() => {
+    init(this, this.registerComponent.bind(this)).catch(() => {
       this.cleanEventListeners();
     });
   }
 
-  services(servicesRequest: ServicesRequest): Promise<ServicesMap> {
+  public services(servicesRequest: ServicesRequest): Promise<ServicesMap> {
     return new Promise((resolve) => {
       return resolve(this.servicesMap);
     });
   }
 
-  components(componentsRequest: ComponentsRequest): Promise<ComponentsMap> {
+  public components(componentsRequest: ComponentsRequest): Promise<ComponentsMap> {
     return Promise.resolve(
       Object.values(this.componentRegistry).reduce((componentsMap, component) => {
         return {
@@ -74,7 +74,7 @@ export class Workspace implements IWorkspace {
     );
   }
 
-  registerService(registerServiceRequest: RegisterServiceRequest): Promise<void> {
+  public registerService(registerServiceRequest: RegisterServiceRequest): Promise<void> {
     return new Promise((resolve, reject) => {
       if (!validateRegisterServiceRequest(registerServiceRequest)) {
         return reject(new Error(invalidRegisterServiceRequestError));
@@ -98,7 +98,7 @@ export class Workspace implements IWorkspace {
             seedAddress: 'testCluster',
           });
         } catch (error) {
-          console.log('error', error);
+          console.error('error', error);
         }
 
         this.serviceRegistry[registerServiceRequest.serviceName] = { ...registerServiceRequest };
@@ -108,7 +108,7 @@ export class Workspace implements IWorkspace {
     });
   }
 
-  private registerComponent(registerComponentRequest: Component): Promise<void> {
+  public registerComponent(registerComponentRequest: Component): Promise<void> {
     return new Promise((resolve, reject) => {
       if (!validateComponentInConfig(this.configuration, registerComponentRequest)) {
         reject(new Error(componentToRegisterMissingInConfigurationError));

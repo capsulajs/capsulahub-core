@@ -1,10 +1,10 @@
 import { ConfigurationService, ConfigurationServiceHttp } from '@capsulajs/capsulajs-configuration-service';
 import WorkspaceConfig from '../api/WorkspaceConfig';
-import Component from '../api/Component';
+import ComponentConfig from '../api/ComponentConfig';
 import { Component as RegisteredComponent } from '../api/methods/components';
 import { Workspace as IWorkspace } from '../api/Workspace';
 import { ComponentType } from '../api/methods/components';
-import Service from '../api/Service';
+import ServiceConfig from '../api/ServiceConfig';
 import { bootstrapComponentError, bootstrapServiceError } from './const';
 
 export const getConfigurationService = (token: string): ConfigurationService<WorkspaceConfig> =>
@@ -21,7 +21,7 @@ export const bootstrapComponent = (componentName: string, WebComponent: any) => 
 
 export const initComponent = (
   nodeId: string,
-  componentsConfig: { [nodeId: string]: Component },
+  componentsConfig: { [nodeId: string]: ComponentConfig },
   workspace: IWorkspace,
   registerComponent: (registerComponent: RegisteredComponent) => Promise<void>,
   type: ComponentType
@@ -46,11 +46,12 @@ export const initComponent = (
     });
 };
 
-export const bootstrapServices = (workspace: IWorkspace, servicesConfig: Service[]): Promise<any[]> => {
+export const bootstrapServices = (workspace: IWorkspace, servicesConfig: ServiceConfig[]): Promise<any[]> => {
   return Promise.all(
     servicesConfig.map((serviceConfig) => {
       return getModuleDynamically(serviceConfig.path).then(
-        (bootstrap: (workspace: IWorkspace, service: Service) => Promise<object>) => bootstrap(workspace, serviceConfig)
+        (bootstrap: (workspace: IWorkspace, service: ServiceConfig) => Promise<object>) =>
+          bootstrap(workspace, serviceConfig)
       );
     })
   ).catch(() => {
@@ -61,7 +62,7 @@ export const bootstrapServices = (workspace: IWorkspace, servicesConfig: Service
 export const initComponents = (
   workspace: IWorkspace,
   registerComponent: (registerComponent: RegisteredComponent) => Promise<void>,
-  componentsConfig: { [nodeId: string]: Component },
+  componentsConfig: { [nodeId: string]: ComponentConfig },
   type: ComponentType
 ) => {
   return Promise.all(

@@ -1,5 +1,8 @@
+import { ComponentType } from './index';
+
 export default interface Component {
   componentName: string;
-  path: string;
-  config: { [key: string]: any };
+  nodeId: string;
+  reference: any;
+  type: ComponentType;
 }

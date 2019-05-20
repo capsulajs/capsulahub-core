@@ -10,7 +10,7 @@ export interface ComponentRegistry {
   [nodeId: string]: Component;
 }
 
-export interface FullWorkspace extends Workspace {
+export interface InternalWorkspace extends Workspace {
   registerComponent(registerComponentRequest: Component): Promise<void>;
 }
 

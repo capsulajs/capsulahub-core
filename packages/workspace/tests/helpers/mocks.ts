@@ -8,7 +8,7 @@ export const mockConfigurationService = (configurationServiceMock: any) => {
   });
 };
 
-export const mockGetModuleDynamically = (modulePromises: Promise<any>[]) => {
+export const mockGetModuleDynamically = (modulePromises: Array<Promise<any>>) => {
   const getModuleDynamicallyMock = jest.fn();
   modulePromises.forEach((modulePromise) => {
     getModuleDynamicallyMock.mockReturnValueOnce(modulePromise);
