@@ -2,9 +2,16 @@ import '@babel/polyfill';
 import { WorkspaceFactory } from '../es/src';
 
 const workspaceFactory = new WorkspaceFactory();
+let workspace;
 workspaceFactory
   .createWorkspace({ token: 'localhost:3000/configuration' })
-  .then((workspace) => {
+  .then((createdWorkspace) => {
+    workspace = createdWorkspace;
+  })
+  .then(() => {
+    document.getElementById('root').innerHTML = '<web-grid><web-request-form></web-request-form></web-grid>';
+  })
+  .then(() => {
     return workspace.services({});
   })
   .then((services) => {
