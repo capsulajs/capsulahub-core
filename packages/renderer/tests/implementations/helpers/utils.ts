@@ -1,10 +1,10 @@
 // @ts-ignore
-export const mockWorkspaceComponents = (components) => {
+export const mockWorkspace = (components) => {
   const mock = jest.fn();
   // @ts-ignore
-  global.CAPSULAHUB_WORKSPACE = {
+  const WORKSPACE = {
     components: mock,
   };
-
   mock.mockResolvedValueOnce(components);
+  return WORKSPACE;
 };
