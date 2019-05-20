@@ -1,11 +1,11 @@
 import { ConfigurationService, ConfigurationServiceHttp } from '@capsulajs/capsulajs-configuration-service';
 import WorkspaceConfig from '../api/WorkspaceConfig';
 import Component from '../api/Component';
+import { Component as RegisteredComponent } from '../api/methods/components';
 import { Workspace as IWorkspace } from '../api/Workspace';
 import { ComponentType } from '../api/methods/components';
 import Service from '../api/Service';
 import { bootstrapComponentError, bootstrapServiceError } from './const';
-import { FullWorkspace } from './types';
 
 export const getConfigurationService = (token: string): ConfigurationService<WorkspaceConfig> =>
   new ConfigurationServiceHttp(token);
@@ -22,7 +22,8 @@ export const bootstrapComponent = (componentName: string, WebComponent: any) => 
 export const initComponent = (
   nodeId: string,
   componentsConfig: { [nodeId: string]: Component },
-  workspace: FullWorkspace,
+  workspace: IWorkspace,
+  registerComponent: (registerComponent: RegisteredComponent) => Promise<void>,
   type: ComponentType
 ): Promise<void> => {
   const componentData = componentsConfig[nodeId];
@@ -33,7 +34,7 @@ export const initComponent = (
       return bootstrapComponent(componentData.componentName, WebComponent);
     })
     .then((webComponent) => {
-      return workspace.registerComponent({
+      return registerComponent({
         nodeId,
         type,
         componentName: componentData.componentName,
@@ -45,7 +46,7 @@ export const initComponent = (
     });
 };
 
-export const bootstrapServices = (workspace: FullWorkspace, servicesConfig: Service[]): Promise<any[]> => {
+export const bootstrapServices = (workspace: IWorkspace, servicesConfig: Service[]): Promise<any[]> => {
   return Promise.all(
     servicesConfig.map((serviceConfig) => {
       return getModuleDynamically(serviceConfig.path).then(
@@ -58,12 +59,15 @@ export const bootstrapServices = (workspace: FullWorkspace, servicesConfig: Serv
 };
 
 export const initComponents = (
-  workspace: FullWorkspace,
+  workspace: IWorkspace,
+  registerComponent: (registerComponent: RegisteredComponent) => Promise<void>,
   componentsConfig: { [nodeId: string]: Component },
   type: ComponentType
 ) => {
   return Promise.all(
-    Object.keys(componentsConfig).map((nodeId: string) => initComponent(nodeId, componentsConfig, workspace, type))
+    Object.keys(componentsConfig).map((nodeId: string) =>
+      initComponent(nodeId, componentsConfig, workspace, registerComponent, type)
+    )
   ).catch((error) => {
     throw new Error(bootstrapComponentError);
   });

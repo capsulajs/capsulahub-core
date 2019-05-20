@@ -14,6 +14,7 @@ import { Entity } from '@capsulajs/capsulajs-configuration-service/lib/api/Entit
 import { validateCreateWorkspaceRequest, validateWorkspaceConfig } from './helpers/validators';
 import { Microservices, Api } from '@scalecube/scalecube-microservice';
 import { FullWorkspace } from './helpers/types';
+import { Component } from './api/methods/components';
 
 export class WorkspaceFactory implements IWorkspaceFactory {
   createWorkspace(createWorkspaceRequest: CreateWorkspaceRequest): Promise<Workspace> {
@@ -54,19 +55,29 @@ export class WorkspaceFactory implements IWorkspaceFactory {
 
             let initPromise: Promise<{ workspace: IWorkspace; microservice: Api.Microservice }>;
 
-            const createInitPromise = (workspace: FullWorkspace) => {
+            const createInitPromise = (
+              workspace: IWorkspace,
+              registerComponent: (registerComponent: Component) => Promise<void>
+            ) => {
               initPromise = new Promise((resolve, reject) => {
                 let microservice: Api.Microservice;
 
                 bootstrapServices(workspace, formattedConfiguration.services)
-                  .then((services: any[]) => {
-                    // microservice = Microservices.create({
-                    //   services,
-                    // });
-                    return initComponents(workspace, formattedConfiguration.components.layouts, 'layout');
+                  .then(() => {
+                    return initComponents(
+                      workspace,
+                      registerComponent,
+                      formattedConfiguration.components.layouts,
+                      'layout'
+                    );
                   })
                   .then(() => {
-                    return initComponents(workspace, formattedConfiguration.components.items, 'item');
+                    return initComponents(
+                      workspace,
+                      registerComponent,
+                      formattedConfiguration.components.items,
+                      'item'
+                    );
                   })
                   .then(() => {
                     return resolve({ workspace: workspace, microservice });
@@ -78,9 +89,10 @@ export class WorkspaceFactory implements IWorkspaceFactory {
             };
 
             const init = (
-              workspace: FullWorkspace
+              workspace: IWorkspace,
+              registerComponent: (registerComponent: Component) => Promise<void>
             ): Promise<{ workspace: IWorkspace; microservice: Api.Microservice }> => {
-              return createInitPromise(workspace);
+              return createInitPromise(workspace, registerComponent);
             };
 
             workspace = new Workspace(formattedConfiguration, init);

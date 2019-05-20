@@ -26,7 +26,10 @@ export class Workspace implements IWorkspace {
   private servicesMap: ServicesMap;
   private listeners: EventListeners;
 
-  constructor(configuration: WorkspaceConfig, init: (arg: any) => Promise<IWorkspace>) {
+  constructor(
+    configuration: WorkspaceConfig,
+    init: (workspace: IWorkspace, registerComponent: (registerComponent: Component) => Promise<void>) => Promise<any>
+  ) {
     this.configuration = configuration;
     this.serviceRegistry = {} as ServiceRegistry;
     this.componentRegistry = {} as ComponentRegistry;
@@ -49,7 +52,7 @@ export class Workspace implements IWorkspace {
       };
     }, {});
 
-    init(this).catch(() => {
+    init(this, this.registerComponent).catch(() => {
       this.cleanEventListeners();
     });
   }
