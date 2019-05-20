@@ -111,7 +111,7 @@ export class Workspace implements IWorkspace {
         try {
           this.microservice = Microservices.create({
             services: [{ definition: serviceConfig!.definition, reference: registerServiceRequest.reference }],
-            seedAddress: 'testCluster',
+            seedAddress: this.id,
           });
         } catch (error) {
           reject(

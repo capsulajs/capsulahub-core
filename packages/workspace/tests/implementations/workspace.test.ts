@@ -363,4 +363,38 @@ describe('Workspace tests', () => {
       })
     ).rejects.toEqual(new Error(serviceToRegisterMissingInConfigurationError));
   });
+
+  it('Call registerService method with invalid reference rejects servicePromise in ServicesMap', async (done) => {
+    expect.assertions(2);
+    const configurationServiceMock = {
+      entries: () => Promise.resolve({ entries: configEntriesWithUnregisteredService }),
+    };
+    mockConfigurationService(configurationServiceMock);
+    mockGetModuleDynamically([
+      Promise.resolve(serviceABootstrap),
+      Promise.resolve(serviceBBootstrap),
+      Promise.resolve(serviceCBootstrap),
+      Promise.resolve(gridComponentBootstrap),
+      Promise.resolve(requestFormComponentBootstrap),
+    ]);
+    mockBootstrapComponent();
+
+    const workspaceFactory = new WorkspaceFactory();
+    const workspace = await workspaceFactory.createWorkspace({ token: '123' });
+    const services = await workspace.services({});
+
+    services.ServiceC.catch((error) => {
+      expect(error).toEqual(new Error(invalidRegisterServiceRequestError));
+      done();
+    });
+
+    try {
+      await workspace.registerService({
+        serviceName: serviceCConfig.serviceName,
+        reference: 'invalid reference',
+      });
+    } catch (error) {
+      expect(error).toEqual(new Error(invalidRegisterServiceRequestError));
+    }
+  });
 });

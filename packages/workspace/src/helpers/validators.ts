@@ -18,7 +18,9 @@ export const validateRegisterServiceRequest = (registerServiceRequest: any) => {
   return !(
     !registerServiceRequest.serviceName ||
     typeof registerServiceRequest.serviceName !== 'string' ||
-    !registerServiceRequest.serviceName.trim()
+    !registerServiceRequest.serviceName.trim() ||
+    !registerServiceRequest.reference ||
+    typeof registerServiceRequest.reference !== 'object'
   );
 };
 
