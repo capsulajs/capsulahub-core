@@ -6,6 +6,7 @@ import { Workspace as IWorkspace } from '../api/Workspace';
 import { ComponentType } from '../api/methods/components';
 import ServiceConfig from '../api/ServiceConfig';
 import { bootstrapComponentError, bootstrapServiceError } from './const';
+import { InternalWorkspace } from './types';
 
 export const getConfigurationService = (token: string): ConfigurationService<WorkspaceConfig> =>
   new ConfigurationServiceHttp(token);
@@ -22,8 +23,7 @@ export const bootstrapComponent = (componentName: string, WebComponent: any) => 
 export const initComponent = (
   nodeId: string,
   componentsConfig: { [nodeId: string]: ComponentConfig },
-  workspace: IWorkspace,
-  registerComponent: (registerComponent: RegisteredComponent) => Promise<void>,
+  workspace: InternalWorkspace,
   type: ComponentType
 ): Promise<void> => {
   const componentData = componentsConfig[nodeId];
@@ -34,7 +34,7 @@ export const initComponent = (
       return bootstrapComponent(componentData.componentName, WebComponent);
     })
     .then((webComponent) => {
-      return registerComponent({
+      return workspace.registerComponent({
         nodeId,
         type,
         componentName: componentData.componentName,
@@ -60,15 +60,12 @@ export const bootstrapServices = (workspace: IWorkspace, servicesConfig: Service
 };
 
 export const initComponents = (
-  workspace: IWorkspace,
-  registerComponent: (registerComponent: RegisteredComponent) => Promise<void>,
+  workspace: InternalWorkspace,
   componentsConfig: { [nodeId: string]: ComponentConfig },
   type: ComponentType
 ) => {
   return Promise.all(
-    Object.keys(componentsConfig).map((nodeId: string) =>
-      initComponent(nodeId, componentsConfig, workspace, registerComponent, type)
-    )
+    Object.keys(componentsConfig).map((nodeId: string) => initComponent(nodeId, componentsConfig, workspace, type))
   ).catch((error) => {
     throw new Error(bootstrapComponentError);
   });

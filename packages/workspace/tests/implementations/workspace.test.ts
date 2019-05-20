@@ -23,7 +23,11 @@ import {
   serviceToRegisterMissingInConfigurationError,
 } from '../../src/helpers/const';
 import { mockBootstrapComponent, mockConfigurationService, mockGetModuleDynamically } from '../helpers/mocks';
-import baseConfigEntries, { serviceAConfig } from '../helpers/baseConfigEntries';
+import baseConfigEntries, {
+  configEntriesWithUnregisteredService,
+  serviceAConfig,
+  serviceCConfig,
+} from '../helpers/baseConfigEntries';
 import { Workspace } from '../../src/Workspace';
 import { applyPostMessagePolyfill } from '../helpers/polyfills/PostMessageWithTransferPolyfill';
 import { applyMessageChannelPolyfill } from '../helpers/polyfills/MessageChannelPolyfill';
@@ -75,19 +79,21 @@ describe('Workspace tests', () => {
     }
   );
 
-  it('Call createWorkspace when a Workspace is created creates new instance of Workspace', async () => {
-    expect.assertions(3);
+  it('Call createWorkspace when a Workspace is created creates new instance of Workspace', async (done) => {
+    expect.assertions(2);
     const configurationServiceMock = {
-      entries: () => Promise.resolve({ entries: baseConfigEntries }),
+      entries: () => Promise.resolve({ entries: configEntriesWithUnregisteredService }),
     };
     mockConfigurationService(configurationServiceMock);
     mockGetModuleDynamically([
       Promise.resolve(serviceABootstrap),
       Promise.resolve(serviceBBootstrap),
+      Promise.resolve(serviceCBootstrap),
       Promise.resolve(gridComponentBootstrap),
       Promise.resolve(requestFormComponentBootstrap),
       Promise.resolve(serviceABootstrap),
       Promise.resolve(serviceBBootstrap),
+      Promise.resolve(serviceCBootstrap),
       Promise.resolve(gridComponentBootstrap),
       Promise.resolve(requestFormComponentBootstrap),
     ]);
@@ -95,10 +101,33 @@ describe('Workspace tests', () => {
 
     const workspaceFactory = new WorkspaceFactory();
     const workspace1 = await workspaceFactory.createWorkspace({ token: '123' });
+
     const workspace2 = await workspaceFactory.createWorkspace({ token: '123' });
-    expect(workspace1 instanceof Workspace).toBeTruthy();
-    expect(workspace2 instanceof Workspace).toBeTruthy();
-    expect(workspace1 !== workspace2).toBeTruthy();
+    const serviceCData = await serviceCBootstrap(workspace2, serviceCConfig);
+
+    const servicesForWorkspace1 = await workspace1.services({});
+    const servicesForWorkspace2 = await workspace2.services({});
+
+    let unregisteredServiceFromWorkspace1Received = false;
+    let unregisteredServiceFromWorkspace2Received = false;
+
+    servicesForWorkspace1.ServiceC.then(() => {
+      unregisteredServiceFromWorkspace1Received = true;
+    });
+    servicesForWorkspace2.ServiceC.then(() => {
+      unregisteredServiceFromWorkspace2Received = true;
+    });
+
+    await workspace2.registerService({
+      serviceName: serviceCConfig.serviceName,
+      reference: (serviceCData as any).reference,
+    });
+
+    setTimeout(() => {
+      expect(unregisteredServiceFromWorkspace1Received).toBeFalsy();
+      expect(unregisteredServiceFromWorkspace2Received).toBeTruthy();
+      done();
+    }, 1000);
   });
 
   it('An error with importing a service occurs after calling createWorkspace', async () => {
@@ -233,29 +262,8 @@ describe('Workspace tests', () => {
 
   it('Call registerService method registers the provided service in the Workspace', async () => {
     expect.assertions(2);
-    const serviceCConfig = {
-      serviceName: 'ServiceC',
-      path: 'http://localhost:3000/services/serviceC.js',
-      definition: {
-        serviceName: 'ServiceC',
-        methods: {
-          hello: { asyncModel: 'requestResponse' as Api.AsyncModel },
-        },
-      },
-      config: {},
-    };
-
-    const configurationMock = [
-      baseConfigEntries[0],
-      {
-        key: 'services',
-        value: [...(baseConfigEntries[1] as any).value, serviceCConfig],
-      },
-      baseConfigEntries[2],
-    ];
-
     const configurationServiceMock = {
-      entries: () => Promise.resolve({ entries: configurationMock }),
+      entries: () => Promise.resolve({ entries: configEntriesWithUnregisteredService }),
     };
     mockConfigurationService(configurationServiceMock);
     mockGetModuleDynamically([

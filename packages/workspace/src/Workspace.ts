@@ -1,3 +1,4 @@
+import uuidv4 from 'uuid/v4';
 import { Api as ScalecubeApi, Microservices } from '@scalecube/scalecube-microservice';
 
 import { Workspace as IWorkspace } from './api/Workspace';
@@ -18,6 +19,11 @@ import {
   validateServiceInConfig,
 } from './helpers/validators';
 
+const serviceEventsTypes = {
+  registered: 'registered',
+  registrationFailed: 'registration_failed',
+};
+
 export class Workspace implements IWorkspace {
   private configuration: WorkspaceConfig;
   private serviceRegistry: ServiceRegistry;
@@ -25,36 +31,35 @@ export class Workspace implements IWorkspace {
   private microservice?: ScalecubeApi.Microservice;
   private servicesMap: ServicesMap;
   private listeners: EventListeners;
+  private id: string;
 
-  constructor(
-    configuration: WorkspaceConfig,
-    init: (workspace: IWorkspace, registerComponent: (registerComponent: Component) => Promise<void>) => Promise<any>
-  ) {
+  constructor(configuration: WorkspaceConfig) {
+    this.id = uuidv4();
     this.configuration = configuration;
     this.serviceRegistry = {} as ServiceRegistry;
     this.componentRegistry = {} as ComponentRegistry;
     this.listeners = {};
     this.servicesMap = this.configuration.services.reduce((servicesMap, serviceConfig) => {
-      const servicePromise = new Promise((resolve) => {
-        const listenerHandler = () => {
-          resolve({
-            serviceName: serviceConfig.serviceName,
-            proxy: this.microservice!.createProxy({ serviceDefinition: serviceConfig.definition }),
-          });
+      const servicePromise = new Promise((resolve, reject) => {
+        const observeEvent = (type: string) => {
+          const listenerHandler = (event: CustomEvent) =>
+            type === serviceEventsTypes.registered
+              ? resolve({
+                  serviceName: serviceConfig.serviceName,
+                  proxy: this.microservice!.createProxy({ serviceDefinition: serviceConfig.definition }),
+                })
+              : reject(new Error(event.detail));
+          const eventType = this.generateEventType(serviceConfig.serviceName, type);
+          document.addEventListener(eventType, listenerHandler as EventListener, { once: true });
+          this.listeners[eventType] = (this.listeners[eventType] || []).concat(listenerHandler as EventListener);
         };
-        const eventType = `${serviceConfig.serviceName}Registered`;
-        document.addEventListener(eventType, listenerHandler, { once: true });
-        this.listeners[eventType] = (this.listeners[eventType] || []).concat(listenerHandler);
+        Object.values(serviceEventsTypes).forEach(observeEvent);
       });
       return {
         ...servicesMap,
         [serviceConfig.serviceName]: servicePromise,
       };
     }, {});
-
-    init(this, this.registerComponent.bind(this)).catch(() => {
-      this.cleanEventListeners();
-    });
   }
 
   public services(servicesRequest: ServicesRequest): Promise<ServicesMap> {
@@ -77,16 +82,22 @@ export class Workspace implements IWorkspace {
   public registerService(registerServiceRequest: RegisterServiceRequest): Promise<void> {
     return new Promise((resolve, reject) => {
       if (!validateRegisterServiceRequest(registerServiceRequest)) {
+        this.emitServiceRegistrationFailedEvent(registerServiceRequest.serviceName, invalidRegisterServiceRequestError);
         return reject(new Error(invalidRegisterServiceRequestError));
       }
 
       if (!validateServiceInConfig(this.configuration, registerServiceRequest)) {
+        this.emitServiceRegistrationFailedEvent(
+          registerServiceRequest.serviceName,
+          serviceToRegisterMissingInConfigurationError
+        );
         return reject(new Error(serviceToRegisterMissingInConfigurationError));
       }
 
       const service = this.serviceRegistry[registerServiceRequest.serviceName];
 
       if (!!service) {
+        this.emitServiceRegistrationFailedEvent(registerServiceRequest.serviceName, serviceAlreadyRegisteredError);
         return reject(new Error(serviceAlreadyRegisteredError));
       } else {
         const serviceConfig = this.configuration.services.find(
@@ -102,7 +113,9 @@ export class Workspace implements IWorkspace {
         }
 
         this.serviceRegistry[registerServiceRequest.serviceName] = { ...registerServiceRequest };
-        document.dispatchEvent(new CustomEvent(`${registerServiceRequest.serviceName}Registered`));
+        document.dispatchEvent(
+          new CustomEvent(this.generateEventType(registerServiceRequest.serviceName, serviceEventsTypes.registered))
+        );
         return resolve();
       }
     });
@@ -124,10 +137,22 @@ export class Workspace implements IWorkspace {
     });
   }
 
-  private cleanEventListeners(): void {
+  public cleanEventListeners(): void {
     Object.keys(this.listeners).forEach((eventType) => {
       this.listeners[eventType].forEach((eventCallback) => document.removeEventListener(eventType, eventCallback));
     });
     this.listeners = {};
+  }
+
+  private generateEventType(serviceName: any, type: string) {
+    return `${typeof serviceName === 'string' ? serviceName.toUpperCase() : 'UNKNOWN_SERVICE'}_${type.toUpperCase()}_${
+      this.id
+    }`;
+  }
+
+  private emitServiceRegistrationFailedEvent(serviceName: string, error: string) {
+    document.dispatchEvent(
+      new CustomEvent(this.generateEventType(serviceName, serviceEventsTypes.registrationFailed), { detail: error })
+    );
   }
 }

@@ -1,6 +1,5 @@
-import { WorkspaceFactory as IWorkspaceFactory } from './api/WorkspaceFactory';
+import { WorkspaceFactory as IWorkspaceFactory } from './api';
 import { Workspace } from './Workspace';
-import { Workspace as IWorkspace } from './api/Workspace';
 import { bootstrapServices, getConfigurationService, initComponents } from './helpers/utils';
 import { CreateWorkspaceRequest } from './api/methods/createWorkspace';
 import {
@@ -12,9 +11,6 @@ import {
 import WorkspaceConfig from './api/WorkspaceConfig';
 import { Entity } from '@capsulajs/capsulajs-configuration-service/lib/api/Entity';
 import { validateCreateWorkspaceRequest, validateWorkspaceConfig } from './helpers/validators';
-import { Microservices, Api } from '@scalecube/scalecube-microservice';
-import { FullWorkspace } from './helpers/types';
-import { Component } from './api/methods/components';
 
 export class WorkspaceFactory implements IWorkspaceFactory {
   public createWorkspace(createWorkspaceRequest: CreateWorkspaceRequest): Promise<Workspace> {
@@ -33,14 +29,12 @@ export class WorkspaceFactory implements IWorkspaceFactory {
       }
 
       // Getting configuration and initializing Workspace
-      let formattedConfiguration: WorkspaceConfig;
-      let workspace: Workspace;
       return configurationService
         .entries({ repository: configRepositoryName })
         .then(
           (configuration: any): any => {
             // Preparing and validating formattedConfiguration
-            formattedConfiguration = configuration.entries.reduce(
+            const formattedConfiguration = configuration.entries.reduce(
               (acc: WorkspaceConfig, configEntity: Entity) => {
                 return {
                   ...acc,
@@ -53,51 +47,25 @@ export class WorkspaceFactory implements IWorkspaceFactory {
               return reject(new Error(configWrongFormatError));
             }
 
-            let initPromise: Promise<{ workspace: IWorkspace; microservice: Api.Microservice }>;
-
-            const createInitPromise = (
-              workspace: IWorkspace,
-              registerComponent: (registerComponent: Component) => Promise<void>
-            ) => {
-              initPromise = new Promise((resolve, reject) => {
-                let microservice: Api.Microservice;
-
-                bootstrapServices(workspace, formattedConfiguration.services)
-                  .then(() => {
-                    return initComponents(
-                      workspace,
-                      registerComponent,
-                      formattedConfiguration.components.layouts,
-                      'layout'
-                    );
-                  })
-                  .then(() => {
-                    return initComponents(
-                      workspace,
-                      registerComponent,
-                      formattedConfiguration.components.items,
-                      'item'
-                    );
-                  })
-                  .then(() => {
-                    return resolve({ workspace, microservice });
-                  })
-                  .catch((error) => reject(error));
+            const workspace = new Workspace(formattedConfiguration);
+            return bootstrapServices(workspace, formattedConfiguration.services)
+              .then(() => {
+                return initComponents(workspace, formattedConfiguration.components.layouts, 'layout');
+              })
+              .then(() => {
+                return initComponents(workspace, formattedConfiguration.components.items, 'item');
+              })
+              .then(() => {
+                return resolve({
+                  services: workspace.services.bind(workspace),
+                  components: workspace.components.bind(workspace),
+                  registerService: workspace.registerService.bind(workspace),
+                } as Workspace);
+              })
+              .catch((error) => {
+                reject(error);
+                workspace.cleanEventListeners();
               });
-
-              return initPromise;
-            };
-
-            const init = (
-              workspace: IWorkspace,
-              registerComponent: (registerComponent: Component) => Promise<void>
-            ): Promise<{ workspace: IWorkspace; microservice: Api.Microservice }> => {
-              return createInitPromise(workspace, registerComponent);
-            };
-
-            workspace = new Workspace(formattedConfiguration, init);
-
-            return initPromise!.then((data: any) => resolve(data.workspace));
           }
         )
         .catch((error) => reject(error));

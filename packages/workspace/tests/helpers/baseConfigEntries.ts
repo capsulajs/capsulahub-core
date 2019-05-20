@@ -1,5 +1,17 @@
 import { Api } from '@scalecube/scalecube-microservice';
 
+export const serviceCConfig = {
+  serviceName: 'ServiceC',
+  path: 'http://localhost:3000/services/serviceC.js',
+  definition: {
+    serviceName: 'ServiceC',
+    methods: {
+      hello: { asyncModel: 'requestResponse' as Api.AsyncModel },
+    },
+  },
+  config: {},
+};
+
 export const serviceAConfig = {
   serviceName: 'ServiceA',
   path: 'http://localhost:3000/services/serviceA.js',
@@ -12,7 +24,7 @@ export const serviceAConfig = {
   config: { name: 'serviceA', message: 'what pill would you choose: red or blue?' },
 };
 
-export default [
+const baseConfigEntries = [
   {
     key: 'name',
     value: 'baseWorkspace',
@@ -56,3 +68,14 @@ export default [
     },
   },
 ];
+
+export const configEntriesWithUnregisteredService = [
+  baseConfigEntries[0],
+  {
+    key: 'services',
+    value: [...(baseConfigEntries[1] as any).value, serviceCConfig],
+  },
+  baseConfigEntries[2],
+];
+
+export default baseConfigEntries;
