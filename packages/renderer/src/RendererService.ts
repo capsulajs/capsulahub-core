@@ -1,3 +1,4 @@
+import '@babel/polyfill';
 import { Workspace } from '@capsulajs/capsulahub-core-workspace/lib/api/Workspace';
 import { Component, ComponentType } from '@capsulajs/capsulahub-core-workspace/lib/api/methods/components';
 import RendererConfig from './api/RendererConfig';

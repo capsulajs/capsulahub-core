@@ -11,17 +11,25 @@
     "build:es": "rimraf es && tsc --module esnext --target es2015 --outDir es",
     "clean": "rimraf lib es",
     "doc": "typedoc ./src/api --out ./doc --mode file --hideGenerator",
-    "test": "jest --maxWorkers=4 --env=jsdom",
+    "test": "jest --maxWorkers=4 --env=jsdoms",
     "lint": "yarn lint:md && yarn lint:ts",
     "lint:md": "remark . --rc-path ../../.remarkrc --output",
     "lint:ts": "tslint '{src,tests}/**/*.{ts,tsx}' --fix",
-    "prettier": "prettier --write '{src,tests}/**/*.{ts,tsx}'"
+    "prettier": "prettier --write '{src,tests}/**/*.{ts,tsx}'",
+    "start-example": "parcel example/index.html",
+    "cypress:debug": "cypress open",
+    "cypress:run": "cypress run"
   },
   "jest": {
     "transform": {
       ".(ts|tsx)": "ts-jest"
     },
     "testRegex": "(/__tests__/.*|\\.(test|spec|steps))\\.(ts|tsx|js)$",
+    "testPathIgnorePatterns": [
+      "<rootDir>/es/",
+      "<rootDir>/lib/",
+      "<rootDir>/packages/workspace/node_modules/"
+    ],
     "moduleFileExtensions": [
       "ts",
       "tsx",
@@ -30,23 +38,18 @@
     "moduleDirectories": [
       "node_modules",
       "app/src"
-    ],
-    "setupFiles": [
-      "./tests/setupTests.ts"
     ]
   },
   "dependencies": {
+    "@babel/polyfill": "^7.4.4",
     "@capsulajs/capsulahub-core-workspace": ">=0.0.1",
     "react": "^16.8.6",
     "react-dom": "^16.8.6"
   },
   "devDependencies": {
-    "@types/enzyme": "^3.9.2",
-    "@types/enzyme-adapter-react-16": "^1.0.5",
     "@types/jsdom": "^12.2.3",
     "@types/node": "^12.0.2",
-    "@webcomponents/custom-elements": "^1.2.4",
-    "enzyme": "^3.9.0",
-    "enzyme-adapter-react-16": "^1.13.0"
+    "cypress": "^3.3.0",
+    "parcel-bundler": "^1.12.3"
   }
 }
