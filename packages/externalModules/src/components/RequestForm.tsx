@@ -3,10 +3,9 @@ const bootstrap = () => {
     class RequestForm extends HTMLElement {
       constructor() {
         super();
-        this.innerHTML = '<div><h1>Hello from request form</h1></div>';
+        this.innerHTML = '<div id="request-form"><h1>Hello from request form</h1></div>';
       }
     }
-
     resolve(RequestForm);
   });
 };
