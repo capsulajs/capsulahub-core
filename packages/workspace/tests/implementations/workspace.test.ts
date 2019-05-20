@@ -241,7 +241,6 @@ describe('Workspace tests', () => {
     const workspace = await workspaceFactory.createWorkspace({ token: '123' });
     const components = await workspace.components({});
     expect(Object.keys(components)).toEqual(['grid', 'request-form']);
-
     const gridComponentData = await components.grid;
     expect(gridComponentData.componentName).toEqual('web-grid');
     expect(gridComponentData.nodeId).toEqual('grid');
