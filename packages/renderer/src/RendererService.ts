@@ -11,50 +11,40 @@ const bootstrap = (WORKSPACE: Workspace, SERVICE_CONFIG: RendererConfig) => {
       private renderedLayouts: boolean = false;
 
       async renderLayouts() {
+        this.renderedLayouts = true;
+
         (await this.components('layout')).forEach((component: Component) => {
-          try {
-            this.renderComponent(component);
-          } catch (error) {
-            return Promise.reject(error);
-          }
+          this.renderComponent(component);
         });
       }
 
       async renderItems() {
         if (!this.renderedLayouts) {
-          return Promise.reject(new Error(callRenderLayoutsBefore));
+          throw new Error(callRenderLayoutsBefore);
         }
 
         (await this.components('item')).forEach((component: Component) => {
-          try {
-            this.renderComponent(component);
-          } catch (error) {
-            return Promise.reject(error);
-          }
+          this.renderComponent(component);
         });
       }
 
       async renderItem(renderItemRequest: RenderItemRequest) {
         if (!this.renderedLayouts) {
-          return Promise.reject(new Error(callRenderLayoutsBefore));
+          throw new Error(callRenderLayoutsBefore);
         }
 
         if (typeof renderItemRequest.nodeId !== 'string') {
-          return Promise.reject(new Error(invalidNodeId));
+          throw new Error(invalidNodeId);
         }
 
         const component = (await this.components()).find(
           (component: Component) => component.nodeId === renderItemRequest.nodeId
         );
         if (!component) {
-          return Promise.reject(new Error(notFoundComponent));
+          throw new Error(notFoundComponent);
         }
 
-        try {
-          this.renderComponent(component);
-        } catch (error) {
-          return Promise.reject(error);
-        }
+        this.renderComponent(component);
       }
 
       private renderComponent(component: Component) {
@@ -62,7 +52,8 @@ const bootstrap = (WORKSPACE: Workspace, SERVICE_CONFIG: RendererConfig) => {
         if (!node) {
           throw new Error(notFoundNode);
         }
-        node.innerHTML = component.reference;
+        node.innerHTML = '';
+        node.appendChild(component.reference);
       }
 
       private async components(type?: ComponentType) {
