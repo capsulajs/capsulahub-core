@@ -1,11 +1,11 @@
-import '@babel/polyfill';
+// import '@babel/polyfill';
 import { timer } from 'rxjs';
 import { map } from 'rxjs/operators';
 
 const bootstrap = (WORKSPACE: any, SERVICE_CONFIG: any) => {
   return new Promise(async (resolve) => {
     class ServiceB {
-      getRandomNumbers() {
+      public getRandomNumbers() {
         return timer(0, 1000).pipe(map(() => Math.round(Math.random() * 1000)));
       }
     }
@@ -16,8 +16,8 @@ const bootstrap = (WORKSPACE: any, SERVICE_CONFIG: any) => {
       serviceName: SERVICE_CONFIG.serviceName,
       reference: serviceB,
     };
-    await WORKSPACE.registerService(registerServiceData);
-    resolve({ ...registerServiceData, reference: serviceB });
+    WORKSPACE.registerService(registerServiceData);
+    resolve(serviceB);
   });
 };
 

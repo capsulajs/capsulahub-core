@@ -100,7 +100,7 @@ describe('Workspace tests', () => {
     const workspace1 = await workspaceFactory.createWorkspace({ token: '123' });
 
     const workspace2 = await workspaceFactory.createWorkspace({ token: '123' });
-    const serviceCData = await serviceCBootstrap(workspace2, serviceCConfig);
+    const serviceCReference = await serviceCBootstrap();
 
     const servicesForWorkspace1 = await workspace1.services({});
     const servicesForWorkspace2 = await workspace2.services({});
@@ -117,7 +117,7 @@ describe('Workspace tests', () => {
 
     await workspace2.registerService({
       serviceName: serviceCConfig.serviceName,
-      reference: (serviceCData as any).reference,
+      reference: serviceCReference,
     });
 
     setTimeout(() => {
@@ -276,11 +276,11 @@ describe('Workspace tests', () => {
     const workspace = await workspaceFactory.createWorkspace({ token: '123' });
     const services = await workspace.services({});
 
-    const serviceCData = await serviceCBootstrap(workspace, serviceCConfig);
+    const serviceCReference = await serviceCBootstrap();
 
     await workspace.registerService({
       serviceName: serviceCConfig.serviceName,
-      reference: (serviceCData as any).reference,
+      reference: serviceCReference,
     });
     const serviceC = await services.ServiceC;
     expect(serviceC.serviceName).toEqual('ServiceC');
@@ -311,8 +311,8 @@ describe('Workspace tests', () => {
     ).rejects.toEqual(new Error(serviceAlreadyRegisteredError));
   });
 
-  const invalidServiceName = [' ', {}, { test: 'test' }, [], ['test'], null, undefined, true, false, 0, -1];
-  test.each(invalidServiceName)(
+  const invalidServiceNames = [' ', {}, { test: 'test' }, [], ['test'], null, undefined, true, false, 0, -1];
+  test.each(invalidServiceNames)(
     'Call registerService method with an invalid serviceName is rejected with error',
     async (invalidServiceName) => {
       expect.assertions(1);

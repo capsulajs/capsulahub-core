@@ -5,10 +5,6 @@ const bootstrap = () => {
         super();
         this.innerHTML = '<div><h1>Hello from request form</h1></div>';
       }
-
-      public connectedCallback() {
-        console.log('RequestForm mounted');
-      }
     }
 
     resolve(RequestForm);

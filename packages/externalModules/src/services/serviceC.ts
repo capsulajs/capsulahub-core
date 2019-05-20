@@ -1,23 +1,16 @@
-const bootstrap = (WORKSPACE: any, SERVICE_CONFIG: any) => {
+const bootstrap = (): Promise<object> => {
   return new Promise(async (resolve) => {
     class ServiceC {
-      hello(name: string) {
-        return new Promise((resolve, reject) => {
+      public hello(name: string) {
+        return new Promise((helloResolve, reject) => {
           if (!name) {
             reject('No name to greet has been provided :-(');
           }
-          resolve(`Hello, ${name}`);
+          helloResolve(`Hello, ${name}`);
         });
       }
     }
-
-    const serviceC = new ServiceC();
-
-    resolve({
-      serviceName: SERVICE_CONFIG.serviceName,
-      definition: SERVICE_CONFIG.definition,
-      reference: serviceC,
-    });
+    resolve(new ServiceC());
   });
 };
 

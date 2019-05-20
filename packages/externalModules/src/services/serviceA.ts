@@ -6,12 +6,12 @@ const bootstrap = (WORKSPACE: any, SERVICE_CONFIG: any) => {
         this.message = message;
       }
 
-      greet(name: string) {
-        return new Promise((resolve, reject) => {
+      public greet(name: string) {
+        return new Promise((greetResolve, reject) => {
           if (!name) {
             reject('No name to greet has been provided :-(');
           }
-          resolve(`Dear ${name}, ${this.message}`);
+          greetResolve(`Dear ${name}, ${this.message}`);
         });
       }
     }
@@ -23,8 +23,8 @@ const bootstrap = (WORKSPACE: any, SERVICE_CONFIG: any) => {
       reference: serviceA,
     };
 
-    await WORKSPACE.registerService(registerServiceData);
-    resolve({ ...registerServiceData, reference: serviceA });
+    WORKSPACE.registerService(registerServiceData);
+    resolve(serviceA);
   });
 };
 

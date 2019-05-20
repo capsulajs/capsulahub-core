@@ -5,10 +5,6 @@ const bootstrap = () => {
         super();
         this.innerHTML = '<div id="grid"><div id="request-form"></div></div>';
       }
-
-      public connectedCallback() {
-        console.log('grid connected');
-      }
     }
 
     resolve(Grid);
