@@ -1,3 +1,4 @@
+import Workspace from './Workspace';
 import WorkspaceConfig from './WorkspaceConfig';
 
-export { WorkspaceConfig };
+export { Workspace, WorkspaceConfig };
