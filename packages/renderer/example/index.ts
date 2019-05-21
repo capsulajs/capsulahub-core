@@ -1,4 +1,4 @@
-import { bootstrap } from '../src/index';
+import bootstrap from '../src/index';
 import mocks from './mocks';
 
 // @ts-ignore
