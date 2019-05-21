@@ -34,12 +34,7 @@ const bootstrap = (WORKSPACE: Workspace, SERVICE_CONFIG: RendererConfig) => {
           throw new Error(invalidNodeId);
         }
 
-        if (!this.renderedLayouts) {
-          throw new Error(callRenderLayoutsBefore);
-        }
-
         const component = (await this.components()).find((c: Component) => c.nodeId === renderItemRequest.nodeId);
-
         if (!component) {
           throw new Error(notFoundComponent);
         }
@@ -69,6 +64,10 @@ const bootstrap = (WORKSPACE: Workspace, SERVICE_CONFIG: RendererConfig) => {
       reference: SERVICE_CONFIG.reference,
     };
     await WORKSPACE.registerService(registerServiceData);
+
+    // await rendererService.renderLayouts();
+    // await rendererService.renderItems();
+
     resolve({ ...registerServiceData, reference: rendererService });
   });
 };

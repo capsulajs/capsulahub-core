@@ -21,10 +21,6 @@ test('Call renderItems when layout is not rendered  is rejected with error', () 
   expect(renderService.renderItems({})).rejects.toEqual(new Error(callRenderLayoutsBefore));
 });
 
-test('Call renderItem when layout is not rendered is rejected with error', () => {
-  expect(renderService.renderItem({ nodeId: 'item-a' })).rejects.toEqual(new Error(callRenderLayoutsBefore));
-});
-
 test('Call renderItem with invalid nodeId is rejected with error', () => {
   // @ts-ignore
   [{}, { test: 'test' }, [], ['test'], null, undefined, true, false, 0, -1].forEach((nodeId) => {
@@ -55,6 +51,5 @@ test('Call renderItem with an nodeId which does not exist in configuration is re
   // @ts-ignore
   const { reference } = await bootstrap(customWorkspace, {});
   renderService = reference;
-  await renderService.renderLayouts({});
   expect(renderService.renderItem({ nodeId: 'item-a' })).rejects.toThrow(notFoundNode);
 });

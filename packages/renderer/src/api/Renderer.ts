@@ -1,7 +1,7 @@
 import { RenderLayoutsRequest, RenderItemsRequest, RenderItemRequest } from './methods';
 
 /**
- * Renderer is the core service of Capsula Hub, it is responsible for :
+ * Renderer is the core service of Capsula Hub responsible for :
  * - Rendering in the DOM all layouts registered in the Workspace
  * - Rendering in the DOM all items registered in the Workspace
  * - Rendering in the DOM item registered in the Workspace

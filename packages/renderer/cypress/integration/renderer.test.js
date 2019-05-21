@@ -33,10 +33,13 @@ describe('Renderer resolves TCs', () => {
       })
       .get('[data-cy=layout-abc]')
       .find('[data-cy=item-a]')
+      .contains('Item A')
       .get('[data-cy=layout-abc]')
       .find('[data-cy=item-b]')
+      .contains('Item B')
       .get('[data-cy=layout-abc]')
-      .find('[data-cy=item-c]');
+      .find('[data-cy=item-c]')
+      .contains('Item C');
   });
 
   it('Calling renderItem with nodeId renders the relevant item', () => {
@@ -54,6 +57,7 @@ describe('Renderer resolves TCs', () => {
       })
       .get('[data-cy=layout-abc]')
       .find('[data-cy=item-a]')
+      .contains('Item A')
       .get('[data-cy=layout-abc]')
       .find('[data-cy=item-b]')
       .should('not.exist')
