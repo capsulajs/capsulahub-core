@@ -1,7 +1,7 @@
 {
-  "name": "@capsulajs/capsulahub-core-workspace",
+  "name": "@capsulajs/capsulahub-core-orchestrator",
   "version": "0.0.1",
-  "description": "A workspace package for CapsulaHub core services",
+  "description": "Orchestrator core services for CapsulaHub",
   "main": "lib/index.js",
   "license": "MIT",
   "private": false,
@@ -16,9 +16,5 @@
     "lint:md": "remark . --rc-path ../../.remarkrc --output",
     "lint:ts": "tslint '{src,tests}/**/*.{ts,tsx}' --fix",
     "prettier": "prettier --write '{src,tests}/**/*.{ts,tsx}'"
-  },
-  "dependencies": {
-    "@capsulajs/capsulajs-configuration-service": "^0.1.6",
-    "@scalecube/scalecube-microservice": "next"
   }
 }
