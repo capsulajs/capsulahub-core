@@ -39,7 +39,7 @@ test('Call renderItem with an nodeId which does not exist in configuration is re
   expect(renderService.renderItem({ nodeId: 'not-found' })).rejects.toThrow(notFoundComponent);
 });
 
-test('Call renderItem with an nodeId which does not exist in configuration is rejected with error', async () => {
+test('Calling renderItem with nodeId which node not exist rejects the with error', async () => {
   const mock = jest.fn();
   // @ts-ignore
   const customWorkspace = {

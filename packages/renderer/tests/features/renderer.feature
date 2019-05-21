@@ -50,3 +50,9 @@ Scenario: Call renderItem with an nodeId which does not exist in configuration i
   And   one item with valid nodeId
   When  I call renderItem method with the nodeId which does not exist in configuration
   Then  an error is returned
+
+Scenario: Calling renderItem with nodeId which node not exist rejects the with error
+  Given Renderer service with renderItem method
+  And   one item with valid nodeId
+  When  I call renderItem method with a valid request and with valid nodeId
+  Then  an error is returned
