@@ -64,11 +64,10 @@ const bootstrap = (WORKSPACE: Workspace, SERVICE_CONFIG: RendererConfig) => {
       reference: SERVICE_CONFIG.reference,
     };
     await WORKSPACE.registerService(registerServiceData);
+    await rendererService.renderLayouts();
+    await rendererService.renderItems();
 
-    // await rendererService.renderLayouts();
-    // await rendererService.renderItems();
-
-    resolve({ ...registerServiceData, reference: rendererService });
+    resolve();
   });
 };
 
