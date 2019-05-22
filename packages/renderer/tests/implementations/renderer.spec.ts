@@ -3,11 +3,6 @@ import Renderer from '../../src/api/Renderer';
 // @ts-ignore
 import { callRenderLayoutsBefore, invalidNodeId, notFoundComponent, notFoundNode } from '../../src/helpers/const';
 
-// @ts-ignore
-const config = {
-  serviceName: 'RendererService',
-};
-
 let renderService: Renderer;
 
 beforeEach(async () => {
@@ -17,8 +12,9 @@ beforeEach(async () => {
     components: () => Promise.resolve({}),
     registerService: mock,
   };
+  mock.mockResolvedValueOnce({});
   // @ts-ignore
-  await bootstrap(workspace, config);
+  await bootstrap(workspace, {});
   renderService = mock.mock.calls[0][0].reference;
 });
 
@@ -54,8 +50,9 @@ test('Calling renderItem with nodeId which node not exist rejects the with error
       }),
     registerService: mock,
   };
+  mock.mockResolvedValueOnce({});
   // @ts-ignore
-  await bootstrap(customWorkspace, config);
+  await bootstrap(customWorkspace, {});
   renderService = mock.mock.calls[0][0].reference;
   expect(renderService.renderItem({ nodeId: 'item-a' })).rejects.toThrow(notFoundNode);
 });

@@ -1,4 +1,1 @@
-export default interface RendererConfig {
-  serviceName: string;
-  reference: any;
-}
+export default interface RendererConfig {}

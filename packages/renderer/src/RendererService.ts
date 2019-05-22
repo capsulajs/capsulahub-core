@@ -6,7 +6,8 @@ import { Renderer, RenderItemRequest } from './api';
 // @ts-ignore
 import { callRenderLayoutsBefore, invalidNodeId, notFoundComponent, notFoundNode } from './helpers/const';
 
-const bootstrap = (WORKSPACE: Workspace, CONFIG: RendererConfig) => {
+// @ts-ignore
+const bootstrap = (WORKSPACE: Workspace, SERVICE_COMNFIG: RendererConfig) => {
   return new Promise(async (resolve) => {
     class RendererService implements Renderer {
       private renderedLayouts: boolean = false;
@@ -60,15 +61,15 @@ const bootstrap = (WORKSPACE: Workspace, CONFIG: RendererConfig) => {
 
     const rendererService = new RendererService();
 
-    await WORKSPACE.registerService({
-      serviceName: CONFIG.serviceName,
+    WORKSPACE.registerService({
+      serviceName: 'RendererService',
       reference: rendererService,
+    }).then(async () => {
+      if (process.env.NODE_ENV !== 'test') {
+        await rendererService.renderLayouts();
+        await rendererService.renderItems();
+      }
     });
-
-    if (process.env.NODE_ENV !== 'test') {
-      await rendererService.renderLayouts();
-      await rendererService.renderItems();
-    }
 
     resolve();
   });
