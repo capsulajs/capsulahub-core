@@ -1,14 +1,13 @@
-import { Workspace } from '@capsulajs/capsulahub-core-workspace/lib/api';
-import { RendererConfig } from './api';
-import * as api from './api';
+import bootstrap from './RendererService';
+import * as apiMap from './api';
 
-declare global {
-  interface Window {
-    CAPSULAHUB_WORKSPACE: Workspace;
-    SERVICE_CONFIG: RendererConfig;
-  }
+// @ts-ignore
+if (typeof publicExports !== 'undefined') {
+  // @ts-ignore
+  API = apiMap;
+  // @ts-ignore
+  publicExports = bootstrap;
 }
 
-export default {
-  api,
-};
+export const api = apiMap;
+export default bootstrap;
