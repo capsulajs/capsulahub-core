@@ -1,7 +1,6 @@
-import { CreateWorkspaceRequest } from './methods/createWorkspace';
-import { Workspace } from './Workspace';
+import { CreateWorkspaceRequest, Workspace } from '.';
 
-export interface WorkspaceFactory {
+export default interface WorkspaceFactory {
   /**
    * Creating a workspace and loading all services and components included in its configuration.
    * CAPSULAHUB_WORKSPACE and CAPSULAHUB_CONFIGURATION variables are available for loaded services and components,

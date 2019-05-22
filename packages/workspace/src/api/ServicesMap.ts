@@ -1,11 +1,6 @@
-export interface ServicesRequest {}
+import { Service } from '.';
 
-export interface Service {
-  serviceName: string;
-  proxy: any;
-}
-
-export interface ServicesMap {
+export default interface ServicesMap {
   /** Each promise will be resolved when the corresponding service will be registered */
   [serviceName: string]: Promise<Service>;
 }

@@ -1,6 +1,7 @@
 .cache
 .idea/
-dist
+dist/
+dist-example/
 node_modules/
 doc/
 lib/
