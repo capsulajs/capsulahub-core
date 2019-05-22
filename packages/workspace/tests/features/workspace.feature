@@ -80,18 +80,6 @@ Scenario: Call components method returns a map of promises to each component loa
           |nodeId       |
           |reference    |
 
-Scenario: Call registerService method registers the provided service in the Workspace
-    Given WorkspaceFactory instance with createWorkspace method
-    And  Configuration for token 123 that includes service A and B and components 1 and 2
-    And  Service A and service B include a bootstrap that call registerService
-    When I run createWorkspace method with token 123 and Workspace is created
-    And  registerService method with service A and with a valid request is called by the bootstrap
-    And  The request has the following <property> and <type>
-         |<property> | <type>|
-         |serviceName| string|
-         |reference  | any   |
-    Then Service A is registered in the Workspace
-
 Scenario: Call registerService method with a service already registered is rejected with error
     Given WorkspaceFactory instance with createWorkspace method
     And   Configuration for token 123 that includes service A and B and components 1 and 2
@@ -127,3 +115,12 @@ Scenario: Call registerService method with a service that doesnt's exist in conf
     When  I run createWorkspace with token 123 and Workspace is created
     And   I call registerService method with service C
     Then  I expect to receive an error
+
+Scenario: Call registerService method with invalid reference rejects servicePromise in ServicesMap
+    Given WorkspaceFactory instance with createWorkspace method
+    And   Configuration for token 123 that includes service A and B and components 1 and 2
+    And   Service A and service B include a bootstrap that calls registerService
+    When  I run createWorkspace with token 123 and Workspace is created
+    And   I call services method
+    And   I call workspace registerService method with invalid reference
+    Then  I expect servicePromise to be rejected with an error
