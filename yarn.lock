@@ -7465,6 +7465,11 @@ parcel-bundler@^1.12.3:
     v8-compile-cache "^2.0.0"
     ws "^5.1.1"
 
+parcel-plugin-wrapper@^0.2.2:
+  version "0.2.2"
+  resolved "https://registry.npmjs.org/parcel-plugin-wrapper/-/parcel-plugin-wrapper-0.2.2.tgz#44bad43e8a0f02f21eee8217325d62ddbb148da0"
+  integrity sha512-qYd5mfpaAnkMYmD+lvhtOPuq2YKgMOBGQYc7fSPfXIUKPpQkH/qsTQSVfdqOekZQM8THi0oZoJ0XKOwSGqHyeQ==
+
 parse-asn1@^5.0.0:
   version "5.1.4"
   resolved "https://registry.npmjs.org/parse-asn1/-/parse-asn1-5.1.4.tgz#37f6628f823fbdeb2273b4d540434a22f3ef1fcc"
