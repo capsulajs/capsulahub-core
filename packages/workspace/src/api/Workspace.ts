@@ -1,6 +1,4 @@
-import { ServicesMap, ServicesRequest } from './methods/services';
-import { RegisterServiceRequest } from './methods/registerService';
-import { ComponentsMap, ComponentsRequest } from './methods/components';
+import { ServicesMap, ServicesRequest, RegisterServiceRequest, ComponentsMap, ComponentsRequest } from '.';
 
 /**
  * Workspace is the core service of Capsula Hub, it is responsible for :
@@ -32,7 +30,6 @@ export default interface Workspace {
    * - Invalid request
    * - Service specified in request doesn't exist in workspace configuration
    * - Service specified in request already registered
-   * - Invalid request
    * @param registerServiceRequest
    */
   registerService(registerServiceRequest: RegisterServiceRequest): Promise<void>;

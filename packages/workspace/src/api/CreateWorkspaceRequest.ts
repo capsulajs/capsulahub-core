@@ -1,4 +1,4 @@
-export interface CreateWorkspaceRequest {
+export default interface CreateWorkspaceRequest {
   /** Token used to get workspace configuration */
   token: string;
 }
