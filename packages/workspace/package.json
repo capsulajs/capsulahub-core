@@ -16,7 +16,7 @@
     "lint:md": "remark . --rc-path ../../.remarkrc --output",
     "lint:ts": "tslint '{src,tests}/**/*.{ts,tsx}' --fix",
     "prettier": "prettier --write '{src,tests}/**/*.{ts,tsx}'",
-    "start-example": "parcel example/index.html --out-dir=dist-example",
+    "start-example": "parcel example/index.html --out-dir=dist-example --no-cache",
     "cypress:debug": "cypress open",
     "cypress:run": "cypress run",
     "deploy": "SERVICE=$(echo $npm_package_name | cut -d '/' -f 2) && ../../scripts/deploy.sh $SERVICE"
@@ -37,8 +37,5 @@
     "webpack": "^4.32.0",
     "webpack-cli": "^3.3.2",
     "wrapper-webpack-plugin": "^2.1.0"
-  },
-  "browserList": [
-    "ie8"
-  ]
+  }
 }

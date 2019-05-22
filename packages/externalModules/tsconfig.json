@@ -10,7 +10,8 @@
     "noUnusedParameters": true,
     "moduleResolution": "classic",
     "baseUrl": "./src",
-    "esModuleInterop": true
+    "esModuleInterop": true,
+    "jsx": "react"
   },
   "include": ["src/**/*", "tests/**/*"]
 }

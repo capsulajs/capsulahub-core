@@ -20,10 +20,12 @@ export class MessagePortPolyfill implements IMessagePortPolyfill {
   public otherPort: IMessagePortPolyfill | null;
 
   private onmessage: any;
+  // @ts-ignore
   private onmessageerror: any;
   private onmessageListeners: any[];
   private queue: any[];
   private otherSideStart: boolean;
+  // @ts-ignore
   private whoami: string;
 
   constructor(whoami: string) {

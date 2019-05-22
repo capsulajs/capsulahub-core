@@ -4,7 +4,7 @@ import serviceABootstrap from '@capsulajs/capsulahub-core-external-modules/src/s
 // @ts-ignore
 import serviceBBootstrap from '@capsulajs/capsulahub-core-external-modules/src/services/serviceB';
 // @ts-ignore
-import serviceCBootstrap from '@capsulajs/capsulahub-core-external-modules/src/services/serviceC';
+import serviceCBootstrap, { ServiceC } from '@capsulajs/capsulahub-core-external-modules/src/services/serviceC';
 // @ts-ignore
 import gridComponentBootstrap from '@capsulajs/capsulahub-core-external-modules/src/components/Grid';
 // // @ts-ignore
@@ -100,7 +100,6 @@ describe('Workspace tests', () => {
     const workspace1 = await workspaceFactory.createWorkspace({ token: '123' });
 
     const workspace2 = await workspaceFactory.createWorkspace({ token: '123' });
-    const serviceCReference = await serviceCBootstrap();
 
     const servicesForWorkspace1 = await workspace1.services({});
     const servicesForWorkspace2 = await workspace2.services({});
@@ -117,7 +116,7 @@ describe('Workspace tests', () => {
 
     await workspace2.registerService({
       serviceName: serviceCConfig.serviceName,
-      reference: serviceCReference,
+      reference: new ServiceC(),
     });
 
     setTimeout(() => {
@@ -254,36 +253,6 @@ describe('Workspace tests', () => {
     // Jest limitation of using HTMLElement
     expect(requestFormComponentData.reference).toEqual({});
     expect(requestFormComponentData.type).toEqual('item');
-  });
-
-  it('Call registerService method registers the provided service in the Workspace', async () => {
-    expect.assertions(2);
-    const configurationServiceMock = {
-      entries: () => Promise.resolve({ entries: configEntriesWithUnregisteredService }),
-    };
-    mockConfigurationService(configurationServiceMock);
-    mockGetModuleDynamically([
-      Promise.resolve(serviceABootstrap),
-      Promise.resolve(serviceBBootstrap),
-      Promise.resolve(serviceCBootstrap),
-      Promise.resolve(gridComponentBootstrap),
-      Promise.resolve(requestFormComponentBootstrap),
-    ]);
-    mockBootstrapComponent();
-
-    const workspaceFactory = new WorkspaceFactory();
-    const workspace = await workspaceFactory.createWorkspace({ token: '123' });
-    const services = await workspace.services({});
-
-    const serviceCReference = await serviceCBootstrap();
-
-    await workspace.registerService({
-      serviceName: serviceCConfig.serviceName,
-      reference: serviceCReference,
-    });
-    const serviceC = await services.ServiceC;
-    expect(serviceC.serviceName).toEqual('ServiceC');
-    return expect(serviceC.proxy.hello('Stephane')).resolves.toEqual('Hello, Stephane');
   });
 
   it('Call registerService method with a service already registered is rejected with error', async () => {

@@ -21,3 +21,7 @@ export const serviceToRegisterMissingInConfigurationError =
 
 export const componentToRegisterMissingInConfigurationError =
   'Component that should be registered does not exist in the Workspace config';
+
+export const componentsRequestInvalidError = 'Components request is invalid';
+
+export const servicesRequestInvalidError = 'Services request is invalid';
