@@ -7,7 +7,7 @@ import { Renderer, RenderItemRequest } from './api';
 import { callRenderLayoutsBefore, invalidNodeId, notFoundComponent, notFoundNode } from './helpers/const';
 
 // @ts-ignore
-const bootstrap = (WORKSPACE: Workspace, SERVICE_COMNFIG: RendererConfig) => {
+export default (WORKSPACE: Workspace, SERVICE_COMNFIG: RendererConfig) => {
   return new Promise(async (resolve) => {
     class RendererService implements Renderer {
       private renderedLayouts: boolean = false;
@@ -74,11 +74,3 @@ const bootstrap = (WORKSPACE: Workspace, SERVICE_COMNFIG: RendererConfig) => {
     resolve();
   });
 };
-
-// @ts-ignore
-if (typeof publicExports !== 'undefined') {
-  // @ts-ignore
-  publicExports = bootstrap;
-}
-
-export default bootstrap;
