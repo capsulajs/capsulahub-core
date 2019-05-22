@@ -3,6 +3,6 @@ import Provider from './Provider';
 
 export default interface ConfigurationConfig {
   token: string;
-  provider: Provider;
-  dispatcher: Dispatcher;
+  provider?: Provider;
+  dispatcher?: Dispatcher;
 }
