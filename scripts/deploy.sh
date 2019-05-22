@@ -41,7 +41,7 @@ echo "$COUNT"
 
 # upload to s3
 aws s3 rm $S3_PATH/$SERVICE_PATH --recursive --region $S3_REGION
-aws s3 cp lib $S3_PATH$SERVICE_PATH --recursive
+aws s3 cp dist $S3_PATH$SERVICE_PATH --recursive
 #aws s3 cp doc $S3_PATH${SERVICE_PATH}doc --recursive
 
 echo "application was uploaded to s3 url: $CF_URL$SERVICE_PATH"
