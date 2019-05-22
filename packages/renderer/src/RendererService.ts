@@ -1,6 +1,6 @@
 import '@babel/polyfill';
-import { Workspace } from '@capsulajs/capsulahub-core-workspace/lib/api';
-import { Component, ComponentType } from '@capsulajs/capsulahub-core-workspace/lib/api/methods/components';
+import { Workspace } from '@capsulajs/capsulahub-core-workspace/src/api';
+import { Component, ComponentType } from '@capsulajs/capsulahub-core-workspace/src/api';
 import RendererConfig from './api/RendererConfig';
 import { Renderer, RenderItemRequest } from './api';
 // @ts-ignore
