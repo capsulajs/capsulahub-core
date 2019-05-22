@@ -27,7 +27,6 @@ import {
   validateRegisterServiceRequest,
   validateServiceInConfig,
 } from './helpers/validators';
-import { reject } from 'q';
 
 const eventsTypes = {
   registered: 'registered',
@@ -55,28 +54,28 @@ export class Workspace implements IWorkspace {
   }
 
   public services(servicesRequest: ServicesRequest): Promise<ServicesMap> {
-    return new Promise((resolve, rejectServices) => {
+    return new Promise((resolve, reject) => {
       if (!servicesRequest) {
-        return rejectServices(new Error(servicesRequestInvalidError));
+        return reject(new Error(servicesRequestInvalidError));
       }
       return resolve(this.servicesMap);
     });
   }
 
   public components(componentsRequest: ComponentsRequest): Promise<ComponentsMap> {
-    return new Promise((resolve, rejectComponents) => {
+    return new Promise((resolve, reject) => {
       if (!componentsRequest) {
-        return rejectComponents(new Error(componentsRequestInvalidError));
+        return reject(new Error(componentsRequestInvalidError));
       }
       return resolve(this.componentsMap);
     });
   }
 
   public registerService(registerServiceRequest: RegisterServiceRequest): Promise<void> {
-    return new Promise((resolve, rejectRegisterService) => {
+    return new Promise((resolve, reject) => {
       if (!validateRegisterServiceRequest(registerServiceRequest)) {
         this.emitServiceRegistrationFailedEvent(registerServiceRequest.serviceName, invalidRegisterServiceRequestError);
-        return rejectRegisterService(new Error(invalidRegisterServiceRequestError));
+        return reject(new Error(invalidRegisterServiceRequestError));
       }
 
       if (!validateServiceInConfig(this.configuration, registerServiceRequest)) {
@@ -84,14 +83,14 @@ export class Workspace implements IWorkspace {
           registerServiceRequest.serviceName,
           serviceToRegisterMissingInConfigurationError
         );
-        return rejectRegisterService(new Error(serviceToRegisterMissingInConfigurationError));
+        return reject(new Error(serviceToRegisterMissingInConfigurationError));
       }
 
       const service = this.serviceRegistry[registerServiceRequest.serviceName];
 
       if (!!service) {
         this.emitServiceRegistrationFailedEvent(registerServiceRequest.serviceName, serviceAlreadyRegisteredError);
-        return rejectRegisterService(new Error(serviceAlreadyRegisteredError));
+        return reject(new Error(serviceAlreadyRegisteredError));
       } else {
         const serviceConfig = this.configuration.services.find(
           (serviceConfiguration) => serviceConfiguration.serviceName === registerServiceRequest.serviceName
@@ -119,9 +118,9 @@ export class Workspace implements IWorkspace {
   }
 
   public registerComponent(registerComponentRequest: Component): Promise<void> {
-    return new Promise((resolve, rejectRegisterComponent) => {
+    return new Promise((resolve, reject) => {
       if (!validateComponentInConfig(this.configuration, registerComponentRequest)) {
-        rejectRegisterComponent(new Error(componentToRegisterMissingInConfigurationError));
+        reject(new Error(componentToRegisterMissingInConfigurationError));
       }
       const component = this.componentRegistry[registerComponentRequest.nodeId];
 
@@ -131,7 +130,7 @@ export class Workspace implements IWorkspace {
             this.generateComponentEventType(registerComponentRequest.nodeId, eventsTypes.registrationFailed)
           )
         );
-        rejectRegisterComponent(new Error(componentAlreadyRegisteredError));
+        reject(new Error(componentAlreadyRegisteredError));
       } else {
         this.componentRegistry[registerComponentRequest.nodeId] = { ...registerComponentRequest };
         document.dispatchEvent(
@@ -167,7 +166,7 @@ export class Workspace implements IWorkspace {
 
   private createServiceMap() {
     return this.configuration.services.reduce((servicesMap, serviceConfig) => {
-      const servicePromise = new Promise((resolve, rejectCreateServiceMap) => {
+      const servicePromise = new Promise((resolve, reject) => {
         const observeEvent = (type: string) => {
           const listenerHandler = (event: CustomEvent) =>
             type === eventsTypes.registered
@@ -175,7 +174,7 @@ export class Workspace implements IWorkspace {
                   serviceName: serviceConfig.serviceName,
                   proxy: this.microservice!.createProxy({ serviceDefinition: serviceConfig.definition }),
                 })
-              : rejectCreateServiceMap(new Error(event.detail));
+              : reject(new Error(event.detail));
           const eventType = this.generateServiceEventType(serviceConfig.serviceName, type);
           document.addEventListener(eventType, listenerHandler as EventListener, { once: true });
           this.listeners[eventType] = (this.listeners[eventType] || []).concat(listenerHandler as EventListener);
@@ -193,12 +192,12 @@ export class Workspace implements IWorkspace {
     const componentsMap = { ...(this.componentsMap || {}) };
     const fulfillComponentsMap = (componentsConfig: { [nodeId: string]: ComponentConfig }) => {
       Object.keys(componentsConfig).forEach((nodeId) => {
-        componentsMap[nodeId] = new Promise((resolve, rejectCreateComponentsMap) => {
+        componentsMap[nodeId] = new Promise((resolve, reject) => {
           const observeEvent = (type: string) => {
             const listenerHandler = (event: CustomEvent) =>
               type === eventsTypes.registered
                 ? resolve(this.componentRegistry[nodeId])
-                : rejectCreateComponentsMap(new Error(event.detail));
+                : reject(new Error(event.detail));
 
             const eventType = this.generateComponentEventType(nodeId, type);
             document.addEventListener(eventType, listenerHandler as EventListener, { once: true });

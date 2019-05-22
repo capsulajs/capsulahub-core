@@ -1,5 +1,6 @@
 const path = require('path');
 const WrapperPlugin = require('wrapper-webpack-plugin');
+const TsDeclarationWebpackPlugin = require('ts-declaration-webpack-plugin');
 
 module.exports = {
   entry: './src/index.ts',
@@ -18,19 +19,18 @@ module.exports = {
         loader: 'ts-loader',
         options: {
           configFile: '../tsconfig.json',
-          compilerOptions: { declaration: false },
         },
       },
       { parser: { import: false } },
     ],
   },
   plugins: [
-    // strict mode for the whole bundle
     new WrapperPlugin({
-      test: /\.js$/, // only wrap output of bundle files with '.js' extension
+      test: /\.js$/,
       header: 'var publicExports = {}; (function () {\n',
       footer: '})();export default publicExports',
     }),
+    new TsDeclarationWebpackPlugin(),
   ],
   node: {
     fs: 'empty',

@@ -1,17 +1,4 @@
 {
-  "compilerOptions": {
-    "target": "es2015",
-    "module": "esnext",
-    "lib": ["dom", "es2015"],
-    "declaration": true,
-    "outDir": "./lib",
-    "strict": true,
-    "noUnusedLocals": true,
-    "noUnusedParameters": true,
-    "moduleResolution": "classic",
-    "baseUrl": "./src",
-    "esModuleInterop": true,
-    "jsx": "react"
-  },
-  "include": ["src/**/*", "tests/**/*"]
+  "extends": "../../tsconfig",
+  "include": ["src/**/*"]
 }
