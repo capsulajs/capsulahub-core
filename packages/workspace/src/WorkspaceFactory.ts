@@ -50,6 +50,7 @@ export default class WorkspaceFactory implements IWorkspaceFactory {
           }
 
           const workspace = new Workspace(formattedConfiguration);
+          /// <reference path="node.d.ts"/>
           return bootstrapServices(workspace, formattedConfiguration.services)
             .then(() => {
               return initComponents(workspace, formattedConfiguration.components.layouts, 'layout');

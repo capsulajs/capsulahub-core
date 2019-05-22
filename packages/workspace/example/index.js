@@ -1,10 +1,12 @@
 import '@babel/polyfill';
-import { WorkspaceFactory } from '../es/src';
 
-const workspaceFactory = new WorkspaceFactory();
 let workspace;
-workspaceFactory
-  .createWorkspace({ token: 'localhost:3000/configuration' })
+import('http://localhost:3000/index.js')
+  .then((module) => module.default)
+  .then((WorkspaceFactory) => {
+    const workspaceFactory = new WorkspaceFactory();
+    return workspaceFactory.createWorkspace({ token: 'localhost:3000/configuration' });
+  })
   .then((createdWorkspace) => {
     workspace = createdWorkspace;
   })

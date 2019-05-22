@@ -45,13 +45,14 @@ export const initComponent = (
 export const bootstrapServices = (workspace: IWorkspace, servicesConfig: ServiceConfig[]): Promise<any[]> => {
   return Promise.all(
     servicesConfig.map((serviceConfig) => {
+      /// <reference path="node.d.ts"/>
       return getModuleDynamically(serviceConfig.path).then(
         (bootstrap: (workspace: IWorkspace, service: ServiceConfig) => Promise<object>) =>
           bootstrap(workspace, serviceConfig)
       );
     })
-  ).catch(() => {
-    throw new Error(bootstrapServiceError);
+  ).catch((error) => {
+    throw new Error(`${bootstrapServiceError}:${error.message}`);
   });
 };
 

@@ -65,6 +65,8 @@ export class Workspace implements IWorkspace {
 
   public registerService(registerServiceRequest: RegisterServiceRequest): Promise<void> {
     return new Promise((resolve, reject) => {
+      console.log('registerService', registerServiceRequest);
+
       if (!validateRegisterServiceRequest(registerServiceRequest)) {
         this.emitServiceRegistrationFailedEvent(registerServiceRequest.serviceName, invalidRegisterServiceRequestError);
         return reject(new Error(invalidRegisterServiceRequestError));

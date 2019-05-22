@@ -24,7 +24,7 @@ const bootstrap = (WORKSPACE: any, SERVICE_CONFIG: any) => {
     };
 
     WORKSPACE.registerService(registerServiceData);
-    resolve(serviceA);
+    resolve();
   });
 };
 

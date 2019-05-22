@@ -10,7 +10,9 @@ const bootstrap = (): Promise<object> => {
         });
       }
     }
-    resolve(new ServiceC());
+    const serviceC = new ServiceC();
+
+    resolve();
   });
 };
 
