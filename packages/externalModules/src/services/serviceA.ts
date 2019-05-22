@@ -16,10 +16,10 @@ const bootstrap = (WORKSPACE: any, SERVICE_CONFIG: any) => {
       }
     }
 
-    const serviceA = new ServiceA(SERVICE_CONFIG.config.message);
+    const serviceA = new ServiceA(SERVICE_CONFIG.message);
 
     const registerServiceData = {
-      serviceName: SERVICE_CONFIG.serviceName,
+      serviceName: 'ServiceA',
       reference: serviceA,
     };
 

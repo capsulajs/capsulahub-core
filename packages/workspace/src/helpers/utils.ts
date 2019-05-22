@@ -25,7 +25,7 @@ export const initComponent = (
   const componentData = componentsConfig[nodeId];
 
   return getModuleDynamically(componentData.path)
-    .then((bootstrap: any) => bootstrap(workspace, componentData))
+    .then((bootstrap: any) => bootstrap(workspace, componentData.config))
     .then((WebComponent) => {
       return bootstrapComponent(componentData.componentName, WebComponent);
     })
@@ -46,8 +46,8 @@ export const bootstrapServices = (workspace: IWorkspace, servicesConfig: Service
   return Promise.all(
     servicesConfig.map((serviceConfig) => {
       return getModuleDynamically(serviceConfig.path).then(
-        (bootstrap: (workspace: IWorkspace, service: ServiceConfig) => Promise<object>) =>
-          bootstrap(workspace, serviceConfig)
+        (bootstrap: (workspace: IWorkspace, service: object) => Promise<void>) =>
+          bootstrap(workspace, serviceConfig.config)
       );
     })
   ).catch(() => {
@@ -62,7 +62,7 @@ export const initComponents = (
 ) => {
   return Promise.all(
     Object.keys(componentsConfig).map((nodeId: string) => initComponent(nodeId, componentsConfig, workspace, type))
-  ).catch((error) => {
+  ).catch(() => {
     throw new Error(bootstrapComponentError);
   });
 };

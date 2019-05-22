@@ -2,7 +2,7 @@
 import { timer } from 'rxjs';
 import { map } from 'rxjs/operators';
 
-const bootstrap = (WORKSPACE: any, SERVICE_CONFIG: any) => {
+const bootstrap = (WORKSPACE: any) => {
   return new Promise(async (resolve) => {
     class ServiceB {
       public getRandomNumbers() {
@@ -13,7 +13,7 @@ const bootstrap = (WORKSPACE: any, SERVICE_CONFIG: any) => {
     const serviceB = new ServiceB();
 
     const registerServiceData = {
-      serviceName: SERVICE_CONFIG.serviceName,
+      serviceName: 'ServiceB',
       reference: serviceB,
     };
     WORKSPACE.registerService(registerServiceData);
