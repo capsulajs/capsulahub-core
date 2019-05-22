@@ -1,1 +1,3 @@
-export default type Provider = 'remote' | 'local' | 'file' | 'http';
+type Provider = 'remote' | 'local' | 'file' | 'http';
+
+export default Provider;
