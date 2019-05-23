@@ -11,7 +11,7 @@
     "build": "yarn build:dist && yarn build:lib",
     "build:dist": "rimraf dist && parcel build src/index.ts --no-cache",
     "build:lib": "rimraf lib && tsc",
-    "clean": "rimraf lib dist dist-example",
+    "clean": "rimraf lib dist dist-example node_modules",
     "doc": "typedoc ./src/api --out ./doc --mode file --hideGenerator",
     "test": "NODE_ENV=test jest --maxWorkers=4 --env=jsdom --passWithNoTests",
     "lint": "yarn lint:md && yarn lint:ts",
@@ -47,10 +47,6 @@
     "react-dom": "^16.8.6"
   },
   "devDependencies": {
-    "@types/jsdom": "^12.2.3",
-    "@types/node": "^12.0.2",
-    "cypress": "^3.3.0",
-    "parcel-bundler": "^1.12.3",
     "parcel-plugin-wrapper": "^0.2.2"
   }
 }

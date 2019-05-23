@@ -10,7 +10,7 @@
   "scripts": {
     "build": "yarn build:lib",
     "build:lib": "rimraf lib && tsc",
-    "clean": "rimraf lib",
+    "clean": "rimraf lib node_modules",
     "doc": "typedoc ./src/api --out ./doc --mode file --hideGenerator",
     "test": "jest --maxWorkers=4 --env=jsdom --passWithNoTests",
     "lint": "yarn lint:md && yarn lint:ts",

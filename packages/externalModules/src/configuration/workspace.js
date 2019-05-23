@@ -3,7 +3,7 @@ module.exports = {
   services: [
     {
       serviceName: 'ServiceA',
-      path: 'http://localhost:3000/services/serviceA.js',
+      path: 'http://localhost:3000/serviceA.js',
       definition: {
         serviceName: 'ServiceA',
         methods: {
@@ -14,7 +14,7 @@ module.exports = {
     },
     {
       serviceName: 'ServiceB',
-      path: 'http://localhost:3000/services/serviceB.js',
+      path: 'http://localhost:3000/serviceB.js',
       definition: {
         serviceName: 'ServiceB',
         methods: {
@@ -29,7 +29,7 @@ module.exports = {
       grid: {
         componentName: 'web-grid',
         nodeId: 'root',
-        path: 'http://localhost:3000/components/Grid.js',
+        path: 'http://localhost:3000/Grid.js',
         config: { title: 'Base Grid' },
       },
     },
@@ -37,7 +37,7 @@ module.exports = {
       'request-form': {
         componentName: 'web-request-form',
         nodeId: 'request-form',
-        path: 'http://localhost:3000/components/RequestForm.js',
+        path: 'http://localhost:3000/RequestForm.js',
         config: { title: 'Base Request Form' },
       },
     },
