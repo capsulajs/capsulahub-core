@@ -1,7 +1,7 @@
 {
-  "name": "@capsulajs/capsulahub-core-configuration",
+  "name": "@capsulajs/capsulahub-extension-configuration",
   "version": "0.0.1",
-  "description": "A configuration package for CapsulaHub core services",
+  "description": "Configuration service extension for CapsulaHub",
   "main": "lib/index.js",
   "license": "MIT",
   "private": false,
@@ -36,6 +36,7 @@
     ]
   },
   "dependencies": {
+    "@capsulajs/capsulahub-core-workspace": ">=0.0.1",
     "@capsulajs/capsulajs-configuration-service": "^0.1.6",
     "@capsulajs/capsulajs-transport-providers": "^0.1.1"
   },
