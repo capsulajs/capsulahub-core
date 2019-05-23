@@ -9,11 +9,12 @@
   "private": true,
   "scripts": {
     "bootstrap": "lerna bootstrap --npm-client=yarn",
-    "build": "lerna run build",
+    "build": "lerna run build && node ./afterBuild.js",
     "lint": "lerna run lint",
     "start": "lerna run start",
     "test": "lerna run test --concurrency=1",
-    "deploy": "lerna run deploy"
+    "deploy": "lerna run deploy",
+    "clean": "lerna run clean"
   },
   "husky": {
     "hooks": {
