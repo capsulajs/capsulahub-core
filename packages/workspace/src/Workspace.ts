@@ -1,18 +1,7 @@
 import uuidv4 from 'uuid/v4';
-import { Api as ScalecubeApi, Microservices } from '@scalecube/scalecube-microservice';
-
-import {
-  ComponentsMap,
-  ComponentsRequest,
-  Component,
-  ServicesMap,
-  ServicesRequest,
-  Workspace as IWorkspace,
-  WorkspaceConfig,
-  RegisterServiceRequest,
-  ComponentConfig,
-} from './api';
-import { ComponentRegistry, EventListeners, ServiceRegistry } from './helpers/types';
+import { Api as SCALECUBE_API, Microservices } from '@scalecube/scalecube-microservice';
+import { API } from '.';
+import * as INTERNAL_TYPES from './helpers/types';
 import {
   componentAlreadyRegisteredError,
   componentsRequestInvalidError,
@@ -33,27 +22,27 @@ const eventsTypes = {
   registrationFailed: 'registration_failed',
 };
 
-export class Workspace implements IWorkspace {
-  private configuration: WorkspaceConfig;
-  private serviceRegistry: ServiceRegistry;
-  private componentRegistry: ComponentRegistry;
-  private microservice?: ScalecubeApi.Microservice;
-  private servicesMap: ServicesMap;
-  private componentsMap: ComponentsMap;
-  private listeners: EventListeners;
+export class Workspace implements API.Workspace {
+  private configuration: API.WorkspaceConfig;
+  private serviceRegistry: INTERNAL_TYPES.ServiceRegistry;
+  private componentRegistry: INTERNAL_TYPES.ComponentRegistry;
+  private microservice?: SCALECUBE_API.Microservice;
+  private servicesMap: API.ServicesMap;
+  private componentsMap: API.ComponentsMap;
+  private listeners: INTERNAL_TYPES.EventListeners;
   private id: string;
 
-  constructor(configuration: WorkspaceConfig) {
+  constructor(configuration: API.WorkspaceConfig) {
     this.id = uuidv4();
     this.configuration = configuration;
-    this.serviceRegistry = {} as ServiceRegistry;
-    this.componentRegistry = {} as ComponentRegistry;
+    this.serviceRegistry = {} as INTERNAL_TYPES.ServiceRegistry;
+    this.componentRegistry = {} as INTERNAL_TYPES.ComponentRegistry;
     this.listeners = {};
     this.servicesMap = this.createServiceMap();
     this.componentsMap = this.createComponentMap();
   }
 
-  public services(servicesRequest: ServicesRequest): Promise<ServicesMap> {
+  public services(servicesRequest: API.ServicesRequest): Promise<API.ServicesMap> {
     return new Promise((resolve, reject) => {
       if (!servicesRequest) {
         return reject(new Error(servicesRequestInvalidError));
@@ -62,7 +51,7 @@ export class Workspace implements IWorkspace {
     });
   }
 
-  public components(componentsRequest: ComponentsRequest): Promise<ComponentsMap> {
+  public components(componentsRequest: API.ComponentsRequest): Promise<API.ComponentsMap> {
     return new Promise((resolve, reject) => {
       if (!componentsRequest) {
         return reject(new Error(componentsRequestInvalidError));
@@ -71,7 +60,7 @@ export class Workspace implements IWorkspace {
     });
   }
 
-  public registerService(registerServiceRequest: RegisterServiceRequest): Promise<void> {
+  public registerService(registerServiceRequest: API.RegisterServiceRequest): Promise<void> {
     return new Promise((resolve, reject) => {
       if (!validateRegisterServiceRequest(registerServiceRequest)) {
         this.emitServiceRegistrationFailedEvent(registerServiceRequest.serviceName, invalidRegisterServiceRequestError);
@@ -117,7 +106,7 @@ export class Workspace implements IWorkspace {
     });
   }
 
-  public registerComponent(registerComponentRequest: Component): Promise<void> {
+  public registerComponent(registerComponentRequest: API.Component): Promise<void> {
     return new Promise((resolve, reject) => {
       if (!validateComponentInConfig(this.configuration, registerComponentRequest)) {
         reject(new Error(componentToRegisterMissingInConfigurationError));
@@ -190,7 +179,7 @@ export class Workspace implements IWorkspace {
 
   private createComponentMap() {
     const componentsMap = { ...(this.componentsMap || {}) };
-    const fulfillComponentsMap = (componentsConfig: { [nodeId: string]: ComponentConfig }) => {
+    const fulfillComponentsMap = (componentsConfig: { [nodeId: string]: API.ComponentConfig }) => {
       Object.keys(componentsConfig).forEach((nodeId) => {
         componentsMap[nodeId] = new Promise((resolve, reject) => {
           const observeEvent = (type: string) => {

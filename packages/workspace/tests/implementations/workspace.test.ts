@@ -134,7 +134,7 @@ describe('Workspace tests', () => {
     mockConfigurationService(configurationServiceMock);
     mockGetModuleDynamically([
       Promise.reject('Module can not be found'),
-      Promise.resolve((): any => Promise.resolve({})),
+      Promise.resolve(serviceBBootstrap),
       Promise.resolve(gridComponentBootstrap),
       Promise.resolve(requestFormComponentBootstrap),
     ]);

@@ -1,3 +1,5 @@
+import CustomWebComponent from './CustomWebComponent';
+import ModuleBootstrap from './ModuleBootstrap';
 import RegisterComponent from './RegisterComponent';
 import ComponentConfig from './ComponentConfig';
 import ServiceConfig from './ServiceConfig';
@@ -16,6 +18,8 @@ import CreateWorkspaceRequest from './CreateWorkspaceRequest';
 import Workspace from './Workspace';
 
 export {
+  CustomWebComponent,
+  ModuleBootstrap,
   RegisterComponent,
   ComponentConfig,
   ServiceConfig,
