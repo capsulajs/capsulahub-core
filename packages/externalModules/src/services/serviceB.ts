@@ -1,4 +1,3 @@
-// import '@babel/polyfill';
 import { timer } from 'rxjs';
 import { map } from 'rxjs/operators';
 

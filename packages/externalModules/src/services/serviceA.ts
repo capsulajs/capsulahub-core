@@ -1,4 +1,8 @@
-const bootstrap = (WORKSPACE: any, SERVICE_CONFIG: any) => {
+interface ServiceConfig {
+  message: string;
+}
+
+const bootstrap = (WORKSPACE: any, SERVICE_CONFIG: ServiceConfig) => {
   return new Promise(async (resolve) => {
     class ServiceA {
       private message: string;
