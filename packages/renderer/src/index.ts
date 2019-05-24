@@ -1,5 +1,5 @@
 import bootstrap from './RendererService';
-import * as api from './api';
+import * as API from './api';
 
 // @ts-ignore
 if (typeof publicExports !== 'undefined') {
@@ -7,5 +7,5 @@ if (typeof publicExports !== 'undefined') {
   publicExports = bootstrap;
 }
 
-export { api };
+export { API };
 export default bootstrap;

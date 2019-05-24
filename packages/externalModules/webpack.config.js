@@ -4,7 +4,7 @@ const baseConfig = require('../../base-webpack.config');
 module.exports = {
   ...baseConfig,
   entry: {
-    serviceA: './src/services/serviceA.ts',
+    'services/serviceA': './src/services/serviceA.ts',
     serviceB: './src/services/serviceB.ts',
     Grid: './src/components/Grid.tsx',
     RequestForm: './src/components/RequestForm.tsx',
