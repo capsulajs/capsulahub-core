@@ -1,7 +1,7 @@
 const WrapperPlugin = require('wrapper-webpack-plugin');
 
 module.exports = {
-  mode: 'development',
+  mode: 'production',
   resolve: {
     extensions: ['.ts', '.tsx', '.js', '.json'],
   },
