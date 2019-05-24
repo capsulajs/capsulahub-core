@@ -1,13 +1,11 @@
 import bootstrap from './RendererService';
-import * as apiMap from './api';
+import * as API from './api';
 
 // @ts-ignore
 if (typeof publicExports !== 'undefined') {
   // @ts-ignore
-  API = apiMap;
-  // @ts-ignore
   publicExports = bootstrap;
 }
 
-export const api = apiMap;
+export { API };
 export default bootstrap;

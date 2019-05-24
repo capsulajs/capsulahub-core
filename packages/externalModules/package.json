@@ -2,29 +2,23 @@
   "name": "@capsulajs/capsulahub-core-external-modules",
   "version": "0.0.1",
   "description": "An external modules package for CapsulaHub core services",
-  "main": "public/index.js",
-  "module": "public/index.js",
+  "main": "lib/index.js",
+  "module": "lib/index.js",
+  "types": "lib/index.d.ts",
   "license": "MIT",
   "private": false,
   "scripts": {
     "start": "node server.js",
-    "build:serviceA": "parcel build src/services/serviceA.ts --out-dir public/services --no-source-maps --no-cache --no-minify",
-    "build:serviceB": "parcel build src/services/serviceB.ts --out-dir public/services --no-source-maps --no-cache --no-minify",
-    "build:Grid": "parcel build src/components/Grid.tsx --out-dir public/components --no-source-maps --no-cache",
-    "build:RequestForm": "parcel build src/components/RequestForm.tsx --out-dir public/components --no-source-maps --no-cache",
-    "build": "yarn build:serviceA && yarn build:serviceB && yarn build:Grid && yarn build:RequestForm",
+    "build": "rimraf public && webpack",
     "lint": "yarn lint:md && yarn lint:ts",
     "lint:md": "remark . --rc-path ../../.remarkrc --output",
     "lint:ts": "tslint 'src/**/*.{ts,tsx}' --fix",
-    "prettier": "prettier --write 'src/**/*.{ts,tsx}'"
+    "prettier": "prettier --write 'src/**/*.{ts,tsx}'",
+    "clean": "rimraf public node_modules"
   },
   "dependencies": {
     "@babel/polyfill": "^7.4.4",
     "express": "^4.16.4",
-    "parcel-bundler": "^1.12.3"
-  },
-  "devDependencies": {
-    "parcel-plugin-wrapper": "^0.2.2",
-    "typescript": "^3.4.5"
+    "rxjs": "^6.5.2"
   }
 }

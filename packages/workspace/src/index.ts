@@ -1,5 +1,5 @@
-import * as api from './api';
 import WorkspaceFactory from './WorkspaceFactory';
+import * as API from './api';
 
 // @ts-ignore
 if (typeof publicExports !== 'undefined') {
@@ -7,4 +7,5 @@ if (typeof publicExports !== 'undefined') {
   publicExports = WorkspaceFactory;
 }
 
-export { api, WorkspaceFactory };
+export { API };
+export default WorkspaceFactory;

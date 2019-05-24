@@ -1,4 +1,4 @@
-import { Component } from '.';
+import { Component } from './index';
 
 type RegisterComponent = (registerComponent: Component) => Promise<void>;
 

@@ -1,4 +1,4 @@
-import { CreateWorkspaceRequest, Workspace } from '.';
+import { CreateWorkspaceRequest, Workspace } from './index';
 
 export default interface WorkspaceFactory {
   /**

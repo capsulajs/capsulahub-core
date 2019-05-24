@@ -1,3 +1,3 @@
-import { RegisterServiceRequest } from '.';
+import { RegisterServiceRequest } from './index';
 
 export default interface RegisteredService extends RegisterServiceRequest {}

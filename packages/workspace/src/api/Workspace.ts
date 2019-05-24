@@ -1,4 +1,4 @@
-import { ServicesMap, ServicesRequest, RegisterServiceRequest, ComponentsMap, ComponentsRequest } from '.';
+import { ServicesMap, ServicesRequest, RegisterServiceRequest, ComponentsMap, ComponentsRequest } from './index';
 
 /**
  * Workspace is the core service of Capsula Hub, it is responsible for :

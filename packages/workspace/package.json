@@ -2,40 +2,35 @@
   "name": "@capsulajs/capsulahub-core-workspace",
   "version": "0.0.1",
   "description": "A workspace package for CapsulaHub core services",
-  "main": "lib/index.js",
+  "main": "dist/index.js",
+  "module": "lib/index.js",
+  "types": "lib/index.d.ts",
   "license": "MIT",
   "private": false,
   "scripts": {
-    "build": "yarn build:dist && yarn build:lib",
+    "build": "yarn build:lib && yarn build:dist",
     "build:dist": "rimraf dist && webpack",
-    "build:lib": "rimraf lib && tsc --outDir lib",
-    "clean": "rimraf lib dist",
-    "doc": "typedoc ./src/api --out ./doc --mode file --hideGenerator",
+    "build:lib": "rimraf lib && tsc",
+    "clean": "rimraf lib dist dist-example node_modules",
+    "doc": "typedoc src/api --out ./doc --mode file --hideGenerator",
     "test": "jest --maxWorkers=4 --env=jsdom --config ../../jest.config.js --passWithNoTests",
     "lint": "yarn lint:md && yarn lint:ts",
     "lint:md": "remark . --rc-path ../../.remarkrc --output",
     "lint:ts": "tslint '{src,tests}/**/*.{ts,tsx}' --fix",
     "prettier": "prettier --write '{src,tests}/**/*.{ts,tsx}'",
-    "start-example": "parcel example/index.html --out-dir=dist-example --no-cache",
+    "start-example": "rimraf dist-example && parcel example/index.html --out-dir=dist-example --no-cache",
     "cypress:debug": "cypress open",
     "cypress:run": "cypress run",
     "deploy": "SERVICE=$(echo $npm_package_name | cut -d '/' -f 2) && ../../scripts/deploy.sh $SERVICE"
   },
   "dependencies": {
+    "@babel/polyfill": "^7.4.4",
+    "@capsulajs/capsulahub-core-external-modules": "^0.0.1",
     "@capsulajs/capsulajs-configuration-service": "^0.1.6",
     "@scalecube/scalecube-microservice": "0.1.3-alpha.10",
     "uuid": "^3.3.2"
   },
   "devDependencies": {
-    "@babel/core": "^7.4.5",
-    "@babel/preset-env": "^7.4.5",
-    "@capsulajs/capsulahub-core-external-modules": "^0.0.1",
-    "cypress": "^3.3.0",
-    "parcel-bundler": "^1.12.3",
-    "rxjs": "^6.5.2",
-    "ts-loader": "^6.0.1",
-    "webpack": "^4.32.0",
-    "webpack-cli": "^3.3.2",
-    "wrapper-webpack-plugin": "^2.1.0"
+    "rxjs": "^6.5.2"
   }
 }
