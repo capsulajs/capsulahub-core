@@ -9,7 +9,7 @@
   "private": false,
   "scripts": {
     "build": "yarn build:dist && yarn build:lib",
-    "build:dist": "rimraf dist && parcel build src/index.ts --no-cache",
+    "build:dist": "rimraf dist && webpack",
     "build:lib": "rimraf lib && tsc",
     "clean": "rimraf lib dist dist-example node_modules",
     "doc": "typedoc ./src/api --out ./doc --mode file --hideGenerator",
@@ -42,11 +42,8 @@
   },
   "dependencies": {
     "@babel/polyfill": "^7.4.4",
-    "@capsulajs/capsulahub-core-workspace": ">=0.0.1",
+    "@capsulajs/capsulahub-core-workspace": "*",
     "react": "^16.8.6",
     "react-dom": "^16.8.6"
-  },
-  "devDependencies": {
-    "parcel-plugin-wrapper": "^0.2.2"
   }
 }

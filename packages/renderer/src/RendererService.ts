@@ -1,13 +1,9 @@
 import '@babel/polyfill';
-import { Workspace } from '@capsulajs/capsulahub-core-workspace/src/api';
-import { Component, ComponentType } from '@capsulajs/capsulahub-core-workspace/src/api';
-import RendererConfig from './api/RendererConfig';
+import { API } from '@capsulajs/capsulahub-core-workspace';
 import { Renderer, RenderItemRequest } from './api';
-// @ts-ignore
 import { callRenderLayoutsBefore, invalidNodeId, notFoundComponent, notFoundNode } from './helpers/const';
 
-// @ts-ignore
-export default (WORKSPACE: Workspace, SERVICE_COMNFIG: RendererConfig) => {
+export default (WORKSPACE: API.Workspace) => {
   return new Promise(async (resolve) => {
     class RendererService implements Renderer {
       private renderedLayouts: boolean = false;
@@ -15,7 +11,7 @@ export default (WORKSPACE: Workspace, SERVICE_COMNFIG: RendererConfig) => {
       public async renderLayouts() {
         this.renderedLayouts = true;
 
-        (await this.components('layout')).forEach((component: Component) => {
+        (await this.components('layout')).forEach((component: API.Component) => {
           this.renderComponent(component);
         });
       }
@@ -25,7 +21,7 @@ export default (WORKSPACE: Workspace, SERVICE_COMNFIG: RendererConfig) => {
           throw new Error(callRenderLayoutsBefore);
         }
 
-        (await this.components('item')).forEach((component: Component) => {
+        (await this.components('item')).forEach((component: API.Component) => {
           this.renderComponent(component);
         });
       }
@@ -35,7 +31,7 @@ export default (WORKSPACE: Workspace, SERVICE_COMNFIG: RendererConfig) => {
           throw new Error(invalidNodeId);
         }
 
-        const component = (await this.components()).find((c: Component) => c.nodeId === renderItemRequest.nodeId);
+        const component = (await this.components()).find((c: API.Component) => c.nodeId === renderItemRequest.nodeId);
         if (!component) {
           throw new Error(notFoundComponent);
         }
@@ -43,7 +39,7 @@ export default (WORKSPACE: Workspace, SERVICE_COMNFIG: RendererConfig) => {
         this.renderComponent(component);
       }
 
-      private renderComponent(component: Component) {
+      private renderComponent(component: API.Component) {
         const node = document && document.getElementById(component.nodeId);
         if (!node) {
           throw new Error(notFoundNode);
@@ -52,10 +48,10 @@ export default (WORKSPACE: Workspace, SERVICE_COMNFIG: RendererConfig) => {
         node.appendChild(component.reference);
       }
 
-      private async components(type?: ComponentType) {
+      private async components(type?: API.ComponentType) {
         const componentsMap = await WORKSPACE.components({});
         const components = await Promise.all(Object.keys(componentsMap).map((key) => componentsMap[key]));
-        return type ? components.filter((component: Component) => component.type === type) : components;
+        return type ? components.filter((component: API.Component) => component.type === type) : components;
       }
     }
 

@@ -1,6 +1,5 @@
 import bootstrap from '../../src';
 import Renderer from '../../src/api/Renderer';
-// @ts-ignore
 import { callRenderLayoutsBefore, invalidNodeId, notFoundComponent, notFoundNode } from '../../src/helpers/const';
 
 let renderService: Renderer;
