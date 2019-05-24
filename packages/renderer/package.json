@@ -18,7 +18,9 @@
     "lint:md": "remark . --rc-path ../../.remarkrc --output",
     "lint:ts": "tslint '{src,tests}/**/*.{ts,tsx}' --fix",
     "prettier": "prettier --write '{src,tests}/**/*.{ts,tsx}'",
-    "start-example": "rimraf dist-example && NODE_ENV=test parcel example/index.html --out-dir=dist-example --no-cache",
+    "start-example-server": "http-server './example' --p 1234 --cors",
+    "build-example": "rimraf example/dist && webpack --config webpack.config-example.js",
+    "start-example": "yarn build-example && yarn start-example-server",
     "cypress:debug": "cypress open",
     "cypress:run": "cypress run"
   },

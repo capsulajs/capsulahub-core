@@ -1,7 +1,9 @@
 import '@babel/polyfill';
+import { API } from '../lib';
 
-let workspace;
-import('http://localhost:3000/index.js')
+let workspace: API.Workspace;
+// @ts-ignore
+import('http://localhost:7777/dist/index.js')
   .then((module) => module.default)
   .then((WorkspaceFactory) => {
     const workspaceFactory = new WorkspaceFactory();
@@ -11,7 +13,7 @@ import('http://localhost:3000/index.js')
     workspace = createdWorkspace;
   })
   .then(() => {
-    document.getElementById('root').innerHTML = '<web-grid></web-grid><web-request-form></web-request-form>';
+    document.getElementById('root')!.innerHTML = '<web-grid></web-grid><web-request-form></web-request-form>';
   })
   .then(() => {
     return workspace.services({});
@@ -26,5 +28,5 @@ import('http://localhost:3000/index.js')
   .then((greeting) => {
     const serviceResEl = document.createElement('h2');
     serviceResEl.innerText = greeting;
-    document.getElementById('request-form').appendChild(serviceResEl);
+    document.getElementById('request-form')!.appendChild(serviceResEl);
   });
