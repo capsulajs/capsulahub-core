@@ -1,19 +1,26 @@
-import { RegisteredService, Component, Workspace } from '../api';
+import { API } from '..';
 
 export interface ServiceRegistry {
-  [serviceName: string]: RegisteredService;
+  [serviceName: string]: API.RegisteredService;
 }
 
 export interface ComponentRegistry {
-  [nodeId: string]: Component;
+  [nodeId: string]: API.Component;
 }
 
-export interface InternalWorkspace extends Workspace {
-  registerComponent(registerComponentRequest: Component): Promise<void>;
+export interface Workspace extends API.Workspace {
+  registerComponent(registerComponentRequest: API.Component): Promise<void>;
 }
 
 type EventHandler = (event: Event) => any;
 
 export interface EventListeners {
   [eventType: string]: EventHandler[];
+}
+
+type CustomWebComponentClass = new () => API.CustomWebComponent;
+export { CustomWebComponentClass };
+
+export interface ComponentsConfig {
+  [nodeId: string]: API.ComponentConfig;
 }

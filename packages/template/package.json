@@ -9,8 +9,8 @@
   "private": false,
   "scripts": {
     "build": "yarn build:lib && yarn build:dist",
-    "build:lib": "rimraf dist && webpack",
-    "build:dist": "rimraf lib && tsc",
+    "build:dist": "rimraf dist && PACKAGE_NAME=$(echo \"${PWD##*/}\") webpack",
+    "build:lib": "rimraf lib && tsc",
     "clean": "rimraf lib dist node_modules",
     "deploy": "SERVICE=$(echo $npm_package_name | cut -d '/' -f 2) && ../../scripts/deploy.sh $SERVICE",
     "doc": "typedoc ./src/api --out ./doc --mode file --hideGenerator",

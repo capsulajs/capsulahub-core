@@ -1,12 +1,5 @@
-const path = require('path');
-const baseConfig = require('../../base-webpack.config');
+const baseConfig = require('../../base-webpack.config-example');
 
 module.exports = {
   ...baseConfig,
-  entry: './example/index.ts',
-  output: {
-    path: path.resolve(__dirname, 'example/dist'),
-    filename: 'index.js',
-  },
-  plugins: [],
 };

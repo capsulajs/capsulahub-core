@@ -1,10 +1,5 @@
 import { Entity } from '@capsulajs/capsulajs-configuration-service/lib/api/Entity';
-import {
-  WorkspaceFactory as IWorkspaceFactory,
-  CreateWorkspaceRequest,
-  WorkspaceConfig,
-  Workspace as IWorkspace,
-} from './api';
+import { API } from './';
 import { Workspace } from './Workspace';
 import { bootstrapServices, getConfigurationService, initComponents } from './helpers/utils';
 import {
@@ -15,8 +10,8 @@ import {
 } from './helpers/const';
 import { validateCreateWorkspaceRequest, validateWorkspaceConfig } from './helpers/validators';
 
-export default class WorkspaceFactory implements IWorkspaceFactory {
-  public createWorkspace(createWorkspaceRequest: CreateWorkspaceRequest): Promise<IWorkspace> {
+export default class WorkspaceFactory implements API.WorkspaceFactory {
+  public createWorkspace(createWorkspaceRequest: API.CreateWorkspaceRequest): Promise<API.Workspace> {
     return new Promise((resolve, reject) => {
       // createWorkspaceRequest validation
       if (!validateCreateWorkspaceRequest(createWorkspaceRequest)) {
@@ -34,16 +29,16 @@ export default class WorkspaceFactory implements IWorkspaceFactory {
       // Getting configuration and initializing Workspace
       return configurationService
         .entries({ repository: configRepositoryName })
-        .then((configuration: { entries: any[] }) => {
+        .then((configuration: { entries: Entity[] }) => {
           // Preparing and validating formattedConfiguration
           const formattedConfiguration = configuration.entries.reduce(
-            (acc: WorkspaceConfig, configEntity: Entity) => {
+            (acc: API.WorkspaceConfig, configEntity: Entity) => {
               return {
                 ...acc,
                 [configEntity.key]: configEntity.value,
               };
             },
-            {} as WorkspaceConfig
+            {} as API.WorkspaceConfig
           );
           if (!validateWorkspaceConfig(formattedConfiguration)) {
             return reject(new Error(configWrongFormatError));

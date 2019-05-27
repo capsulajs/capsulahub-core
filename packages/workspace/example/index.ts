@@ -19,7 +19,7 @@ import('http://localhost:7777/dist/index.js')
     return workspace.services({});
   })
   .then((services) => {
-    console.log('services', services);
+    console.info('services', services);
     return services.ServiceA;
   })
   .then((serviceA) => {
