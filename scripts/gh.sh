@@ -7,6 +7,7 @@ link="[**S3**](${URL}index.js)"
 
 commentAlreadyExists() {
     comments=$(curl -s -u "$GH_USER:$GH_ACCESS_TOKEN" "$COMMENTS_URL" | jq -r '.[].body')
+    echo ${comments}
     [[ "$comments" == *"$1"* ]]
     return $?
 }
