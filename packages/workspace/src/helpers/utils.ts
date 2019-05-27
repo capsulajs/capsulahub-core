@@ -1,7 +1,7 @@
 import { ConfigurationService, ConfigurationServiceHttp } from '@capsulajs/capsulajs-configuration-service';
 import { API } from '..';
 import * as INTERNAL_TYPES from './types';
-import { bootstrapComponentError, bootstrapServiceError } from './const';
+import { getBootstrapComponentError, getBootstrapServiceError } from './const';
 
 export const getConfigurationService = (token: string): ConfigurationService<API.WorkspaceConfig> =>
   new ConfigurationServiceHttp(token);
@@ -37,9 +37,6 @@ export const initComponent = (
         componentName: componentData.componentName,
         reference: webComponent,
       });
-    })
-    .catch((error) => {
-      throw new Error(error);
     });
 };
 
@@ -50,8 +47,8 @@ export const bootstrapServices = (workspace: API.Workspace, servicesConfig: API.
         bootstrap(workspace, serviceConfig.config)
       );
     })
-  ).catch(() => {
-    throw new Error(bootstrapServiceError);
+  ).catch((error) => {
+    throw new Error(getBootstrapServiceError(error));
   });
 };
 
@@ -62,7 +59,7 @@ export const initComponents = (
 ) => {
   return Promise.all(
     Object.keys(componentsConfig).map((nodeId: string) => initComponent(nodeId, componentsConfig, workspace, type))
-  ).catch(() => {
-    throw new Error(bootstrapComponentError);
+  ).catch((error) => {
+    throw new Error(getBootstrapComponentError(error));
   });
 };
