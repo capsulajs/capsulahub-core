@@ -11,6 +11,7 @@ module.exports = {
     'services/MethodSelector': './src/services/MethodSelector.ts',
     'services/Orchestrator': './src/services/Orchestrator.ts',
     'components/Logger': './src/components/Logger.tsx',
+    'components/EnvDropdown': './src/components/EnvDropdown.tsx',
     'components/Catalog': './src/components/Catalog.tsx',
     'components/Grid': './src/components/Grid.tsx',
     'components/RequestForm': './src/components/RequestForm.tsx',

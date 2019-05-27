@@ -35,7 +35,7 @@ const bootstrap = (WORKSPACE: any) => {
                   map(
                     (response): LoggerEvent => ({
                       request: {},
-                      response,
+                      data: response,
                       correlationId: 'EnvSelectorService',
                       type: 'response',
                       serviceName: 'EnvSelectorService',
@@ -48,7 +48,7 @@ const bootstrap = (WORKSPACE: any) => {
                   map(
                     (response): LoggerEvent => ({
                       request: {},
-                      response,
+                      data: response,
                       correlationId: 'EnvSelectorService',
                       type: 'response',
                       serviceName: 'EnvSelectorService',

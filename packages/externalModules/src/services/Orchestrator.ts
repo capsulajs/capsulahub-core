@@ -14,11 +14,9 @@ const bootstrap = (WORKSPACE: any) => {
         .pipe(toArray())
         .subscribe(async (envs: any) => {
           await envSelector.proxy.input({ data: from([envs]) });
-          envSelector.proxy.select({ key: { envKey: 'develop' } });
         });
 
       envSelector.proxy.selected$({}).subscribe((item: any) => {
-        console.log('selected$');
         if (item && Object.keys(item).length) {
           const methods: any = []; // define interface
           item.env.services.forEach((service) => {

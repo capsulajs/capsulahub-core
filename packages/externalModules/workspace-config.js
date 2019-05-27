@@ -90,6 +90,11 @@ module.exports = {
         path: 'http://localhost:3001/components/Catalog.js',
         config: {},
       },
+      'env-dropdown': {
+        componentName: 'web-env-dropdown',
+        path: 'http://localhost:3001/components/EnvDropdown.js',
+        config: {},
+      },
     },
   },
 };

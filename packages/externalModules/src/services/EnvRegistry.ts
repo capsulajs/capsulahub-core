@@ -12,8 +12,6 @@ const bootstrap = (WORKSPACE: any, CONFIG: any) => {
       console.log('error', error);
     }
 
-    console.log('envRegistry', envRegistry);
-
     const registerServiceData = {
       serviceName: 'EnvRegistryService',
       reference: envRegistry,

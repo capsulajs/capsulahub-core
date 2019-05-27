@@ -5,6 +5,7 @@ const bootstrap = () => {
         super();
         this.innerHTML =
           '<div id="grid"><h1>Hello from CapsulaHub!</h1>' +
+          '<div id="env-dropdown"></div>' +
           '<div id="catalog"></div>' +
           '<div id="request-form"></div>' +
           '<div id="logger"></div>' +

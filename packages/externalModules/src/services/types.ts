@@ -12,5 +12,5 @@ export interface LoggerEvent {
   serviceName: string;
   methodName: string;
   request: any;
-  response: any;
+  data: any;
 }
