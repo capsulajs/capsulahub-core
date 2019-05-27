@@ -3,7 +3,11 @@ const bootstrap = () => {
     class Grid extends HTMLElement {
       constructor() {
         super();
-        this.innerHTML = '<div id="grid"><h1>Hello from Grid!</h1></div>';
+        this.innerHTML =
+          '<div id="grid"><h1>Hello from Grid!</h1>' +
+          '<div id="request-form"></div>' +
+          '<div id="catalog"></div>' +
+          '</div>';
       }
     }
 
