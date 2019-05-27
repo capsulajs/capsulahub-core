@@ -14,7 +14,7 @@ commentAlreadyExists() {
 }
 
 comment(){
-    COMMENT_TEXT="**Travis-CI**<table><tr><td><h2>$SERVICE</h2><br />deployed on $link</td></tr></table>"
+    COMMENT_TEXT="**Travis-CI** just deployed $SERVICE on $link"
     echo "$COMMENT_TEXT"
 
     # Post comment about service if it's not posted yet
