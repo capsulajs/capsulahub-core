@@ -75,11 +75,11 @@ module.exports = {
       },
     },
     items: {
-      // 'request-form': {
-      //   componentName: 'web-request-form',
-      //   path: 'http://localhost:3001/components/RequestForm.js',
-      //   config: { title: 'Base Request Form' },
-      // },
+      'request-form': {
+        componentName: 'web-request-form',
+        path: 'http://localhost:3001/components/RequestForm.js',
+        config: { title: 'Base Request Form' },
+      },
       catalog: {
         componentName: 'web-catalog',
         path: 'http://localhost:3001/components/Catalog.js',

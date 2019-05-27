@@ -10,6 +10,7 @@ const bootstrap = (WORKSPACE: any) => {
   return new Promise(async (resolve) => {
     interface MethodCatalogProps {
       methods: any[];
+      selectMethod: (args: any) => void;
     }
 
     interface MethodCatalogState {
@@ -38,7 +39,10 @@ const bootstrap = (WORKSPACE: any) => {
         );
       }
 
-      private handleOnChange = (selectedMethod) => this.setState({ selectedMethod });
+      private handleOnChange = (selectedMethod) => {
+        this.props.selectMethod(selectedMethod);
+        this.setState({ selectedMethod });
+      };
     }
 
     const mountPoint = 'web-method-catalog';
@@ -63,10 +67,18 @@ const bootstrap = (WORKSPACE: any) => {
           mergeMap((services: any) => from(services.MethodSelectorService)),
           map((serviceData: any) => serviceData.proxy),
           switchMap((methodSelectorService) => {
-            return methodSelectorService.output$({}).pipe(map((methods) => ({ methods })));
+            return methodSelectorService.output$({}).pipe(
+              // @ts-ignore
+              map((methods) => ({
+                methods,
+                selectMethod: (selectedMethod) =>
+                  methodSelectorService.select({ key: { methodName: selectedMethod.name } }),
+              }))
+            );
           }),
           startWith({
             methods: [],
+            selectedMethod: () => {},
           })
         );
       }
