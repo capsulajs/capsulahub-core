@@ -1,8 +1,8 @@
-import { ComponentType } from './index';
+import { ComponentType, CustomWebComponent } from './index';
 
 export default interface Component {
   componentName: string;
   nodeId: string;
-  reference: any;
+  reference: CustomWebComponent;
   type: ComponentType;
 }

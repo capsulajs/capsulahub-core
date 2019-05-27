@@ -1,15 +1,16 @@
 import { ConfigurationService, ConfigurationServiceHttp } from '@capsulajs/capsulajs-configuration-service';
-import { WorkspaceConfig, ComponentConfig, Workspace as IWorkspace, ComponentType } from '../api';
-import ServiceConfig from '../api/ServiceConfig';
+import { API } from '..';
+import * as INTERNAL_TYPES from './types';
 import { bootstrapComponentError, bootstrapServiceError } from './const';
-import { InternalWorkspace } from './types';
 
-export const getConfigurationService = (token: string): ConfigurationService<WorkspaceConfig> =>
+export const getConfigurationService = (token: string): ConfigurationService<API.WorkspaceConfig> =>
   new ConfigurationServiceHttp(token);
 
-export const getModuleDynamically = (path: string): Promise<any> => import(path).then((module) => module.default);
+export const getModuleDynamically = <BootstrapResponse>(
+  path: string
+): Promise<API.ModuleBootstrap<BootstrapResponse>> => import(path).then((module) => module.default);
 
-export const bootstrapComponent = (componentName: string, WebComponent: any) => {
+export const bootstrapComponent = (componentName: string, WebComponent: INTERNAL_TYPES.CustomWebComponentClass) => {
   customElements.define(componentName, WebComponent);
   const webComponent = new WebComponent();
   typeof webComponent.setProps === 'function' && webComponent.setProps();
@@ -18,14 +19,14 @@ export const bootstrapComponent = (componentName: string, WebComponent: any) => 
 
 export const initComponent = (
   nodeId: string,
-  componentsConfig: { [nodeId: string]: ComponentConfig },
-  workspace: InternalWorkspace,
-  type: ComponentType
+  componentsConfig: INTERNAL_TYPES.ComponentsConfig,
+  workspace: INTERNAL_TYPES.Workspace,
+  type: API.ComponentType
 ): Promise<void> => {
   const componentData = componentsConfig[nodeId];
 
-  return getModuleDynamically(componentData.path)
-    .then((bootstrap: any) => bootstrap(workspace, componentData.config))
+  return getModuleDynamically<INTERNAL_TYPES.CustomWebComponentClass>(componentData.path)
+    .then((bootstrap) => bootstrap(workspace, componentData.config))
     .then((WebComponent) => {
       return bootstrapComponent(componentData.componentName, WebComponent);
     })
@@ -42,12 +43,11 @@ export const initComponent = (
     });
 };
 
-export const bootstrapServices = (workspace: IWorkspace, servicesConfig: ServiceConfig[]): Promise<any[]> => {
+export const bootstrapServices = (workspace: API.Workspace, servicesConfig: API.ServiceConfig[]): Promise<any[]> => {
   return Promise.all(
     servicesConfig.map((serviceConfig) => {
-      return getModuleDynamically(serviceConfig.path).then(
-        (bootstrap: (workspace: IWorkspace, service: object) => Promise<void>) =>
-          bootstrap(workspace, serviceConfig.config)
+      return getModuleDynamically<void>(serviceConfig.path).then((bootstrap) =>
+        bootstrap(workspace, serviceConfig.config)
       );
     })
   ).catch(() => {
@@ -56,9 +56,9 @@ export const bootstrapServices = (workspace: IWorkspace, servicesConfig: Service
 };
 
 export const initComponents = (
-  workspace: InternalWorkspace,
-  componentsConfig: { [nodeId: string]: ComponentConfig },
-  type: ComponentType
+  workspace: INTERNAL_TYPES.Workspace,
+  componentsConfig: INTERNAL_TYPES.ComponentsConfig,
+  type: API.ComponentType
 ) => {
   return Promise.all(
     Object.keys(componentsConfig).map((nodeId: string) => initComponent(nodeId, componentsConfig, workspace, type))

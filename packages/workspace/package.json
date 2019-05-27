@@ -9,7 +9,7 @@
   "private": false,
   "scripts": {
     "build": "yarn build:lib && yarn build:dist",
-    "build:dist": "rimraf dist && webpack",
+    "build:dist": "rimraf dist && PACKAGE_NAME=$(echo \"${PWD##*/}\") webpack",
     "build:lib": "rimraf lib && tsc",
     "clean": "rimraf lib dist dist-example node_modules",
     "doc": "typedoc src/api --out ./doc --mode file --hideGenerator",
@@ -20,7 +20,7 @@
     "prettier": "prettier --write '{src,tests}/**/*.{ts,tsx}'",
     "start-example-server": "http-server './example' --p 1234 --cors",
     "start-workspace-cdn-server": "http-server --p 7777 --cors",
-    "build-example": "rimraf example/dist && webpack --config webpack.config-example.js",
+    "build-example": "rimraf example/dist && PACKAGE_NAME=$(echo \"${PWD##*/}\") webpack --config webpack.config-example.js",
     "start-example": "yarn build-example && yarn start-example-server",
     "cypress:debug": "cypress open",
     "cypress:run": "cypress run",
@@ -30,10 +30,10 @@
     "@babel/polyfill": "^7.4.4",
     "@capsulajs/capsulajs-configuration-service": "^0.1.6",
     "@scalecube/scalecube-microservice": "0.1.3-alpha.10",
+    "rxjs": "^6.5.2",
     "uuid": "^3.3.2"
   },
   "devDependencies": {
-    "rxjs": "^6.5.2",
     "@capsulajs/capsulahub-core-external-modules": "*"
   }
 }

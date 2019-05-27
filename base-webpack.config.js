@@ -1,7 +1,15 @@
+const path = require('path');
 const WrapperPlugin = require('wrapper-webpack-plugin');
+
+const packagePath = path.resolve(__dirname, `packages/${process.env.PACKAGE_NAME}`);
 
 module.exports = {
   mode: 'production',
+  entry: `${packagePath}/src/index.ts`,
+  output: {
+    path: `${packagePath}/dist`,
+    filename: 'index.js',
+  },
   resolve: {
     extensions: ['.ts', '.tsx', '.js', '.json'],
   },
