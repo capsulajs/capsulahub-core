@@ -12,7 +12,7 @@ const allowCrossDomain = function(req, res, next) {
 };
 
 app.use(allowCrossDomain);
-app.use(express.static('public-real'));
+app.use(express.static('public'));
 
 app.post('/configuration/workspace', (req, res) => {
   res.send(workspaceConfig);

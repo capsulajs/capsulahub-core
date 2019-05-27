@@ -3,14 +3,23 @@ import { envs } from './envRegistryData';
 
 const bootstrap = (WORKSPACE: any, CONFIG: any) => {
   return new Promise(async (resolve) => {
-    localStorage.setItem('environmentRegistry', JSON.stringify(envs));
-    const envRegistry = new EnvRegistry(CONFIG.token);
+    localStorage.setItem(`${CONFIG.token}.environmentRegistry`, JSON.stringify(envs));
+
+    let envRegistry: any;
+    try {
+      envRegistry = new EnvRegistry(CONFIG.token);
+    } catch (error) {
+      console.log('error', error);
+    }
+
+    console.log('envRegistry', envRegistry);
 
     const registerServiceData = {
-      serviceName: 'EnvRegistry',
+      serviceName: 'EnvRegistryService',
       reference: envRegistry,
     };
-    WORKSPACE.registerService(registerServiceData);
+
+    WORKSPACE.registerService.call(WORKSPACE, registerServiceData);
     resolve();
   });
 };

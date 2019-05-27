@@ -15,38 +15,56 @@ module.exports = {
       config: {},
     },
     {
-      serviceName: 'EnvRegistry',
+      serviceName: 'EnvRegistryService',
       path: 'http://localhost:3001/services/EnvRegistry.js',
       definition: {
-        serviceName: 'EnvRegistry',
+        serviceName: 'EnvRegistryService',
         methods: {
-          methods$: { asyncModel: 'requestStream' },
+          register: { asyncModel: 'requestResponse' },
+          environments$: { asyncModel: 'requestStream' },
+        },
+      },
+      config: {
+        token: 'develop',
+      },
+    },
+    {
+      serviceName: 'EnvSelectorService',
+      path: 'http://localhost:3001/services/EnvSelector.js',
+      definition: {
+        serviceName: 'EnvSelectorService',
+        methods: {
+          input: { asyncModel: 'requestResponse' },
+          output$: { asyncModel: 'requestStream' },
+          select: { asyncModel: 'requestResponse' },
+          selected$: { asyncModel: 'requestStream' },
         },
       },
       config: {},
     },
-    // {
-    //   serviceName: 'ServiceA',
-    //   path: 'http://localhost:3001/services/serviceA.js',
-    //   definition: {
-    //     serviceName: 'ServiceA',
-    //     methods: {
-    //       greet: { asyncModel: 'requestResponse' },
-    //     },
-    //   },
-    //   config: { name: 'serviceA', message: 'what pill would you choose: red or blue?' },
-    // },
-    // {
-    //   serviceName: 'ServiceB',
-    //   path: 'http://localhost:3001/services/serviceB.js',
-    //   definition: {
-    //     serviceName: 'ServiceB',
-    //     methods: {
-    //       getRandomNumbers: { asyncModel: 'requestStream' },
-    //     },
-    //   },
-    //   config: { name: 'serviceB' },
-    // },
+    {
+      serviceName: 'MethodSelectorService',
+      path: 'http://localhost:3001/services/MethodSelector.js',
+      definition: {
+        serviceName: 'MethodSelectorService',
+        methods: {
+          input: { asyncModel: 'requestResponse' },
+          output$: { asyncModel: 'requestStream' },
+          select: { asyncModel: 'requestResponse' },
+          selected$: { asyncModel: 'requestStream' },
+        },
+      },
+      config: {},
+    },
+    {
+      serviceName: 'Orchestrator',
+      path: 'http://localhost:3001/services/Orchestrator.js',
+      definition: {
+        serviceName: 'Orchestrator',
+        methods: {},
+      },
+      config: {},
+    },
   ],
   components: {
     layouts: {
@@ -57,16 +75,16 @@ module.exports = {
       },
     },
     items: {
-      'request-form': {
-        componentName: 'web-request-form',
-        path: 'http://localhost:3001/components/RequestForm.js',
-        config: { title: 'Base Request Form' },
-      },
-      // catalog: {
-      //   componentName: 'web-catalog',
-      //   path: 'http://localhost:3001/components/Catalog.js',
-      //   config: {},
+      // 'request-form': {
+      //   componentName: 'web-request-form',
+      //   path: 'http://localhost:3001/components/RequestForm.js',
+      //   config: { title: 'Base Request Form' },
       // },
+      catalog: {
+        componentName: 'web-catalog',
+        path: 'http://localhost:3001/components/Catalog.js',
+        config: {},
+      },
     },
   },
 };

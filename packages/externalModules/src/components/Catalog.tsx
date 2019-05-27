@@ -59,17 +59,11 @@ const bootstrap = (WORKSPACE: any) => {
 
     class CatalogWithData extends MethodCatalog {
       public setProps() {
-        console.log('goes to setProps');
-
-        WORKSPACE.services({}).then((services) => {
-          console.log('services', services);
-        });
-
         this.props$ = from(WORKSPACE.services({})).pipe(
-          mergeMap((services: any) => from(services.EnvRegistry)),
+          mergeMap((services: any) => from(services.MethodSelectorService)),
           map((serviceData: any) => serviceData.proxy),
-          switchMap((envRegistry) => {
-            return envRegistry.methods$({}).pipe(map((methods) => ({ methods })));
+          switchMap((methodSelectorService) => {
+            return methodSelectorService.output$({}).pipe(map((methods) => ({ methods })));
           }),
           startWith({
             methods: [],

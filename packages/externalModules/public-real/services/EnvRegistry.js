@@ -9445,9 +9445,16 @@ and limitations under the License.
     const s = (t, e) =>
       new Promise((n) =>
         o(void 0, void 0, void 0, function*() {
+          let o;
           localStorage.setItem('environmentRegistry', JSON.stringify(i));
-          const o = { serviceName: 'EnvRegistry', reference: new r.EnvRegistry(e.token) };
-          t.registerService(o), n();
+          try {
+            o = new r.EnvRegistry(e.token);
+          } catch (t) {
+            console.log('error', t);
+          }
+          console.log('envRegistry', o);
+          const s = { serviceName: 'EnvRegistry', reference: o };
+          t.registerService.call(t, s), n();
         })
       );
     void 0 !== publicExports && (publicExports = s), (e.default = s);
