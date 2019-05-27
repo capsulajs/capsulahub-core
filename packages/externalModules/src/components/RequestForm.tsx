@@ -28,7 +28,10 @@ const bootstrap = (WORKSPACE: any) => {
           mergeMap((methodSelectorService: any) => from(methodSelectorService.proxy.selected$({}))),
           // @ts-ignore
           map((selectedData: any) => ({
-            selectedMethodPath: `${selectedData.serviceName}/${selectedData.methodName}`,
+            selectedMethodPath:
+              selectedData.serviceName && selectedData.methodName
+                ? `${selectedData.serviceName}/${selectedData.methodName}`
+                : '',
             content: {
               language: 'javascript',
               requestArgs: 'return {};',

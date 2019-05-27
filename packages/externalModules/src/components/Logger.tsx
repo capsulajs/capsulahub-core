@@ -1,7 +1,7 @@
 import * as ReactDOM from 'react-dom';
 import * as React from 'react';
-import { Observable, of, from, combineLatest } from 'rxjs';
-import { map, switchMap, distinctUntilChanged } from 'rxjs/operators';
+import { Observable, from, combineLatest, merge } from 'rxjs';
+import { map, switchMap, distinctUntilChanged, mergeMap, scan } from 'rxjs/operators';
 import { Logger } from '@capsulajs/capsulahub-ui';
 import { dataComponentHoc } from '../helpers/dataComponentHoc';
 import { LoggerEvent } from '../services/types';
@@ -9,7 +9,7 @@ import { isEqual } from 'lodash';
 
 const bootstrap = (WORKSPACE: any) => {
   return new Promise(async (resolve) => {
-    const mountPoint = 'web-logger';
+    const mountPoint = 'logger';
 
     class Logs extends HTMLElement {
       public props$?: Observable<any>;
@@ -27,54 +27,51 @@ const bootstrap = (WORKSPACE: any) => {
 
     class LogsWithData extends Logs {
       public setProps() {
-        this.props$ = combineLatest(
-          from(WORKSPACE.services({}).EnvSelectorService),
-          from(WORKSPACE.services({}).MethodSelectorService)
-        ).pipe(
+        this.props$ = from(WORKSPACE.services({})).pipe(
+          mergeMap((services: any) => {
+            return combineLatest(from(services.EnvSelectorService), from(services.MethodSelectorService));
+          }),
           map((servicesData: any) => servicesData.map((serviceData: any) => serviceData.proxy)),
           switchMap(([envSelectorService, methodSelectorService]) => {
-            if (envSelectorService && methodSelectorService) {
-              return of({
+            return merge(
+              envSelectorService.selected$({}).pipe(
+                distinctUntilChanged(isEqual),
+                map(
+                  (response): LoggerEvent => ({
+                    request: {},
+                    response,
+                    correlationId: 'EnvSelectorService',
+                    type: 'response',
+                    serviceName: 'EnvSelectorService',
+                    methodName: 'selected$',
+                    timestamp: new Date().getTime(),
+                  })
+                )
+              ),
+              methodSelectorService.selected$({}).pipe(
+                distinctUntilChanged(isEqual),
+                map(
+                  (response): LoggerEvent => ({
+                    request: {},
+                    response,
+                    correlationId: 'EnvSelectorService',
+                    type: 'response',
+                    serviceName: 'EnvSelectorService',
+                    methodName: 'selected$',
+                    timestamp: new Date().getTime(),
+                  })
+                )
+              )
+            ).pipe(
+              scan((logs: any, log) => {
+                return [...logs, log];
+              }, []),
+              map((logs) => ({
                 width: 600,
                 height: 400,
-                logs: [
-                  envSelectorService.selected$({}).pipe(
-                    distinctUntilChanged(isEqual),
-                    map(
-                      (response): LoggerEvent => ({
-                        request: {},
-                        response,
-                        correlationId: 'EnvSelectorService',
-                        type: 'response',
-                        serviceName: 'EnvSelectorService',
-                        methodName: 'selected$',
-                        timestamp: new Date().getTime(),
-                      })
-                    )
-                  ),
-                  methodSelectorService.output$({}).pipe(
-                    distinctUntilChanged(isEqual),
-                    map(
-                      (response): LoggerEvent => ({
-                        request: {},
-                        response,
-                        correlationId: 'MethodSelectorService',
-                        type: 'response',
-                        serviceName: 'MethodSelectorService',
-                        methodName: 'output$',
-                        timestamp: new Date().getTime(),
-                      })
-                    )
-                  ),
-                ],
-              });
-            }
-
-            return of({
-              width: 600,
-              height: 400,
-              logs: [],
-            });
+                logs,
+              }))
+            );
           })
         );
       }

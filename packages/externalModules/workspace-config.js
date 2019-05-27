@@ -80,6 +80,11 @@ module.exports = {
         path: 'http://localhost:3001/components/RequestForm.js',
         config: { title: 'Base Request Form' },
       },
+      logger: {
+        componentName: 'web-logger',
+        path: 'http://localhost:3001/components/Logger.js',
+        config: { title: 'Base logger' },
+      },
       catalog: {
         componentName: 'web-catalog',
         path: 'http://localhost:3001/components/Catalog.js',
