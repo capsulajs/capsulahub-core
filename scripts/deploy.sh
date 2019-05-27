@@ -41,7 +41,7 @@ aws s3 cp dist $S3_PATH$SERVICE_PATH --recursive
 
 echo "application was uploaded to s3 url: $CF_URL$SERVICE_PATH"
 
-if [ "$COUNT" == "0" ] && [ ! "$TRAVIS_PULL_REQUEST" == "false" ]; then
+if [ ! "$TRAVIS_PULL_REQUEST" == "false" ]; then
     # add comment on github pull request.
     source ./gh.sh $SERVICE $CF_BASE_URL$SERVICE_PATH
     echo "comment sent to GH pull request: $TRAVIS_BRANCH $TRAVIS_PULL_REQUEST_BRANCH PR $TRAVIS_PULL_REQUEST"
