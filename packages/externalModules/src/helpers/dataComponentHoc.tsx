@@ -5,6 +5,8 @@ export const dataComponentHoc = (Component: any, data$: any) => {
     public componentDidMount() {
       data$.subscribe((data: any) => {
         this.setState(data);
+
+        console.log('new PROPS!', data);
       });
     }
 
