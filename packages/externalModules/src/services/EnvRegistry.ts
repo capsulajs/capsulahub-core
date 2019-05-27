@@ -1,43 +1,10 @@
-import { from } from 'rxjs';
+import { EnvRegistry } from '@capsulajs/environment-registry';
+import { envs } from './envRegistryData';
 
-const bootstrap = (WORKSPACE: any) => {
+const bootstrap = (WORKSPACE: any, CONFIG: any) => {
   return new Promise(async (resolve) => {
-    class EnvRegistry {
-      public methods$() {
-        return from([
-          {
-            methods: [
-              {
-                serviceName: 'service1',
-                url: 'http://accessPoint/dev/service1',
-                methods: {
-                  myTestMethod1: {
-                    asyncModel: 'RequestResponse',
-                  },
-                },
-              },
-              {
-                serviceName: 'service2',
-                url: 'http://accessPoint/dev/service2',
-                methods: {
-                  myTestMethod1: {
-                    asyncModel: 'RequestResponse',
-                  },
-                  myTestMethod2: {
-                    asyncModel: 'RequestStream',
-                  },
-                  myTestMethod3: {
-                    asyncModel: 'RequestStream',
-                  },
-                },
-              },
-            ],
-          },
-        ] as any);
-      }
-    }
-
-    const envRegistry = new EnvRegistry();
+    localStorage.setItem('environmentRegistry', JSON.stringify(envs));
+    const envRegistry = new EnvRegistry(CONFIG.token);
 
     const registerServiceData = {
       serviceName: 'EnvRegistry',

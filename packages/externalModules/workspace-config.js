@@ -25,28 +25,28 @@ module.exports = {
       },
       config: {},
     },
-    {
-      serviceName: 'ServiceA',
-      path: 'http://localhost:3001/services/serviceA.js',
-      definition: {
-        serviceName: 'ServiceA',
-        methods: {
-          greet: { asyncModel: 'requestResponse' },
-        },
-      },
-      config: { name: 'serviceA', message: 'what pill would you choose: red or blue?' },
-    },
-    {
-      serviceName: 'ServiceB',
-      path: 'http://localhost:3001/services/serviceB.js',
-      definition: {
-        serviceName: 'ServiceB',
-        methods: {
-          getRandomNumbers: { asyncModel: 'requestStream' },
-        },
-      },
-      config: { name: 'serviceB' },
-    },
+    // {
+    //   serviceName: 'ServiceA',
+    //   path: 'http://localhost:3001/services/serviceA.js',
+    //   definition: {
+    //     serviceName: 'ServiceA',
+    //     methods: {
+    //       greet: { asyncModel: 'requestResponse' },
+    //     },
+    //   },
+    //   config: { name: 'serviceA', message: 'what pill would you choose: red or blue?' },
+    // },
+    // {
+    //   serviceName: 'ServiceB',
+    //   path: 'http://localhost:3001/services/serviceB.js',
+    //   definition: {
+    //     serviceName: 'ServiceB',
+    //     methods: {
+    //       getRandomNumbers: { asyncModel: 'requestStream' },
+    //     },
+    //   },
+    //   config: { name: 'serviceB' },
+    // },
   ],
   components: {
     layouts: {
@@ -62,11 +62,11 @@ module.exports = {
         path: 'http://localhost:3001/components/RequestForm.js',
         config: { title: 'Base Request Form' },
       },
-      catalog: {
-        componentName: 'web-catalog',
-        path: 'http://localhost:3001/components/Catalog.js',
-        config: {},
-      },
+      // catalog: {
+      //   componentName: 'web-catalog',
+      //   path: 'http://localhost:3001/components/Catalog.js',
+      //   config: {},
+      // },
     },
   },
 };

@@ -1,4 +1,4 @@
-export const envRegistry = {
+export const envs = {
   develop: {
     services: [
       {
