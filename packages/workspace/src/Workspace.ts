@@ -85,11 +85,15 @@ export class Workspace implements API.Workspace {
           (serviceConfiguration) => serviceConfiguration.serviceName === registerServiceRequest.serviceName
         );
         try {
+          console.log('serviceConfig!.definition', serviceConfig!.definition);
+          console.log('registerServiceRequest.reference', registerServiceRequest.reference);
+
           this.microservice = Microservices.create({
             services: [{ definition: serviceConfig!.definition, reference: registerServiceRequest.reference }],
             seedAddress: this.id,
           });
         } catch (error) {
+          console.log('GOES!!');
           reject(
             new Error(
               `Error while serviceRegister has happened while creating scalecube microservice: ${error.message}`

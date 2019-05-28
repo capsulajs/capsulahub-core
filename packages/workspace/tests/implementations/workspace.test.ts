@@ -6,6 +6,8 @@ import serviceBBootstrap from '@capsulajs/capsulahub-core-external-modules/src/s
 // @ts-ignore
 import serviceCBootstrap, { ServiceC } from '@capsulajs/capsulahub-core-external-modules/src/services/serviceC';
 // @ts-ignore
+import serviceDBootstrap from '@capsulajs/capsulahub-core-external-modules/src/services/serviceC';
+// @ts-ignore
 import gridComponentBootstrap from '@capsulajs/capsulahub-core-external-modules/src/components/Grid';
 // // @ts-ignore
 import requestFormComponentBootstrap from '@capsulajs/capsulahub-core-external-modules/src/components/RequestForm';
@@ -25,6 +27,7 @@ import {
 } from '../../src/helpers/const';
 import { mockBootstrapComponent, mockConfigurationService, mockGetModuleDynamically } from '../helpers/mocks';
 import baseConfigEntries, {
+  configEntriesWithIncorrectDefinitionService,
   configEntriesWithUnregisteredService,
   serviceAConfig,
   serviceCConfig,
@@ -421,5 +424,29 @@ describe('Workspace tests', () => {
     } catch (error) {
       expect(error).toEqual(new Error(invalidRegisterServiceRequestError));
     }
+  });
+
+  it.only('Test', async (done) => {
+    // expect.assertions(1);
+    const configurationServiceMock = {
+      entries: () => Promise.resolve({ entries: configEntriesWithIncorrectDefinitionService }),
+    };
+    mockConfigurationService(configurationServiceMock);
+    mockGetModuleDynamically([
+      Promise.resolve(serviceABootstrap),
+      Promise.resolve(serviceBBootstrap),
+      Promise.resolve(serviceDBootstrap),
+      Promise.resolve(gridComponentBootstrap),
+      Promise.resolve(requestFormComponentBootstrap),
+    ]);
+    mockBootstrapComponent();
+
+    const workspaceFactory = new WorkspaceFactory();
+    const workspace = await workspaceFactory.createWorkspace({ token: '123' });
+    const services = await workspace.services({});
+    services.ServiceA.catch((error) => {
+      console.log('error', error);
+      done();
+    });
   });
 });

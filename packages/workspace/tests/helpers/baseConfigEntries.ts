@@ -1,5 +1,17 @@
 import { Api } from '@scalecube/scalecube-microservice';
 
+export const serviceAConfig = {
+  serviceName: 'ServiceA',
+  path: 'http://localhost:3000/services/serviceA.js',
+  definition: {
+    serviceName: 'ServiceA',
+    methods: {
+      greet: { asyncModel: 'requestResponse' as Api.AsyncModel },
+    },
+  },
+  config: { name: 'serviceA', message: 'what pill would you choose: red or blue?' },
+};
+
 export const serviceCConfig = {
   serviceName: 'ServiceC',
   path: 'http://localhost:3000/services/serviceC.js',
@@ -12,16 +24,17 @@ export const serviceCConfig = {
   config: {},
 };
 
-export const serviceAConfig = {
-  serviceName: 'ServiceA',
-  path: 'http://localhost:3000/services/serviceA.js',
+export const serviceDConfig = {
+  serviceName: 'ServiceD',
+  path: 'http://localhost:3000/services/serviceD.js',
   definition: {
-    serviceName: 'ServiceA',
+    serviceName: 'ServiceD',
     methods: {
-      greet: { asyncModel: 'requestResponse' as Api.AsyncModel },
+      hello: { asyncModel: 'requestResponse' as Api.AsyncModel },
+      world: { asyncModel: 'requestResponse' as Api.AsyncModel },
     },
   },
-  config: { name: 'serviceA', message: 'what pill would you choose: red or blue?' },
+  config: {},
 };
 
 const baseConfigEntries = [
@@ -74,6 +87,15 @@ export const configEntriesWithUnregisteredService = [
   {
     key: 'services',
     value: [...(baseConfigEntries[1] as any).value, serviceCConfig],
+  },
+  baseConfigEntries[2],
+];
+
+export const configEntriesWithIncorrectDefinitionService = [
+  baseConfigEntries[0],
+  {
+    key: 'services',
+    value: [...(baseConfigEntries[1] as any).value, serviceDConfig],
   },
   baseConfigEntries[2],
 ];
