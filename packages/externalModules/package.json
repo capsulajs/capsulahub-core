@@ -15,7 +15,7 @@
     "start": "node server.js",
     "build-example": "webpack --config webpack.config-example.js",
     "start-example": "http-server -p 9999",
-    "build": "webpack",
+    "build": "webpack && yarn build-example",
     "lint": "yarn lint:md && yarn lint:ts",
     "lint:md": "remark . --rc-path ../../.remarkrc --output",
     "lint:ts": "tslint 'src/**/*.{ts,tsx}' --fix",

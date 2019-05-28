@@ -14,7 +14,7 @@ const App = () => {
     { src: './images/devops-02.png', appLink: 'http://localhost:55555' },
     { src: './images/meteor_transperent_sticker-05.png', appLink: 'http://localhost:4444' },
     {
-      src: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQb-9fGZGL6K16RDZROu4kfiWMxcldy7tmN8n_NBCT0B8TcxmZnGA',
+      src: './images/panda.jpg',
       appLink: 'http://localhost:8888',
     },
   ];
