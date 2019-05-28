@@ -14,14 +14,14 @@ import {
   configRepositoryName,
   configWrongFormatError,
   createWorkspaceWrongRequestError,
-  // getBootstrapComponentError,
-  // getBootstrapServiceError,
+  getBootstrapComponentError,
   getLoadingServiceError,
   getInitComponentError,
   getLoadingComponentError,
   invalidRegisterServiceRequestError,
   serviceAlreadyRegisteredError,
   serviceToRegisterMissingInConfigurationError,
+  getBootstrapServiceError,
 } from '../../src/helpers/const';
 import { mockBootstrapComponent, mockConfigurationService, mockGetModuleDynamically } from '../helpers/mocks';
 import baseConfigEntries, {
@@ -149,6 +149,30 @@ describe('Workspace tests', () => {
     );
   });
 
+  it('An error with bootstrapping a service occurs after calling createWorkspace', async () => {
+    expect.assertions(1);
+    const bootstrapError = new Error('Type error: logic is undefined');
+    const configurationServiceMock = {
+      entries: () => Promise.resolve({ entries: baseConfigEntries }),
+    };
+    mockConfigurationService(configurationServiceMock);
+    mockGetModuleDynamically([
+      Promise.resolve(serviceABootstrap),
+      Promise.resolve(() => {
+        return new Promise(() => {
+          throw bootstrapError;
+        });
+      }),
+      Promise.resolve(gridComponentBootstrap),
+      Promise.resolve(requestFormComponentBootstrap),
+    ]);
+
+    const workspaceFactory = new WorkspaceFactory();
+    return expect(workspaceFactory.createWorkspace({ token: '123' })).rejects.toEqual(
+      new Error(getBootstrapServiceError(bootstrapError, 'ServiceB'))
+    );
+  });
+
   it('An error with importing a component occurs after calling createWorkspace', async () => {
     expect.assertions(1);
     const error = new Error('Module can not be found');
@@ -167,6 +191,32 @@ describe('Workspace tests', () => {
 
     return expect(workspaceFactory.createWorkspace({ token: '123' })).rejects.toEqual(
       new Error(getLoadingComponentError(error, 'web-grid'))
+    );
+  });
+
+  it('An error with bootstrapping a component occurs after calling createWorkspace', async () => {
+    expect.assertions(1);
+    const bootstrapError = new Error('TypeError: stream$ is not a function');
+    const configurationServiceMock = {
+      entries: () => Promise.resolve({ entries: baseConfigEntries }),
+    };
+    mockConfigurationService(configurationServiceMock);
+    mockGetModuleDynamically([
+      Promise.resolve(serviceABootstrap),
+      Promise.resolve(serviceBBootstrap),
+      Promise.resolve(gridComponentBootstrap),
+      Promise.resolve(() => {
+        return new Promise(() => {
+          throw bootstrapError;
+        });
+      }),
+    ]);
+    mockBootstrapComponent();
+
+    const workspaceFactory = new WorkspaceFactory();
+
+    return expect(workspaceFactory.createWorkspace({ token: '123' })).rejects.toEqual(
+      new Error(getBootstrapComponentError(bootstrapError, 'web-request-form'))
     );
   });
 

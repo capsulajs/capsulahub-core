@@ -49,7 +49,7 @@ export const initComponent = (
   )
     .then((bootstrap) =>
       bootstrap(workspace, componentData.config).catch((error) => {
-        throw new Error(getBootstrapComponentError(error.message, componentData.componentName));
+        throw new Error(getBootstrapComponentError(error, componentData.componentName));
       })
     )
     .then((WebComponent) => {
