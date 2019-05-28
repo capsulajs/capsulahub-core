@@ -739,10 +739,10 @@
     lodash "^4.17.11"
     to-fast-properties "^2.0.0"
 
-"@capsulajs/capsula-hub@^0.0.4":
-  version "0.0.4"
-  resolved "https://registry.yarnpkg.com/@capsulajs/capsula-hub/-/capsula-hub-0.0.4.tgz#f7c140237a7444eab59dec47c8ff632c3c3e3048"
-  integrity sha512-uZnymu5pQ1u0zv+kyuo6PEUdtbSC+/+TNLO9WCHMhJpgiILPIjlCgEDCxguScLUOoDiGc6ORSlGlBGAlVJ+nqA==
+"@capsulajs/capsula-hub@0.0.3-feature-allow-multiple-workspaces-1559026104":
+  version "0.0.3-feature-allow-multiple-workspaces-1559026104"
+  resolved "https://registry.yarnpkg.com/@capsulajs/capsula-hub/-/capsula-hub-0.0.3-feature-allow-multiple-workspaces-1559026104.tgz#8bc0e229f97bddaa415529d4b78b87f0b5655393"
+  integrity sha512-ivUfC4bC3Bqhr0E1K+jY6WbFkB8b0NKiXTKKqLwNntIA2D/sgPN/xau2gDQ+Sf9moAKIXm3GJBhMShnYNog9Mw==
   dependencies:
     "@babel/polyfill" "^7.4.4"
     "@capsulajs/capsulahub-core-workspace" "^0.0.1-alpha-1"

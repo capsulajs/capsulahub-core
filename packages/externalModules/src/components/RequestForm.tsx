@@ -13,6 +13,13 @@ const bootstrap = (WORKSPACE: any) => {
     class RequestForm extends HTMLElement {
       public props$?: Observable<any>;
 
+      constructor() {
+        super();
+        const styleEl = document.createElement('style');
+        styleEl.innerHTML = `#brace-editor { height: 250px!important; }`;
+        document.body.appendChild(styleEl);
+      }
+
       public connectedCallback() {
         const Component: React.JSXElementConstructor<any> = this.props$
           ? dataComponentHoc(RequestFormUI, this.props$ as any)

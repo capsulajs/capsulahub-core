@@ -34,6 +34,6 @@
     "rxjs": "^6.5.2"
   },
   "devDependencies": {
-    "@capsulajs/capsula-hub": "^0.0.4"
+    "@capsulajs/capsula-hub": "0.0.3-feature-allow-multiple-workspaces-1559026104"
   }
 }
