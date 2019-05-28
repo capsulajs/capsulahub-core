@@ -4,11 +4,13 @@ const bootstrap = () => {
       constructor() {
         super();
         this.innerHTML =
-          '<div id="grid"><h1>Hello from CapsulaHub!</h1>' +
-          '<div id="env-dropdown"></div>' +
-          '<div id="catalog"></div>' +
-          '<div id="request-form"></div>' +
-          '<div id="logger"></div>' +
+          '<div style="display: flex; padding: 30px;" id="grid">' +
+          '<div style="width: 45%; margin-right: 20px" class="left-part">' +
+          '<div id="env-dropdown" style="margin-bottom: 10px;"></div>' +
+          '<div id="catalog" style="margin-bottom: 10px;"></div>' +
+          '<div id="request-form" style="margin-bottom: 10px;"></div>' +
+          '</div>' +
+          '<div class="right-part" id="logger"></div>' +
           '</div>';
       }
     }

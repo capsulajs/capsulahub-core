@@ -3,7 +3,8 @@ import { envs } from './envRegistryData';
 
 const bootstrap = (WORKSPACE: any, CONFIG: any) => {
   return new Promise(async (resolve) => {
-    localStorage.setItem(`${CONFIG.token}.environmentRegistry`, JSON.stringify(envs));
+    console.log('bootstrapping REGISTRY!', CONFIG.token);
+    localStorage.setItem(`${CONFIG.token}.environmentRegistry`, JSON.stringify(envs[CONFIG.token]));
 
     let envRegistry: any;
     try {

@@ -25,7 +25,7 @@ module.exports = {
         },
       },
       config: {
-        token: 'develop',
+        token: 'http://localhost:8888',
       },
     },
     {

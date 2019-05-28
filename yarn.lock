@@ -739,10 +739,10 @@
     lodash "^4.17.11"
     to-fast-properties "^2.0.0"
 
-"@capsulajs/capsula-hub@^0.0.3":
-  version "0.0.3"
-  resolved "https://registry.yarnpkg.com/@capsulajs/capsula-hub/-/capsula-hub-0.0.3.tgz#5550532a5c60e083bc58e65f576c7b9521e625af"
-  integrity sha512-TIPCwME2Xn4ZCb3RrD/ysv3HoI25o0WjEE4wakzcwgvI3HCv1xlpDn4RI146QR121PNVDrA0d5sJS0UL/tqcLQ==
+"@capsulajs/capsula-hub@^0.0.4":
+  version "0.0.4"
+  resolved "https://registry.yarnpkg.com/@capsulajs/capsula-hub/-/capsula-hub-0.0.4.tgz#f7c140237a7444eab59dec47c8ff632c3c3e3048"
+  integrity sha512-uZnymu5pQ1u0zv+kyuo6PEUdtbSC+/+TNLO9WCHMhJpgiILPIjlCgEDCxguScLUOoDiGc6ORSlGlBGAlVJ+nqA==
   dependencies:
     "@babel/polyfill" "^7.4.4"
     "@capsulajs/capsulahub-core-workspace" "^0.0.1-alpha-1"

@@ -15,6 +15,7 @@ module.exports = {
     'components/Catalog': './src/components/Catalog.tsx',
     'components/Grid': './src/components/Grid.tsx',
     'components/RequestForm': './src/components/RequestForm.tsx',
+    app: './src/app.tsx',
   },
   output: {
     path: path.resolve(__dirname, 'public'),

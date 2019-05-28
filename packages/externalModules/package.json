@@ -8,9 +8,14 @@
   "license": "MIT",
   "private": false,
   "scripts": {
-    "run-workspace": "capsula-hub run -l ./workspace-config.js",
+    "run-workspace-55555": "capsula-hub run -l ./workspace-config-5555.js -p 55555",
+    "run-workspace-7777": "capsula-hub run -l ./workspace-config-7777.js -p 7777",
+    "run-workspace-4444": "capsula-hub run -l ./workspace-config-4444.js -p 4444",
+    "run-workspace-8888": "capsula-hub run -l ./workspace-config-8888.js -p 8888",
     "start": "node server.js",
-    "build": "rimraf public && webpack",
+    "build-example": "webpack --config webpack.config-example.js",
+    "start-example": "http-server -p 9999",
+    "build": "webpack",
     "lint": "yarn lint:md && yarn lint:ts",
     "lint:md": "remark . --rc-path ../../.remarkrc --output",
     "lint:ts": "tslint 'src/**/*.{ts,tsx}' --fix",
@@ -29,6 +34,6 @@
     "rxjs": "^6.5.2"
   },
   "devDependencies": {
-    "@capsulajs/capsula-hub": "^0.0.3"
+    "@capsulajs/capsula-hub": "^0.0.4"
   }
 }
