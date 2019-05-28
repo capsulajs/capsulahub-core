@@ -14,8 +14,11 @@ import {
   configRepositoryName,
   configWrongFormatError,
   createWorkspaceWrongRequestError,
-  getBootstrapComponentError,
-  getBootstrapServiceError,
+  // getBootstrapComponentError,
+  // getBootstrapServiceError,
+  getLoadingServiceError,
+  getInitComponentError,
+  getLoadingComponentError,
   invalidRegisterServiceRequestError,
   serviceAlreadyRegisteredError,
   serviceToRegisterMissingInConfigurationError,
@@ -142,7 +145,7 @@ describe('Workspace tests', () => {
 
     const workspaceFactory = new WorkspaceFactory();
     return expect(workspaceFactory.createWorkspace({ token: '123' })).rejects.toEqual(
-      new Error(getBootstrapServiceError(error))
+      new Error(getLoadingServiceError(error, 'ServiceA'))
     );
   });
 
@@ -163,7 +166,7 @@ describe('Workspace tests', () => {
     const workspaceFactory = new WorkspaceFactory();
 
     return expect(workspaceFactory.createWorkspace({ token: '123' })).rejects.toEqual(
-      new Error(getBootstrapComponentError(error))
+      new Error(getLoadingComponentError(error, 'web-grid'))
     );
   });
 
@@ -183,7 +186,7 @@ describe('Workspace tests', () => {
 
     const workspaceFactory = new WorkspaceFactory();
     return expect(workspaceFactory.createWorkspace({ token: '123' })).rejects.toEqual(
-      new Error(getBootstrapComponentError(new Error('Error while defining custom element')))
+      new Error(getInitComponentError(new Error('Error while defining custom element'), 'web-grid'))
     );
   });
 

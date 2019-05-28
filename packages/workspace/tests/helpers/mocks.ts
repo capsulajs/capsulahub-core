@@ -18,7 +18,7 @@ export const mockGetModuleDynamically = (modulePromises: Array<Promise<API.Modul
     getModuleDynamicallyMock.mockReturnValueOnce(modulePromise);
   });
 
-  utilsToMock.getModuleDynamically = getModuleDynamicallyMock;
+  utilsToMock.dynamicImport = getModuleDynamicallyMock;
 };
 
 export const mockBootstrapComponent = (throwsError = false): void => {

@@ -6,11 +6,20 @@ export const configNotLoadedError = 'Workspace configuration can not be loaded';
 
 export const createWorkspaceWrongRequestError = 'createWorkspace has been called with invalid token';
 
-export const getBootstrapServiceError = (error: Error) =>
-  `Something is wrong while bootstrapping a service: ${error.message}`;
+export const getLoadingServiceError = (error: Error, serviceMame: string) =>
+  `Error while loading service ${serviceMame}: ${error.message}`;
 
-export const getBootstrapComponentError = (error: Error) =>
-  `Something is wrong while bootstrapping a component: ${error.message}`;
+export const getBootstrapServiceError = (error: Error, serviceMame: string) =>
+  `Error while bootstrapping service ${serviceMame}: ${error.message}`;
+
+export const getLoadingComponentError = (error: Error, componentMame: string) =>
+  `Error while loading component ${componentMame}: ${error.message}`;
+
+export const getBootstrapComponentError = (error: Error, componentMame: string) =>
+  `Error while bootstrapping component ${componentMame}: ${error.message}`;
+
+export const getInitComponentError = (error: Error, componentMame: string) =>
+  `Error while initialization component ${componentMame}: ${error.message}`;
 
 export const serviceAlreadyRegisteredError = 'Service has been already registered';
 
