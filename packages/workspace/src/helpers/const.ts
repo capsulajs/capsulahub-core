@@ -7,19 +7,19 @@ export const configNotLoadedError = 'Workspace configuration can not be loaded';
 export const createWorkspaceWrongRequestError = 'createWorkspace has been called with invalid token';
 
 export const getLoadingServiceError = (error: Error, serviceMame: string) =>
-  `Error while loading service ${serviceMame}: ${error.message}`;
+  `Error while loading service "${serviceMame}": ${error.message}`;
 
 export const getBootstrapServiceError = (error: Error, serviceMame: string) =>
-  `Error while bootstrapping service ${serviceMame}: ${error.message}`;
+  `Error while bootstrapping service "${serviceMame}": ${error.message}`;
 
 export const getLoadingComponentError = (error: Error, componentMame: string) =>
-  `Error while loading component ${componentMame}: ${error.message}`;
+  `Error while loading component "${componentMame}": ${error.message}`;
 
 export const getBootstrapComponentError = (error: Error, componentMame: string) =>
-  `Error while bootstrapping component ${componentMame}: ${error.message}`;
+  `Error while bootstrapping component "${componentMame}": ${error.message}`;
 
 export const getInitComponentError = (error: Error, componentMame: string) =>
-  `Error while initialization component ${componentMame}: ${error.message}`;
+  `Error while initialization component "${componentMame}": ${error.message}`;
 
 export const getScalecubeCreationError = (error: Error, serviceName: string) =>
   `Error in serviceRegister has happened for "${serviceName}" while creating Scalecube microservice: ${error.message}`;

@@ -427,26 +427,30 @@ describe('Workspace tests', () => {
     }
   });
 
-  it.only('Test', async () => {
-    expect.assertions(1);
-    const configurationServiceMock = {
-      entries: () => Promise.resolve({ entries: configEntriesWithIncorrectDefinitionService }),
-    };
-    mockConfigurationService(configurationServiceMock);
-    mockGetModuleDynamically([
-      Promise.resolve(serviceABootstrap),
-      Promise.resolve(serviceBBootstrap),
-      Promise.resolve(serviceDBootstrap),
-      Promise.resolve(gridComponentBootstrap),
-      Promise.resolve(requestFormComponentBootstrap),
-    ]);
-    mockBootstrapComponent();
+  it(
+    'If scalecube error happens while registering a service, the promise for this service should be rejected with' +
+      ' an error',
+    async () => {
+      expect.assertions(1);
+      const configurationServiceMock = {
+        entries: () => Promise.resolve({ entries: configEntriesWithIncorrectDefinitionService }),
+      };
+      mockConfigurationService(configurationServiceMock);
+      mockGetModuleDynamically([
+        Promise.resolve(serviceABootstrap),
+        Promise.resolve(serviceBBootstrap),
+        Promise.resolve(serviceDBootstrap),
+        Promise.resolve(gridComponentBootstrap),
+        Promise.resolve(requestFormComponentBootstrap),
+      ]);
+      mockBootstrapComponent();
 
-    const workspaceFactory = new WorkspaceFactory();
-    const workspace = await workspaceFactory.createWorkspace({ token: '123' });
-    const services = await workspace.services({});
-    return expect(services.ServiceD).rejects.toEqual(
-      getScalecubeCreationError(new Error('Invalid method reference for ServiceD/world'), 'ServiceD')
-    );
-  });
+      const workspaceFactory = new WorkspaceFactory();
+      const workspace = await workspaceFactory.createWorkspace({ token: '123' });
+      const services = await workspace.services({});
+      return expect(services.ServiceD).rejects.toEqual(
+        new Error(getScalecubeCreationError(new Error('Invalid method reference for ServiceD/world'), 'ServiceD'))
+      );
+    }
+  );
 });
