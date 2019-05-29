@@ -21,6 +21,9 @@ export const getBootstrapComponentError = (error: Error, componentMame: string) 
 export const getInitComponentError = (error: Error, componentMame: string) =>
   `Error while initialization component ${componentMame}: ${error.message}`;
 
+export const getScalecubeCreationError = (error: Error, serviceName: string) =>
+  `Error in serviceRegister has happened for "${serviceName}" while creating Scalecube microservice: ${error.message}`;
+
 export const serviceAlreadyRegisteredError = 'Service has been already registered';
 
 export const componentAlreadyRegisteredError = 'Component has been already registered';
