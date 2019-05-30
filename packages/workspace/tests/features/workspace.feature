@@ -124,3 +124,25 @@ Scenario: Call registerService method with invalid reference rejects serviceProm
     And   I call services method
     And   I call workspace registerService method with invalid reference
     Then  I expect servicePromise to be rejected with an error
+
+Scenario: An error with bootstrapping a service occurs after calling createWorkspace
+    Given WorkspaceFactory instance with createWorkspace method
+    And  Configuration for token 123 that includes service A and B and components 1 and 2
+    And  Service A and service B include a bootstrap that calls registerService
+    When I run createWorkspace method with token 123
+    And  An error with bootstrapping a service
+    Then I expect to receive an error with the name of the corresponding service
+
+Scenario: An error with bootstrapping a component occurs after calling createWorkspace
+    Given WorkspaceFactory instance with createWorkspace method
+    And  Configuration for token 123 that includes service A and B and components 1 and 2
+    When I run createWorkspace method with token 123
+    And  An error with bootstrapping a component occurs
+    Then I expect to receive an error with the name of the corresponding component
+
+Scenario: If scalecube error happens while registering a service, the promise for this service should be rejected with an error
+    Given WorkspaceFactory instance with createWorkspace method
+    And  Configuration for token 123 that includes service A, B and D and components 1 and 2
+    When I run createWorkspace method with token 123
+    And  An scalecube error occurs while registering service D
+    Then I expect to receive an error with the name of the corresponding service     
