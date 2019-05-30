@@ -31,6 +31,12 @@ deploy:
     script: yarn deploy
     on:
       branch: develop
+  - provider: script
+    skip_cleanup: true
+    script: bash scripts/publish.sh
+    on:
+      repo: capsulajs/capsulahub-core
+      branch: develop
 
 notifications:
   email:

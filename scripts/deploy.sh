@@ -34,11 +34,6 @@ echo "SERVICE_PATH: $SERVICE_PATH"
 
 export PATH=$PATH:$HOME/.local/bin
 
-# count if there is upload to the branch already
-aws s3 ls $S3_PATH$SERVICE_PATH
-COUNT=$(aws s3 ls $S3_PATH$SERVICE_PATH| wc -l)
-echo "$COUNT"
-
 # upload to s3
 aws s3 rm $S3_PATH/$SERVICE_PATH --recursive --region $S3_REGION
 aws s3 cp dist $S3_PATH$SERVICE_PATH --recursive
@@ -46,9 +41,9 @@ aws s3 cp dist $S3_PATH$SERVICE_PATH --recursive
 
 echo "application was uploaded to s3 url: $CF_URL$SERVICE_PATH"
 
-if [ "$COUNT" == "0" ] && [ ! "$TRAVIS_PULL_REQUEST" == "false" ]; then
+if [ ! "$TRAVIS_PULL_REQUEST" == "false" ]; then
     # add comment on github pull request.
-    sh ../../scripts/gh.sh $SERVICE $CF_BASE_URL$SERVICE_PATH
+    source ./gh.sh $SERVICE $CF_BASE_URL$SERVICE_PATH
     echo "comment sent to GH pull request: $TRAVIS_BRANCH $TRAVIS_PULL_REQUEST_BRANCH PR $TRAVIS_PULL_REQUEST"
 else
     echo "comment was skipped not a pull request or comment already created."
