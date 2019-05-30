@@ -166,4 +166,5 @@ Scenario: If scalecube error happens while registering a service, the promise fo
     And  Configuration for token 123 that includes service A, B and D and components 1 and 2
     When I run createWorkspace method with token 123
     And  A scalecube error occurs while registering service D
+    And  I try to get the data from the promise from service D
     Then I expect to receive an error with the name of the corresponding service
