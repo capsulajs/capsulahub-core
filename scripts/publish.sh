@@ -22,7 +22,7 @@ elif [[ "$TRAVIS_BRANCH" == "develop" ]] && [[ "$TRAVIS_PULL_REQUEST" == "false"
     echo "|     Deploying latest on npm registry     |"
     echo "--------------------------------------------"
 
-    git remote set-url origin https://${GH_TOKEN}@github.com/capsulajs/$(echo $npm_package_name | cut -d '/' -f 2)
+    git remote set-url origin https://${GH_TOKEN}@github.com/capsulajs/capsulahub-core
     git checkout develop
     lerna publish prerelease --dist-tag next --yes -m '[skip ci]'
 
@@ -36,7 +36,7 @@ elif [[ "$TRAVIS_BRANCH" == "master" ]] && [[ "$TRAVIS_PULL_REQUEST" == "false" 
     echo "|     Deploying stable on npm registry     |"
     echo "--------------------------------------------"
 
-    git remote set-url origin https://${GH_TOKEN}@github.com/capsulajs/$(echo $npm_package_name | cut -d '/' -f 2)
+    git remote set-url origin https://${GH_TOKEN}@github.com/capsulajs/capsulahub-core
     git checkout master
     lerna publish patch --yes -m '[skip ci]'
 
