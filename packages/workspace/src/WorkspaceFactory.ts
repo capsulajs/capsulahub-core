@@ -45,7 +45,6 @@ export default class WorkspaceFactory implements API.WorkspaceFactory {
           }
 
           const workspace = new Workspace(formattedConfiguration);
-          /// <reference path="node.d.ts"/>
           return bootstrapServices(workspace, formattedConfiguration.services)
             .then(() => {
               return initComponents(workspace, formattedConfiguration.components.layouts, 'layout');

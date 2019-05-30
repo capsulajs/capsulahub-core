@@ -6,6 +6,7 @@ import {
   componentAlreadyRegisteredError,
   componentsRequestInvalidError,
   componentToRegisterMissingInConfigurationError,
+  getScalecubeCreationError,
   invalidRegisterServiceRequestError,
   serviceAlreadyRegisteredError,
   servicesRequestInvalidError,
@@ -90,11 +91,9 @@ export class Workspace implements API.Workspace {
             seedAddress: this.id,
           });
         } catch (error) {
-          reject(
-            new Error(
-              `Error while serviceRegister has happened while creating scalecube microservice: ${error.message}`
-            )
-          );
+          const errorMessage = getScalecubeCreationError(error, registerServiceRequest.serviceName);
+          this.emitServiceRegistrationFailedEvent(registerServiceRequest.serviceName, errorMessage);
+          return reject(new Error(errorMessage));
         }
 
         this.serviceRegistry[registerServiceRequest.serviceName] = { ...registerServiceRequest };

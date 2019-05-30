@@ -1,14 +1,31 @@
 import { ConfigurationService, ConfigurationServiceHttp } from '@capsulajs/capsulajs-configuration-service';
 import { API } from '..';
 import * as INTERNAL_TYPES from './types';
-import { bootstrapComponentError, bootstrapServiceError } from './const';
+import {
+  getLoadingServiceError,
+  getLoadingComponentError,
+  getBootstrapServiceError,
+  getInitComponentError,
+  getBootstrapComponentError,
+} from './const';
 
 export const getConfigurationService = (token: string): ConfigurationService<API.WorkspaceConfig> =>
   new ConfigurationServiceHttp(token);
 
+export const dynamicImport = (path: string) => import(path).then((module) => module.default);
+
 export const getModuleDynamically = <BootstrapResponse>(
-  path: string
-): Promise<API.ModuleBootstrap<BootstrapResponse>> => import(path).then((module) => module.default);
+  path: string,
+  type: 'service' | 'component',
+  itemName: string
+): Promise<API.ModuleBootstrap<BootstrapResponse>> =>
+  dynamicImport(path).catch((error) => {
+    if (type === 'service') {
+      throw new Error(getLoadingServiceError(error, itemName));
+    } else {
+      throw new Error(getLoadingComponentError(error, itemName));
+    }
+  });
 
 export const bootstrapComponent = (componentName: string, WebComponent: INTERNAL_TYPES.CustomWebComponentClass) => {
   customElements.define(componentName, WebComponent);
@@ -25,34 +42,42 @@ export const initComponent = (
 ): Promise<void> => {
   const componentData = componentsConfig[nodeId];
 
-  return getModuleDynamically<INTERNAL_TYPES.CustomWebComponentClass>(componentData.path)
-    .then((bootstrap) => bootstrap(workspace, componentData.config))
+  return getModuleDynamically<INTERNAL_TYPES.CustomWebComponentClass>(
+    componentData.path,
+    'component',
+    componentData.componentName
+  )
+    .then((bootstrap) =>
+      bootstrap(workspace, componentData.config).catch((error) => {
+        throw new Error(getBootstrapComponentError(error, componentData.componentName));
+      })
+    )
     .then((WebComponent) => {
-      return bootstrapComponent(componentData.componentName, WebComponent);
-    })
-    .then((webComponent) => {
-      return workspace.registerComponent({
+      let webComponent;
+      try {
+        webComponent = bootstrapComponent(componentData.componentName, WebComponent);
+      } catch (error) {
+        throw new Error(getInitComponentError(error, componentData.componentName));
+      }
+      workspace.registerComponent({
         nodeId,
         type,
         componentName: componentData.componentName,
         reference: webComponent,
       });
-    })
-    .catch((error) => {
-      throw new Error(error);
     });
 };
 
 export const bootstrapServices = (workspace: API.Workspace, servicesConfig: API.ServiceConfig[]): Promise<any[]> => {
   return Promise.all(
     servicesConfig.map((serviceConfig) => {
-      return getModuleDynamically<void>(serviceConfig.path).then((bootstrap) =>
-        bootstrap(workspace, serviceConfig.config)
+      return getModuleDynamically<void>(serviceConfig.path, 'service', serviceConfig.serviceName).then((bootstrap) =>
+        bootstrap(workspace, serviceConfig.config).catch((error) => {
+          throw new Error(getBootstrapServiceError(error, serviceConfig.serviceName));
+        })
       );
     })
-  ).catch(() => {
-    throw new Error(bootstrapServiceError);
-  });
+  );
 };
 
 export const initComponents = (
@@ -62,7 +87,5 @@ export const initComponents = (
 ) => {
   return Promise.all(
     Object.keys(componentsConfig).map((nodeId: string) => initComponent(nodeId, componentsConfig, workspace, type))
-  ).catch(() => {
-    throw new Error(bootstrapComponentError);
-  });
+  );
 };

@@ -6,22 +6,29 @@ import serviceBBootstrap from '@capsulajs/capsulahub-core-external-modules/src/s
 // @ts-ignore
 import serviceCBootstrap, { ServiceC } from '@capsulajs/capsulahub-core-external-modules/src/services/serviceC';
 // @ts-ignore
+import serviceDBootstrap from '@capsulajs/capsulahub-core-external-modules/src/services/serviceD';
+// @ts-ignore
 import gridComponentBootstrap from '@capsulajs/capsulahub-core-external-modules/src/components/Grid';
 // // @ts-ignore
 import requestFormComponentBootstrap from '@capsulajs/capsulahub-core-external-modules/src/components/RequestForm';
 import WorkspaceFactory from '../../src/WorkspaceFactory';
 import {
-  bootstrapComponentError,
-  bootstrapServiceError,
   configRepositoryName,
   configWrongFormatError,
   createWorkspaceWrongRequestError,
+  getBootstrapComponentError,
+  getLoadingServiceError,
+  getInitComponentError,
+  getLoadingComponentError,
   invalidRegisterServiceRequestError,
   serviceAlreadyRegisteredError,
   serviceToRegisterMissingInConfigurationError,
+  getBootstrapServiceError,
+  getScalecubeCreationError,
 } from '../../src/helpers/const';
 import { mockBootstrapComponent, mockConfigurationService, mockGetModuleDynamically } from '../helpers/mocks';
 import baseConfigEntries, {
+  configEntriesWithIncorrectDefinitionService,
   configEntriesWithUnregisteredService,
   serviceAConfig,
   serviceCConfig,
@@ -128,23 +135,51 @@ describe('Workspace tests', () => {
 
   it('An error with importing a service occurs after calling createWorkspace', async () => {
     expect.assertions(1);
+    const error = new Error('Module can not be found');
     const configurationServiceMock = {
       entries: () => Promise.resolve({ entries: baseConfigEntries }),
     };
     mockConfigurationService(configurationServiceMock);
     mockGetModuleDynamically([
-      Promise.reject('Module can not be found'),
+      Promise.reject(error),
       Promise.resolve(serviceBBootstrap),
       Promise.resolve(gridComponentBootstrap),
       Promise.resolve(requestFormComponentBootstrap),
     ]);
 
     const workspaceFactory = new WorkspaceFactory();
-    return expect(workspaceFactory.createWorkspace({ token: '123' })).rejects.toEqual(new Error(bootstrapServiceError));
+    return expect(workspaceFactory.createWorkspace({ token: '123' })).rejects.toEqual(
+      new Error(getLoadingServiceError(error, 'ServiceA'))
+    );
+  });
+
+  it('An error with bootstrapping a service occurs after calling createWorkspace', async () => {
+    expect.assertions(1);
+    const bootstrapError = new Error('Type error: logic is undefined');
+    const configurationServiceMock = {
+      entries: () => Promise.resolve({ entries: baseConfigEntries }),
+    };
+    mockConfigurationService(configurationServiceMock);
+    mockGetModuleDynamically([
+      Promise.resolve(serviceABootstrap),
+      Promise.resolve(() => {
+        return new Promise(() => {
+          throw bootstrapError;
+        });
+      }),
+      Promise.resolve(gridComponentBootstrap),
+      Promise.resolve(requestFormComponentBootstrap),
+    ]);
+
+    const workspaceFactory = new WorkspaceFactory();
+    return expect(workspaceFactory.createWorkspace({ token: '123' })).rejects.toEqual(
+      new Error(getBootstrapServiceError(bootstrapError, 'ServiceB'))
+    );
   });
 
   it('An error with importing a component occurs after calling createWorkspace', async () => {
     expect.assertions(1);
+    const error = new Error('Module can not be found');
     const configurationServiceMock = {
       entries: () => Promise.resolve({ entries: baseConfigEntries }),
     };
@@ -152,14 +187,40 @@ describe('Workspace tests', () => {
     mockGetModuleDynamically([
       Promise.resolve(serviceABootstrap),
       Promise.resolve(serviceBBootstrap),
-      Promise.reject('Module can not be found'),
+      Promise.reject(error),
       Promise.resolve(requestFormComponentBootstrap),
     ]);
 
     const workspaceFactory = new WorkspaceFactory();
 
     return expect(workspaceFactory.createWorkspace({ token: '123' })).rejects.toEqual(
-      new Error(bootstrapComponentError)
+      new Error(getLoadingComponentError(error, 'web-grid'))
+    );
+  });
+
+  it('An error with bootstrapping a component occurs after calling createWorkspace', async () => {
+    expect.assertions(1);
+    const bootstrapError = new Error('TypeError: stream$ is not a function');
+    const configurationServiceMock = {
+      entries: () => Promise.resolve({ entries: baseConfigEntries }),
+    };
+    mockConfigurationService(configurationServiceMock);
+    mockGetModuleDynamically([
+      Promise.resolve(serviceABootstrap),
+      Promise.resolve(serviceBBootstrap),
+      Promise.resolve(gridComponentBootstrap),
+      Promise.resolve(() => {
+        return new Promise(() => {
+          throw bootstrapError;
+        });
+      }),
+    ]);
+    mockBootstrapComponent();
+
+    const workspaceFactory = new WorkspaceFactory();
+
+    return expect(workspaceFactory.createWorkspace({ token: '123' })).rejects.toEqual(
+      new Error(getBootstrapComponentError(bootstrapError, 'web-request-form'))
     );
   });
 
@@ -179,7 +240,7 @@ describe('Workspace tests', () => {
 
     const workspaceFactory = new WorkspaceFactory();
     return expect(workspaceFactory.createWorkspace({ token: '123' })).rejects.toEqual(
-      new Error(bootstrapComponentError)
+      new Error(getInitComponentError(new Error('Error while defining custom element'), 'web-grid'))
     );
   });
 
@@ -365,4 +426,31 @@ describe('Workspace tests', () => {
       expect(error).toEqual(new Error(invalidRegisterServiceRequestError));
     }
   });
+
+  it(
+    'If scalecube error happens while registering a service, the promise for this service should be rejected with' +
+      ' an error',
+    async () => {
+      expect.assertions(1);
+      const configurationServiceMock = {
+        entries: () => Promise.resolve({ entries: configEntriesWithIncorrectDefinitionService }),
+      };
+      mockConfigurationService(configurationServiceMock);
+      mockGetModuleDynamically([
+        Promise.resolve(serviceABootstrap),
+        Promise.resolve(serviceBBootstrap),
+        Promise.resolve(serviceDBootstrap),
+        Promise.resolve(gridComponentBootstrap),
+        Promise.resolve(requestFormComponentBootstrap),
+      ]);
+      mockBootstrapComponent();
+
+      const workspaceFactory = new WorkspaceFactory();
+      const workspace = await workspaceFactory.createWorkspace({ token: '123' });
+      const services = await workspace.services({});
+      return expect(services.ServiceD).rejects.toEqual(
+        new Error(getScalecubeCreationError(new Error('Invalid method reference for ServiceD/world'), 'ServiceD'))
+      );
+    }
+  );
 });
