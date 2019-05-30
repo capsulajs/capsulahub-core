@@ -1,15 +1,57 @@
+
+#______________________________________POSITIVE______________________________________
+
+#1
+Scenario: Call createWorkspace when a Workspace is created creates new instance of Workspace
+    Given WorkspaceFactory instance with createWorkspace method
+    And  Configuration for token 123 that includes service A and B and components 1 and 2
+    And  I run createWorkspace method with token 123 and Workspace is created
+    When I run createWorkspace method again with same token
+    Then I receive a new instance of Workspace
+
+#2
+Scenario: Call services method returns a map of promises to each service loaded in Workspace
+    Given WorkspaceFactory instance with createWorkspace method
+    And   Configuration for token 123 that includes service A and B and components 1 and 2
+    And   Service A and service B include a bootstrap that calls registerService
+    And   the bootstrap includes CAPSULAHUB_WORKSPACE and CAPSULAHUB_CONFIGURATION variable
+    When  I run createWorkspace method with token 123 and Workspace is created
+    And   I call services method
+    Then  I expect to receive a map of promises to service A and B having the following <property>s
+          |<property> |
+          |serviceName|
+          |proxy      |
+    And   each of the promises is resolved with corresponding service
+
+#3
+Scenario: Call components method returns a map of promises to each component loaded in Workspace
+    Given WorkspaceFactory instance with createWorkspace method
+    And   Configuration for token 123 that includes service A and B and components 1 and 2
+    When  I run createWorkspace method with token 123 and Workspace is created
+    And   I call workspace components method
+    Then  I expect to receive a map of promises to component 1 and 2 with the following <property>s
+          |<property>   |
+          |componentName|
+          |nodeId       |
+          |reference    |
+
+#______________________________________NEGATIVE______________________________________
+
+#1
 Scenario: Call createWorkspace with a token with no configuration available is rejected with error
    Given WorkspaceFactory instance with createWorkspace method
    And   A token 123 which has no configuration available
    When  I call createWorkspace method with token 123
    Then  I expect to receive an error
 
+#1.1
 Scenario: Call createWorkspace with a token with invalid configuration is rejected with error
    Given WorkspaceFactory instance with createWorkspace method
    And   A token 123 which has a configuration with wrong format
    When  I call createWorkspace method with token 123
    Then  I expect to receive an error
 
+#1.2
 Scenario: Call createWorkspace with a token with invalid format is rejected with error
    Given WorkspaceFactory instance with createWorkspace method
    When  I call createWorkspace with invalid <token> values
@@ -27,13 +69,7 @@ Scenario: Call createWorkspace with a token with invalid format is rejected with
          |-1        |
     Then  I expect to receive an error
 
-Scenario: Call createWorkspace when a Workspace is created creates new instance of Workspace
-    Given WorkspaceFactory instance with createWorkspace method
-    And  Configuration for token 123 that includes service A and B and components 1 and 2
-    And  I run createWorkspace method with token 123 and Workspace is created
-    When I run createWorkspace method again with same token
-    Then I receive a new instance of Workspace
-
+#2
 Scenario: An error with importing a service occurs after calling createWorkspace
     Given WorkspaceFactory instance with createWorkspace method
     And  Configuration for token 123 that includes service A and B and components 1 and 2
@@ -42,6 +78,7 @@ Scenario: An error with importing a service occurs after calling createWorkspace
     And  An error with importing a service occurs
     Then I expect to receive an error
 
+#2.1
 Scenario: An error with importing a component occurs after calling createWorkspace
     Given WorkspaceFactory instance with createWorkspace method
     And  Configuration for token 123 that includes service A and B and components 1 and 2
@@ -49,6 +86,24 @@ Scenario: An error with importing a component occurs after calling createWorkspa
     And  An error with importing a component occurs
     Then I expect to receive an error
 
+#3
+Scenario: An error with bootstrapping a service occurs after calling createWorkspace
+    Given WorkspaceFactory instance with createWorkspace method
+    And  Configuration for token 123 that includes service A and B and components 1 and 2
+    And  Service A and service B include a bootstrap that calls registerService
+    When I run createWorkspace method with token 123
+    And  An error with bootstrapping a service occurs
+    Then I expect to receive an error with the name of the corresponding service
+
+#3.1
+Scenario: An error with bootstrapping a component occurs after calling createWorkspace
+    Given WorkspaceFactory instance with createWorkspace method
+    And  Configuration for token 123 that includes service A and B and components 1 and 2
+    When I run createWorkspace method with token 123
+    And  An error with bootstrapping a component occurs
+    Then I expect to receive an error with the name of the corresponding component
+
+#4
 Scenario: An error with registering a component occurs after calling createWorkspace
     Given WorkspaceFactory instance with createWorkspace method
     And  Configuration for token 123 that includes service A and B and components 1 and 2
@@ -56,30 +111,7 @@ Scenario: An error with registering a component occurs after calling createWorks
     And  An error with registering a component occurs
     Then I expect to receive an error
 
-Scenario: Call services method returns a map of promises to each service loaded in Workspace
-    Given WorkspaceFactory instance with createWorkspace method
-    And   Configuration for token 123 that includes service A and B and components 1 and 2
-    And   Service A and service B include a bootstrap that calls registerService
-    And   the bootstrap includes CAPSULAHUB_WORKSPACE and CAPSULAHUB_CONFIGURATION variable
-    When  I run createWorkspace method with token 123 and Workspace is created
-    And   I call services method
-    Then  I expect to receive a map of promises to service A and B having the following <property>s
-          |<property> |
-          |serviceName|
-          |proxy      |
-    And   each of the promises is resolved with corresponding service
-
-Scenario: Call components method returns a map of promises to each component loaded in Workspace
-    Given WorkspaceFactory instance with createWorkspace method
-    And   Configuration for token 123 that includes service A and B and components 1 and 2
-    When  I run createWorkspace method with token 123 and Workspace is created
-    And   I call workspace components method
-    Then  I expect to receive a map of promises to component 1 and 2 with the following <property>s
-          |<property>   |
-          |componentName|
-          |nodeId       |
-          |reference    |
-
+#4.1
 Scenario: Call registerService method with a service already registered is rejected with error
     Given WorkspaceFactory instance with createWorkspace method
     And   Configuration for token 123 that includes service A and B and components 1 and 2
@@ -88,6 +120,7 @@ Scenario: Call registerService method with a service already registered is rejec
     When  I call registerService method with service A that was registered
     Then  I expect to receive an error
 
+#4.2
 Scenario: Call registerService method with an invalid serviceName is rejected with error
     Given WorkspaceFactory instance with createWorkspace method
     And   Configuration for token 123 that includes service A and B and components 1 and 2
@@ -108,6 +141,7 @@ Scenario: Call registerService method with an invalid serviceName is rejected wi
           |-1        |
     Then  I expect to receive an error
 
+#4.3
 Scenario: Call registerService method with a service that doesnt's exist in configuration is rejected with error
     Given WorkspaceFactory instance with createWorkspace method
     And   Configuration for token 123 that includes service A and B and components 1 and 2
@@ -116,6 +150,7 @@ Scenario: Call registerService method with a service that doesnt's exist in conf
     And   I call registerService method with service C
     Then  I expect to receive an error
 
+#4.4
 Scenario: Call registerService method with invalid reference rejects servicePromise in ServicesMap
     Given WorkspaceFactory instance with createWorkspace method
     And   Configuration for token 123 that includes service A and B and components 1 and 2
@@ -125,24 +160,10 @@ Scenario: Call registerService method with invalid reference rejects serviceProm
     And   I call workspace registerService method with invalid reference
     Then  I expect servicePromise to be rejected with an error
 
-Scenario: An error with bootstrapping a service occurs after calling createWorkspace
-    Given WorkspaceFactory instance with createWorkspace method
-    And  Configuration for token 123 that includes service A and B and components 1 and 2
-    And  Service A and service B include a bootstrap that calls registerService
-    When I run createWorkspace method with token 123
-    And  An error with bootstrapping a service
-    Then I expect to receive an error with the name of the corresponding service
-
-Scenario: An error with bootstrapping a component occurs after calling createWorkspace
-    Given WorkspaceFactory instance with createWorkspace method
-    And  Configuration for token 123 that includes service A and B and components 1 and 2
-    When I run createWorkspace method with token 123
-    And  An error with bootstrapping a component occurs
-    Then I expect to receive an error with the name of the corresponding component
-
+#4.5
 Scenario: If scalecube error happens while registering a service, the promise for this service should be rejected with an error
     Given WorkspaceFactory instance with createWorkspace method
     And  Configuration for token 123 that includes service A, B and D and components 1 and 2
     When I run createWorkspace method with token 123
-    And  An scalecube error occurs while registering service D
-    Then I expect to receive an error with the name of the corresponding service     
+    And  A scalecube error occurs while registering service D
+    Then I expect to receive an error with the name of the corresponding service
