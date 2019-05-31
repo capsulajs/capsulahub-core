@@ -97,8 +97,8 @@ describe('Workspace tests', () => {
     (invalidConfigurationType) => {
       expect.assertions(1);
       const workspaceFactory = new WorkspaceFactory();
-      // @ts-ignore
       return expect(
+        // @ts-ignore
         workspaceFactory.createWorkspace({ token: '123', configurationType: invalidConfigurationType })
       ).rejects.toEqual(new Error(configurationTypeDoesNotExist('Unknown configuration type')));
     }
