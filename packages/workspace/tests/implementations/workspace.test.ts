@@ -93,7 +93,7 @@ describe('Workspace tests', () => {
 
   const invalidConfigurationTypes = [' ', {}, { test: 'test' }, [], ['test'], null, true, false, 0, -1];
   test.each(invalidConfigurationTypes)(
-    'Call createWorkspace with a configurationType with invalid format is rejected with error (%s)',
+    'Call createWorkspace with an invalid configurationType is rejected with error (%s)',
     (invalidConfigurationType) => {
       expect.assertions(1);
       const workspaceFactory = new WorkspaceFactory();
@@ -483,7 +483,7 @@ describe('Workspace tests', () => {
     ${`${configurationTypes.hardcoreServer}`} | ${'ConfigurationServiceHardcoreRemote'}
     ${`${configurationTypes.httpServer}`}     | ${'ConfigurationServiceHttp'}
   `(
-    'Workspace is created with the correct "configurationType": $configurationType: $configurationServiceClassName',
+    'Workspace is created with the correct configurationType: $configurationType: $configurationServiceClassName',
     async ({ configurationType, configurationServiceClassName }) => {
       expect.assertions(1);
       const configurationServiceMock = {
@@ -503,7 +503,7 @@ describe('Workspace tests', () => {
     }
   );
 
-  it('If no "configurationType" is provided in the creation of Workspace, HttpFile Configuration is applied', async () => {
+  it('Call createWorkspace without providing configurationType should create workspace with default type of configuration provider', async () => {
     expect.assertions(1);
     const configurationServiceMock = {
       entries: () => Promise.resolve({ entries: baseConfigEntries }),
@@ -522,7 +522,7 @@ describe('Workspace tests', () => {
     return expect(getConfigurationServiceClassSpy.mock.results[0].value.name).toBe('ConfigurationServiceHttpFile');
   });
 
-  it('If provided "configurationType" does not exist, "createWorkspace" is rejected with an error', async () => {
+  it('Call createWorkspace with providing non-existing configurationType is rejected with error', async () => {
     expect.assertions(1);
     const configurationServiceMock = {
       entries: () => Promise.resolve({ entries: baseConfigEntries }),
