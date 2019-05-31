@@ -80,7 +80,7 @@ describe('Workspace tests', () => {
   const invalidCreateWorkspaceRequest = [' ', {}, { test: 'test' }, [], ['test'], null, undefined, true, false, 0, -1];
 
   test.each(invalidCreateWorkspaceRequest)(
-    'Call createWorkspace with a token with invalid format is rejected with error',
+    'Call createWorkspace with a token with invalid format is rejected with error (%s)',
     (invalidToken) => {
       expect.assertions(1);
       const workspaceFactory = new WorkspaceFactory();
@@ -88,6 +88,19 @@ describe('Workspace tests', () => {
       return expect(workspaceFactory.createWorkspace({ token: invalidToken })).rejects.toEqual(
         new Error(createWorkspaceWrongRequestError)
       );
+    }
+  );
+
+  const invalidConfigurationTypes = [' ', {}, { test: 'test' }, [], ['test'], null, true, false, 0, -1];
+  test.each(invalidConfigurationTypes)(
+    'Call createWorkspace with a configurationType with invalid format is rejected with error (%s)',
+    (invalidConfigurationType) => {
+      expect.assertions(1);
+      const workspaceFactory = new WorkspaceFactory();
+      // @ts-ignore
+      return expect(
+        workspaceFactory.createWorkspace({ token: '123', configurationType: invalidConfigurationType })
+      ).rejects.toEqual(new Error(configurationTypeDoesNotExist('Unknown configuration type')));
     }
   );
 
@@ -525,8 +538,8 @@ describe('Workspace tests', () => {
 
     const wrongConfigurationType = 'wrongConfigurationType';
     const workspaceFactory = new WorkspaceFactory();
-    // @ts-ignore
     return expect(
+      // @ts-ignore
       workspaceFactory.createWorkspace({ token: '123', configurationType: wrongConfigurationType })
     ).rejects.toEqual(new Error(configurationTypeDoesNotExist(wrongConfigurationType)));
   });

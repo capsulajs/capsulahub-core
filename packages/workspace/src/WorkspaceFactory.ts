@@ -33,7 +33,8 @@ export default class WorkspaceFactory implements API.WorkspaceFactory {
         return reject(
           new Error(
             configurationTypeDoesNotExist(
-              typeof createWorkspaceRequest.configurationType === 'string' && createWorkspaceRequest.configurationType
+              typeof createWorkspaceRequest.configurationType === 'string' &&
+                createWorkspaceRequest.configurationType.trim()
                 ? createWorkspaceRequest.configurationType
                 : 'Unknown configuration type'
             )
