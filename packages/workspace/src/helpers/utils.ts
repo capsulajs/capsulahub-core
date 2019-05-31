@@ -25,7 +25,6 @@ export const getConfigurationService = (
 export const getConfigurationServiceClass = (
   configurationType: API.ConfigurationType = configurationTypes.httpFile
 ) => {
-  console.log('getConfigurationServiceClass configurationType', configurationType);
   switch (configurationType) {
     case configurationTypes.httpServer: {
       return ConfigurationServiceHttp;

@@ -43,6 +43,11 @@ const repositoryNotFoundError = `Configuration repository ${configRepositoryName
 describe('Workspace tests', () => {
   applyPostMessagePolyfill();
   applyMessageChannelPolyfill();
+  const getConfigurationServiceClassSpy = jest.spyOn(utils, 'getConfigurationServiceClass');
+
+  beforeEach(() => {
+    getConfigurationServiceClassSpy.mockClear();
+  });
 
   it('Call createWorkspace with a token with no configuration available is rejected with error', () => {
     expect.assertions(1);
@@ -456,13 +461,19 @@ describe('Workspace tests', () => {
     }
   );
 
-  test.only.each(Object.values(configurationTypes))(
-    'Workspace is created with the correct "configurationType": %s',
-    async (configurationType) => {
+  test.each`
+    configurationType                         | configurationServiceClassName
+    ${`${configurationTypes.localStorage}`}   | ${'ConfigurationServiceLocalStorage'}
+    ${`${configurationTypes.localFile}`}      | ${'ConfigurationServiceFile'}
+    ${`${configurationTypes.httpFile}`}       | ${'ConfigurationServiceHttpFile'}
+    ${`${configurationTypes.hardcoreServer}`} | ${'ConfigurationServiceHardcoreRemote'}
+    ${`${configurationTypes.httpServer}`}     | ${'ConfigurationServiceHttp'}
+  `(
+    'Workspace is created with the correct "configurationType": $configurationType: $configurationServiceClassName',
+    async ({ configurationType, configurationServiceClassName }) => {
       expect.assertions(1);
-      const getConfigurationServiceClassSpy = jest.spyOn(utils, 'getConfigurationServiceClass');
       const configurationServiceMock = {
-        entries: () => Promise.resolve({ entries: configEntriesWithIncorrectDefinitionService }),
+        entries: () => Promise.resolve({ entries: baseConfigEntries }),
       };
       mockConfigurationService(configurationServiceMock);
       mockGetModuleDynamically([
@@ -475,29 +486,7 @@ describe('Workspace tests', () => {
       mockBootstrapComponent();
       const workspaceFactory = new WorkspaceFactory();
       await workspaceFactory.createWorkspace({ token: '123', configurationType });
-      switch (configurationType) {
-        case configurationTypes.httpServer: {
-          return expect(getConfigurationServiceClassSpy.mock.results[0].value.name).toBe('ConfigurationServiceHttp');
-        }
-        case configurationTypes.hardcoreServer: {
-          return expect(getConfigurationServiceClassSpy.mock.results[0].value.name).toBe(
-            'ConfigurationServiceHardcoreRemote'
-          );
-        }
-        case configurationTypes.httpFile: {
-          return expect(getConfigurationServiceClassSpy.mock.results[0].value.name).toBe(
-            'ConfigurationServiceHttpFile'
-          );
-        }
-        case configurationTypes.localFile: {
-          return expect(getConfigurationServiceClassSpy.mock.results[0].value.name).toBe('ConfigurationServiceFile');
-        }
-        case configurationTypes.localStorage: {
-          return expect(getConfigurationServiceClassSpy.mock.results[0].value.name).toBe(
-            'ConfigurationServiceLocalStorage'
-          );
-        }
-      }
+      return expect(getConfigurationServiceClassSpy.mock.results[0].value.name).toBe(configurationServiceClassName);
     }
   );
 });
