@@ -1,7 +1,13 @@
 import { Entity } from '@capsulajs/capsulajs-configuration-service/lib/api/Entity';
 import { API } from './';
+import * as EXTERNAL_API from './helpers/types';
 import { Workspace } from './Workspace';
-import { bootstrapServices, getConfigurationService, initComponents } from './helpers/utils';
+import {
+  bootstrapServices,
+  getConfigurationServiceClass,
+  getConfigurationService,
+  initComponents,
+} from './helpers/utils';
 import {
   configNotLoadedError,
   configRepositoryName,
@@ -21,7 +27,9 @@ export default class WorkspaceFactory implements API.WorkspaceFactory {
       // Getting configurationService
       let configurationService;
       try {
-        configurationService = getConfigurationService(createWorkspaceRequest.token);
+        configurationService = getConfigurationService(createWorkspaceRequest.token, getConfigurationServiceClass(
+          createWorkspaceRequest.configurationType
+        ) as EXTERNAL_API.ConfigurationServiceClass);
       } catch (error) {
         return reject(new Error(configNotLoadedError));
       }

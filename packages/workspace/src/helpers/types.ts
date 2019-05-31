@@ -1,4 +1,5 @@
 import { API } from '..';
+import { ConfigurationService } from '@capsulajs/capsulajs-configuration-service';
 
 export interface ServiceRegistry {
   [serviceName: string]: API.RegisteredService;
@@ -24,3 +25,5 @@ export { CustomWebComponentClass };
 export interface ComponentsConfig {
   [nodeId: string]: API.ComponentConfig;
 }
+
+export type ConfigurationServiceClass = new (token: string) => ConfigurationService;

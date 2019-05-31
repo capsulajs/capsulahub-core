@@ -1,4 +1,11 @@
-import { ConfigurationService, ConfigurationServiceHttp } from '@capsulajs/capsulajs-configuration-service';
+import {
+  ConfigurationService,
+  ConfigurationServiceHttp,
+  ConfigurationServiceHardcoreRemote,
+  ConfigurationServiceLocalStorage,
+  ConfigurationServiceFile,
+  ConfigurationServiceHttpFile,
+} from '@capsulajs/capsulajs-configuration-service';
 import { API } from '..';
 import * as INTERNAL_TYPES from './types';
 import {
@@ -7,10 +14,36 @@ import {
   getBootstrapServiceError,
   getInitComponentError,
   getBootstrapComponentError,
+  configurationTypes,
 } from './const';
 
-export const getConfigurationService = (token: string): ConfigurationService<API.WorkspaceConfig> =>
-  new ConfigurationServiceHttp(token);
+export const getConfigurationService = (
+  token: string,
+  ConfigurationServiceClass: INTERNAL_TYPES.ConfigurationServiceClass
+): ConfigurationService<API.WorkspaceConfig> => new ConfigurationServiceClass(token);
+
+export const getConfigurationServiceClass = (
+  configurationType: API.ConfigurationType = configurationTypes.httpFile
+) => {
+  console.log('getConfigurationServiceClass configurationType', configurationType);
+  switch (configurationType) {
+    case configurationTypes.httpServer: {
+      return ConfigurationServiceHttp;
+    }
+    case configurationTypes.hardcoreServer: {
+      return ConfigurationServiceHardcoreRemote;
+    }
+    case configurationTypes.httpFile: {
+      return ConfigurationServiceHttpFile;
+    }
+    case configurationTypes.localFile: {
+      return ConfigurationServiceFile;
+    }
+    case configurationTypes.localStorage: {
+      return ConfigurationServiceLocalStorage;
+    }
+  }
+};
 
 export const dynamicImport = (path: string) => import(path).then((module) => module.default);
 

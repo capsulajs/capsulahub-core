@@ -25,7 +25,9 @@ import {
   serviceToRegisterMissingInConfigurationError,
   getBootstrapServiceError,
   getScalecubeCreationError,
+  configurationTypes,
 } from '../../src/helpers/const';
+import * as utils from '../../src/helpers/utils';
 import { mockBootstrapComponent, mockConfigurationService, mockGetModuleDynamically } from '../helpers/mocks';
 import baseConfigEntries, {
   configEntriesWithIncorrectDefinitionService,
@@ -451,6 +453,51 @@ describe('Workspace tests', () => {
       return expect(services.ServiceD).rejects.toEqual(
         new Error(getScalecubeCreationError(new Error('Invalid method reference for ServiceD/world'), 'ServiceD'))
       );
+    }
+  );
+
+  test.only.each(Object.values(configurationTypes))(
+    'Workspace is created with the correct "configurationType": %s',
+    async (configurationType) => {
+      expect.assertions(1);
+      const getConfigurationServiceClassSpy = jest.spyOn(utils, 'getConfigurationServiceClass');
+      const configurationServiceMock = {
+        entries: () => Promise.resolve({ entries: configEntriesWithIncorrectDefinitionService }),
+      };
+      mockConfigurationService(configurationServiceMock);
+      mockGetModuleDynamically([
+        Promise.resolve(serviceABootstrap),
+        Promise.resolve(serviceBBootstrap),
+        Promise.resolve(serviceDBootstrap),
+        Promise.resolve(gridComponentBootstrap),
+        Promise.resolve(requestFormComponentBootstrap),
+      ]);
+      mockBootstrapComponent();
+      const workspaceFactory = new WorkspaceFactory();
+      await workspaceFactory.createWorkspace({ token: '123', configurationType });
+      switch (configurationType) {
+        case configurationTypes.httpServer: {
+          return expect(getConfigurationServiceClassSpy.mock.results[0].value.name).toBe('ConfigurationServiceHttp');
+        }
+        case configurationTypes.hardcoreServer: {
+          return expect(getConfigurationServiceClassSpy.mock.results[0].value.name).toBe(
+            'ConfigurationServiceHardcoreRemote'
+          );
+        }
+        case configurationTypes.httpFile: {
+          return expect(getConfigurationServiceClassSpy.mock.results[0].value.name).toBe(
+            'ConfigurationServiceHttpFile'
+          );
+        }
+        case configurationTypes.localFile: {
+          return expect(getConfigurationServiceClassSpy.mock.results[0].value.name).toBe('ConfigurationServiceFile');
+        }
+        case configurationTypes.localStorage: {
+          return expect(getConfigurationServiceClassSpy.mock.results[0].value.name).toBe(
+            'ConfigurationServiceLocalStorage'
+          );
+        }
+      }
     }
   );
 });

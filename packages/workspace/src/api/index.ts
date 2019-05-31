@@ -16,6 +16,7 @@ import ServicesRequest from './ServicesRequest';
 import WorkspaceFactory from './WorkspaceFactory';
 import CreateWorkspaceRequest from './CreateWorkspaceRequest';
 import Workspace from './Workspace';
+import ConfigurationType from './ConfigurationType';
 
 export {
   CustomWebComponent,
@@ -36,4 +37,5 @@ export {
   WorkspaceFactory,
   CreateWorkspaceRequest,
   Workspace,
+  ConfigurationType,
 };

@@ -1,3 +1,5 @@
+import { ConfigurationType } from '../api';
+
 export const configRepositoryName = 'workspace';
 
 export const configWrongFormatError = 'Workspace configuration does not have the correct format';
@@ -39,3 +41,11 @@ export const componentToRegisterMissingInConfigurationError =
 export const componentsRequestInvalidError = 'Components request is invalid';
 
 export const servicesRequestInvalidError = 'Services request is invalid';
+
+export const configurationTypes = {
+  localFile: 'localFile' as ConfigurationType,
+  hardcoreServer: 'hardcoreServer' as ConfigurationType,
+  httpFile: 'httpFile' as ConfigurationType,
+  httpServer: 'httpServer' as ConfigurationType,
+  localStorage: 'localStorage' as ConfigurationType,
+};
