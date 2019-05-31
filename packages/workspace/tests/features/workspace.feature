@@ -41,12 +41,12 @@ Scenario: Workspace is created with the correct configurationType
     And  Configuration for token 123 that includes service A and B and components 1 and 2
     And  Service A and service B include a bootstrap that calls registerService
     When I run createWorkspace method with token 123 and with one of the following values for <configurationType>
-	      |<configurationType>|
+          |<configurationType>|
           | httpServer        |
           | hardcoreServer    |
-		  | httpFile          |
-		  | localFile         |
-		  | localStorage      |
+          | httpFile          |
+          | localFile         |
+          | localStorage      |
     Then I expect workspace to be created with the correct <configurationType>
 
 #4.1
@@ -54,7 +54,7 @@ Scenario: Call createWorkspace without providing configurationType should create
     Given WorkspaceFactory instance with createWorkspace method
     And  Configuration for token 123 that includes service A and B and components 1 and 2
     And  Service A and service B include a bootstrap that calls registerService
-	And  "httpFile" is a default type of configuration provider
+    And  "httpFile" is a default type of configuration provider
     When I run createWorkspace method with token 123 and without providing configurationType
     Then I expect workspace to be created with "httpFile" configuration provider
 
@@ -198,13 +198,13 @@ Scenario: Call createWorkspace with providing non-existing configurationType is 
     And  Configuration for token 123 that includes service A and B and components 1 and 2
     And  Service A and service B include a bootstrap that calls registerService
     And  Following types of configuration provider are available
-	      |<configurationType>|
+          |<configurationType>|
           | httpServer        |
           | hardcoreServer    |
-		  | httpFile          |
-		  | localFile         |
-		  | localStorage      |
-    When I run createWorkspace method with token 123 and with non-existing configurationType
+          | httpFile          |
+          | localFile         |
+          | localStorage      |
+    When I run createWorkspace method with token 123 and with non-existing <configurationType>
     Then I expect to receive an error
 
 #5.1
