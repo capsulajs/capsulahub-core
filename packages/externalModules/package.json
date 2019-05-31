@@ -8,8 +8,8 @@
   "license": "MIT",
   "private": false,
   "scripts": {
-    "start": "node server.js",
-    "build": "rimraf public && webpack",
+    "start": "http-server -p 3000 --cors",
+    "build": "rimraf public && webpack && cp -R src/configuration public",
     "lint": "yarn lint:md && yarn lint:ts",
     "lint:md": "remark . --rc-path ../../.remarkrc --output",
     "lint:ts": "tslint 'src/**/*.{ts,tsx}' --fix",
