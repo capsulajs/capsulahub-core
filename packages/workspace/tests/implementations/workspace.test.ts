@@ -26,6 +26,7 @@ import {
   getBootstrapServiceError,
   getScalecubeCreationError,
   configurationTypes,
+  configurationTypeDoesNotExist,
 } from '../../src/helpers/const';
 import * as utils from '../../src/helpers/utils';
 import { mockBootstrapComponent, mockConfigurationService, mockGetModuleDynamically } from '../helpers/mocks';
@@ -479,7 +480,6 @@ describe('Workspace tests', () => {
       mockGetModuleDynamically([
         Promise.resolve(serviceABootstrap),
         Promise.resolve(serviceBBootstrap),
-        Promise.resolve(serviceDBootstrap),
         Promise.resolve(gridComponentBootstrap),
         Promise.resolve(requestFormComponentBootstrap),
       ]);
@@ -489,4 +489,45 @@ describe('Workspace tests', () => {
       return expect(getConfigurationServiceClassSpy.mock.results[0].value.name).toBe(configurationServiceClassName);
     }
   );
+
+  it('If no "configurationType" is provided in the creation of Workspace, HttpFile Configuration is applied', async () => {
+    expect.assertions(1);
+    const configurationServiceMock = {
+      entries: () => Promise.resolve({ entries: baseConfigEntries }),
+    };
+    mockConfigurationService(configurationServiceMock);
+    mockGetModuleDynamically([
+      Promise.resolve(serviceABootstrap),
+      Promise.resolve(serviceBBootstrap),
+      Promise.resolve(gridComponentBootstrap),
+      Promise.resolve(requestFormComponentBootstrap),
+    ]);
+    mockBootstrapComponent();
+
+    const workspaceFactory = new WorkspaceFactory();
+    await workspaceFactory.createWorkspace({ token: '123' });
+    return expect(getConfigurationServiceClassSpy.mock.results[0].value.name).toBe('ConfigurationServiceHttpFile');
+  });
+
+  it('If provided "configurationType" does not exist, "createWorkspace" is rejected with an error', async () => {
+    expect.assertions(1);
+    const configurationServiceMock = {
+      entries: () => Promise.resolve({ entries: baseConfigEntries }),
+    };
+    mockConfigurationService(configurationServiceMock);
+    mockGetModuleDynamically([
+      Promise.resolve(serviceABootstrap),
+      Promise.resolve(serviceBBootstrap),
+      Promise.resolve(gridComponentBootstrap),
+      Promise.resolve(requestFormComponentBootstrap),
+    ]);
+    mockBootstrapComponent();
+
+    const wrongConfigurationType = 'wrongConfigurationType';
+    const workspaceFactory = new WorkspaceFactory();
+    // @ts-ignore
+    return expect(
+      workspaceFactory.createWorkspace({ token: '123', configurationType: wrongConfigurationType })
+    ).rejects.toEqual(new Error(configurationTypeDoesNotExist(wrongConfigurationType)));
+  });
 });

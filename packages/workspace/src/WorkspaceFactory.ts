@@ -11,17 +11,34 @@ import {
 import {
   configNotLoadedError,
   configRepositoryName,
+  configurationTypeDoesNotExist,
   configWrongFormatError,
   createWorkspaceWrongRequestError,
 } from './helpers/const';
-import { validateCreateWorkspaceRequest, validateWorkspaceConfig } from './helpers/validators';
+import {
+  validateCreateWorkspaceRequestConfigurationType,
+  validateCreateWorkspaceRequestToken,
+  validateWorkspaceConfig,
+} from './helpers/validators';
 
 export default class WorkspaceFactory implements API.WorkspaceFactory {
   public createWorkspace(createWorkspaceRequest: API.CreateWorkspaceRequest): Promise<API.Workspace> {
     return new Promise((resolve, reject) => {
       // createWorkspaceRequest validation
-      if (!validateCreateWorkspaceRequest(createWorkspaceRequest)) {
+      if (!validateCreateWorkspaceRequestToken(createWorkspaceRequest)) {
         return reject(new Error(createWorkspaceWrongRequestError));
+      }
+
+      if (!validateCreateWorkspaceRequestConfigurationType(createWorkspaceRequest.configurationType)) {
+        return reject(
+          new Error(
+            configurationTypeDoesNotExist(
+              typeof createWorkspaceRequest.configurationType === 'string' && createWorkspaceRequest.configurationType
+                ? createWorkspaceRequest.configurationType
+                : 'Unknown configuration type'
+            )
+          )
+        );
       }
 
       // Getting configurationService

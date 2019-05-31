@@ -12,7 +12,7 @@ const bootstrap = (WORKSPACE: any) => {
       serviceName: 'ServiceD',
       reference: serviceD,
     };
-    WORKSPACE.registerService(registerServiceData);
+    WORKSPACE.registerService(registerServiceData).catch((error: Error) => console.info(error.message));
     resolve();
   });
 };

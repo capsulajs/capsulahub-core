@@ -49,3 +49,8 @@ export const configurationTypes = {
   httpServer: 'httpServer' as ConfigurationType,
   localStorage: 'localStorage' as ConfigurationType,
 };
+
+export const configurationTypeDoesNotExist = (wrongConfigurationType: string) =>
+  `Provided "configurationType" ${wrongConfigurationType} does not exist. Please select on of these types: ${Object.values(
+    configurationTypes
+  ).join(', ')}`;
