@@ -15,7 +15,7 @@ const clearJSFilesFromFolder = (folderPath) => {
           clearJSFilesFromFolder(fullPath);
         }
 
-        if (extension === 'js') {
+        if (extension === 'js' && itemName !== 'index.js') {
           try {
             fs.unlinkSync(fullPath);
           } catch (error) {
