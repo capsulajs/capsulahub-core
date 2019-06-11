@@ -1,6 +1,6 @@
 {
   "name": "@capsulajs/capsulahub-core-workspace",
-  "version": "0.0.1-alpha.0",
+  "version": "0.0.1-alpha.1",
   "description": "A workspace package for CapsulaHub core services",
   "main": "dist/index.js",
   "module": "lib/index.js",
