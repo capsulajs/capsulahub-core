@@ -39,6 +39,3 @@ export const componentToRegisterMissingInConfigurationError =
 export const componentsRequestInvalidError = 'Components request is invalid';
 
 export const servicesRequestInvalidError = 'Services request is invalid';
-
-export const configurationTypeDoesNotExist = (wrongConfigurationType: string) =>
-  `Provided configurationType "${wrongConfigurationType}" does not exist. Please select on of these types`;

@@ -14,10 +14,6 @@ export const validateCreateWorkspaceRequestToken = (createWorkspaceRequest: any)
   );
 };
 
-// export const validateCreateWorkspaceRequestConfigurationType = (configurationType: any): boolean => {
-//   return !(typeof configurationType !== 'undefined' && !Object.values(configurationTypes).includes(configurationType));
-// };
-
 export const validateRegisterServiceRequest = (registerServiceRequest: any): boolean => {
   return !(
     !registerServiceRequest.serviceName ||

@@ -7,15 +7,10 @@ const bootstrap = (WORKSPACE: any, SERVICE_CONFIG: any) => {
       }
 
       public greet(name: string) {
-        return new Promise(async (greetResolve, reject) => {
+        return new Promise((greetResolve, reject) => {
           if (!name) {
             reject('No name to greet has been provided :-(');
           }
-
-          const services = await WORKSPACE.services;
-          const serviceB = await services.serviceB;
-          serviceB.proxy.methodFromB();
-
           greetResolve(`Dear ${name}, ${this.message}`);
         });
       }

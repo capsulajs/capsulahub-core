@@ -27,7 +27,6 @@ import {
   serviceToRegisterMissingInConfigurationError,
   getBootstrapServiceError,
   getScalecubeCreationError,
-  configurationTypeDoesNotExist,
   configNotLoadedError,
 } from '../../src/helpers/const';
 import { mockBootstrapComponent, mockConfigurationService, mockGetModuleDynamically } from '../helpers/mocks';
@@ -530,25 +529,20 @@ describe('Workspace tests', () => {
     return expect(getConfigurationServiceClassSpy.mock.results[0].value.name).toBe('ConfigurationServiceHttpFile');
   });
 
-  it.skip('Call createWorkspace with providing non-existing configurationType is rejected with error', async () => {
+  it('Call createWorkspace with providing non-existing configurationType is rejected with error', async () => {
     expect.assertions(1);
     const configurationServiceMock = {
       entries: () => Promise.resolve({ entries: baseConfigEntries }),
     };
     mockConfigurationService(configurationServiceMock);
-    mockGetModuleDynamically([
-      Promise.resolve(serviceABootstrap),
-      Promise.resolve(serviceBBootstrap),
-      Promise.resolve(gridComponentBootstrap),
-      Promise.resolve(requestFormComponentBootstrap),
-    ]);
-    mockBootstrapComponent();
 
     const wrongConfigurationType = 'wrongConfigurationType';
     const workspaceFactory = new WorkspaceFactory();
     return expect(
       // @ts-ignore
-      workspaceFactory.createWorkspace({ token: '123', configurationType: wrongConfigurationType })
-    ).rejects.toEqual(new Error(configurationTypeDoesNotExist(wrongConfigurationType)));
+      workspaceFactory.createWorkspace({ token: '123', configProvider: wrongConfigurationType })
+    ).rejects.toEqual(
+      new Error(configNotLoadedError(new Error(configurationServiceItems.messages.configProviderDoesNotExist)))
+    );
   });
 });

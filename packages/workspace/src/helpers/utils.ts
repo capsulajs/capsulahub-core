@@ -12,10 +12,7 @@ import {
 export const getConfigurationService = (
   token: string,
   ConfigurationServiceClass: INTERNAL_TYPES.ConfigurationServiceClass
-): ConfigurationService<API.WorkspaceConfig> => {
-  console.log('NOOOOOT HERE');
-  return new ConfigurationServiceClass(token);
-};
+): ConfigurationService<API.WorkspaceConfig> => new ConfigurationServiceClass(token);
 
 export const dynamicImport = (path: string) => import(path).then((module) => module.default);
 
