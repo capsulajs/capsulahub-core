@@ -139,10 +139,10 @@
     lodash "^4.17.11"
     to-fast-properties "^2.0.0"
 
-"@capsulajs/capsulajs-configuration-service@0.1.10":
-  version "0.1.10"
-  resolved "https://registry.yarnpkg.com/@capsulajs/capsulajs-configuration-service/-/capsulajs-configuration-service-0.1.10.tgz#6e183f0ff02fcf05c79d5dce07902f7545ac8d49"
-  integrity sha512-r9Jai8y4CVX0CCcitvfZqIqr2DbR+nhTr+vJcdEDxMJgE8f1HjbFJpiEMhuMqaZfpD/wXqorbQgjffuRB5a+fw==
+"@capsulajs/capsulajs-configuration-service@0.1.11":
+  version "0.1.11"
+  resolved "https://registry.yarnpkg.com/@capsulajs/capsulajs-configuration-service/-/capsulajs-configuration-service-0.1.11.tgz#3a3828bf62591e8091229f44ad874cc4703645ac"
+  integrity sha512-nK0lQXjWZAL5VbD49q/A2gDN9dBPkK91dbAS662Iza2BIG0e2xaGQ/b9YSd4EvZs/7xImDeDKCB4dfez0FJubQ==
   dependencies:
     "@capsulajs/capsulajs-transport-providers" "^0.1.1"
 

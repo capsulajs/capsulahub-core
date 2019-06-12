@@ -1,5 +1,4 @@
 import { take } from 'rxjs/operators';
-import { configurationTypes } from '@capsulajs/capsulajs-configuration-service/lib/utils';
 import * as configurationServiceItems from '@capsulajs/capsulajs-configuration-service';
 // @ts-ignore
 import serviceABootstrap from '@capsulajs/capsulahub-core-external-modules/src/services/serviceA';
@@ -483,12 +482,12 @@ describe('Workspace tests', () => {
   );
 
   test.each`
-    configProvider                          | configurationServiceClassName
-    ${`${configurationTypes.localStorage}`} | ${'ConfigurationServiceLocalStorage'}
-    ${`${configurationTypes.localFile}`}    | ${'ConfigurationServiceFile'}
-    ${`${configurationTypes.httpFile}`}     | ${'ConfigurationServiceHttpFile'}
-    ${`${configurationTypes.scalecube}`}    | ${'ConfigurationServiceScalecube'}
-    ${`${configurationTypes.httpServer}`}   | ${'ConfigurationServiceHttp'}
+    configProvider                                                    | configurationServiceClassName
+    ${`${configurationServiceItems.configurationTypes.localStorage}`} | ${'ConfigurationServiceLocalStorage'}
+    ${`${configurationServiceItems.configurationTypes.localFile}`}    | ${'ConfigurationServiceFile'}
+    ${`${configurationServiceItems.configurationTypes.httpFile}`}     | ${'ConfigurationServiceHttpFile'}
+    ${`${configurationServiceItems.configurationTypes.scalecube}`}    | ${'ConfigurationServiceScalecube'}
+    ${`${configurationServiceItems.configurationTypes.httpServer}`}   | ${'ConfigurationServiceHttp'}
   `(
     'Workspace is created with the correct configurationType: $configurationType: $configurationServiceClassName',
     async ({ configProvider, configurationServiceClassName }) => {

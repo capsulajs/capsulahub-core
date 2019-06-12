@@ -6,15 +6,10 @@ import { bootstrapServices, getConfigurationService, initComponents } from './he
 import {
   configNotLoadedError,
   configRepositoryName,
-  // configurationTypeDoesNotExist,
   configWrongFormatError,
   createWorkspaceWrongRequestError,
 } from './helpers/const';
-import {
-  // validateCreateWorkspaceRequestConfigurationType,
-  validateCreateWorkspaceRequestToken,
-  validateWorkspaceConfig,
-} from './helpers/validators';
+import { validateCreateWorkspaceRequestToken, validateWorkspaceConfig } from './helpers/validators';
 
 export default class WorkspaceFactory implements API.WorkspaceFactory {
   public createWorkspace(createWorkspaceRequest: API.CreateWorkspaceRequest): Promise<API.Workspace> {
@@ -23,19 +18,6 @@ export default class WorkspaceFactory implements API.WorkspaceFactory {
       if (!validateCreateWorkspaceRequestToken(createWorkspaceRequest)) {
         return reject(new Error(createWorkspaceWrongRequestError));
       }
-
-      // if (!validateCreateWorkspaceRequestConfigurationType(createWorkspaceRequest.configProvider)) {
-      //   return reject(
-      //     new Error(
-      //       configurationTypeDoesNotExist(
-      //         typeof createWorkspaceRequest.configProvider === 'string' &&
-      //           createWorkspaceRequest.configProvider.trim()
-      //           ? createWorkspaceRequest.configProvider
-      //           : 'Unknown configuration type'
-      //       )
-      //     )
-      //   );
-      // }
 
       // Getting configurationService
       let configurationService;
