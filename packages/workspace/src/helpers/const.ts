@@ -1,10 +1,8 @@
-import { ConfigurationType } from '../api';
-
 export const configRepositoryName = 'workspace';
 
 export const configWrongFormatError = 'Workspace configuration does not have the correct format';
 
-export const configNotLoadedError = 'Workspace configuration can not be loaded';
+export const configNotLoadedError = (error: Error) => `Workspace configuration can not be loaded: ${error.message}`;
 
 export const createWorkspaceWrongRequestError = 'createWorkspace has been called with invalid token';
 
@@ -42,15 +40,5 @@ export const componentsRequestInvalidError = 'Components request is invalid';
 
 export const servicesRequestInvalidError = 'Services request is invalid';
 
-export const configurationTypes = {
-  localFile: 'localFile' as ConfigurationType,
-  hardcoreServer: 'hardcoreServer' as ConfigurationType,
-  httpFile: 'httpFile' as ConfigurationType,
-  httpServer: 'httpServer' as ConfigurationType,
-  localStorage: 'localStorage' as ConfigurationType,
-};
-
 export const configurationTypeDoesNotExist = (wrongConfigurationType: string) =>
-  `Provided configurationType "${wrongConfigurationType}" does not exist. Please select on of these types: ${Object.values(
-    configurationTypes
-  ).join(', ')}`;
+  `Provided configurationType "${wrongConfigurationType}" does not exist. Please select on of these types`;

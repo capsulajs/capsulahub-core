@@ -1,4 +1,6 @@
 import { take } from 'rxjs/operators';
+import { configurationTypes } from '@capsulajs/capsulajs-configuration-service/lib/utils';
+import * as configurationServiceItems from '@capsulajs/capsulajs-configuration-service';
 // @ts-ignore
 import serviceABootstrap from '@capsulajs/capsulahub-core-external-modules/src/services/serviceA';
 // @ts-ignore
@@ -25,10 +27,9 @@ import {
   serviceToRegisterMissingInConfigurationError,
   getBootstrapServiceError,
   getScalecubeCreationError,
-  configurationTypes,
   configurationTypeDoesNotExist,
+  configNotLoadedError,
 } from '../../src/helpers/const';
-import * as utils from '../../src/helpers/utils';
 import { mockBootstrapComponent, mockConfigurationService, mockGetModuleDynamically } from '../helpers/mocks';
 import baseConfigEntries, {
   configEntriesWithIncorrectDefinitionService,
@@ -44,7 +45,7 @@ const repositoryNotFoundError = `Configuration repository ${configRepositoryName
 describe('Workspace tests', () => {
   applyPostMessagePolyfill();
   applyMessageChannelPolyfill();
-  const getConfigurationServiceClassSpy = jest.spyOn(utils, 'getConfigurationServiceClass');
+  const getConfigurationServiceClassSpy = jest.spyOn(configurationServiceItems, 'getProvider');
 
   beforeEach(() => {
     getConfigurationServiceClassSpy.mockClear();
@@ -93,14 +94,21 @@ describe('Workspace tests', () => {
 
   const invalidConfigurationTypes = [' ', {}, { test: 'test' }, [], ['test'], null, true, false, 0, -1];
   test.each(invalidConfigurationTypes)(
-    'Call createWorkspace with an invalid configurationType is rejected with error (%s)',
-    (invalidConfigurationType) => {
+    'Call createWorkspace with an invalid configProvider is rejected with error (%s)',
+    (invalidConfigProvider) => {
       expect.assertions(1);
+      const configurationServiceMock = {
+        entries: () => Promise.resolve({ entries: baseConfigEntries }),
+      };
+      mockConfigurationService(configurationServiceMock);
       const workspaceFactory = new WorkspaceFactory();
+      const errorMessageFromConfigurationService = invalidConfigProvider
+        ? configurationServiceItems.messages.configProviderDoesNotExist
+        : configurationServiceItems.messages.getProviderInvalidRequest;
       return expect(
         // @ts-ignore
-        workspaceFactory.createWorkspace({ token: '123', configurationType: invalidConfigurationType })
-      ).rejects.toEqual(new Error(configurationTypeDoesNotExist('Unknown configuration type')));
+        workspaceFactory.createWorkspace({ token: '123', configProvider: invalidConfigProvider })
+      ).rejects.toEqual(new Error(configNotLoadedError(new Error(errorMessageFromConfigurationService))));
     }
   );
 
@@ -476,15 +484,15 @@ describe('Workspace tests', () => {
   );
 
   test.each`
-    configurationType                         | configurationServiceClassName
-    ${`${configurationTypes.localStorage}`}   | ${'ConfigurationServiceLocalStorage'}
-    ${`${configurationTypes.localFile}`}      | ${'ConfigurationServiceFile'}
-    ${`${configurationTypes.httpFile}`}       | ${'ConfigurationServiceHttpFile'}
-    ${`${configurationTypes.hardcoreServer}`} | ${'ConfigurationServiceHardcoreRemote'}
-    ${`${configurationTypes.httpServer}`}     | ${'ConfigurationServiceHttp'}
+    configProvider                          | configurationServiceClassName
+    ${`${configurationTypes.localStorage}`} | ${'ConfigurationServiceLocalStorage'}
+    ${`${configurationTypes.localFile}`}    | ${'ConfigurationServiceFile'}
+    ${`${configurationTypes.httpFile}`}     | ${'ConfigurationServiceHttpFile'}
+    ${`${configurationTypes.scalecube}`}    | ${'ConfigurationServiceScalecube'}
+    ${`${configurationTypes.httpServer}`}   | ${'ConfigurationServiceHttp'}
   `(
     'Workspace is created with the correct configurationType: $configurationType: $configurationServiceClassName',
-    async ({ configurationType, configurationServiceClassName }) => {
+    async ({ configProvider, configurationServiceClassName }) => {
       expect.assertions(1);
       const configurationServiceMock = {
         entries: () => Promise.resolve({ entries: baseConfigEntries }),
@@ -498,7 +506,7 @@ describe('Workspace tests', () => {
       ]);
       mockBootstrapComponent();
       const workspaceFactory = new WorkspaceFactory();
-      await workspaceFactory.createWorkspace({ token: '123', configurationType });
+      await workspaceFactory.createWorkspace({ token: '123', configProvider });
       return expect(getConfigurationServiceClassSpy.mock.results[0].value.name).toBe(configurationServiceClassName);
     }
   );
@@ -522,7 +530,7 @@ describe('Workspace tests', () => {
     return expect(getConfigurationServiceClassSpy.mock.results[0].value.name).toBe('ConfigurationServiceHttpFile');
   });
 
-  it('Call createWorkspace with providing non-existing configurationType is rejected with error', async () => {
+  it.skip('Call createWorkspace with providing non-existing configurationType is rejected with error', async () => {
     expect.assertions(1);
     const configurationServiceMock = {
       entries: () => Promise.resolve({ entries: baseConfigEntries }),

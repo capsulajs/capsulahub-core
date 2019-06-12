@@ -1,22 +1,17 @@
+import * as configurationServiceItems from '@capsulajs/capsulajs-configuration-service';
 import { Entity } from '@capsulajs/capsulajs-configuration-service/lib/api/Entity';
 import { API } from './';
-import * as EXTERNAL_API from './helpers/types';
 import { Workspace } from './Workspace';
-import {
-  bootstrapServices,
-  getConfigurationServiceClass,
-  getConfigurationService,
-  initComponents,
-} from './helpers/utils';
+import { bootstrapServices, getConfigurationService, initComponents } from './helpers/utils';
 import {
   configNotLoadedError,
   configRepositoryName,
-  configurationTypeDoesNotExist,
+  // configurationTypeDoesNotExist,
   configWrongFormatError,
   createWorkspaceWrongRequestError,
 } from './helpers/const';
 import {
-  validateCreateWorkspaceRequestConfigurationType,
+  // validateCreateWorkspaceRequestConfigurationType,
   validateCreateWorkspaceRequestToken,
   validateWorkspaceConfig,
 } from './helpers/validators';
@@ -29,27 +24,33 @@ export default class WorkspaceFactory implements API.WorkspaceFactory {
         return reject(new Error(createWorkspaceWrongRequestError));
       }
 
-      if (!validateCreateWorkspaceRequestConfigurationType(createWorkspaceRequest.configurationType)) {
-        return reject(
-          new Error(
-            configurationTypeDoesNotExist(
-              typeof createWorkspaceRequest.configurationType === 'string' &&
-                createWorkspaceRequest.configurationType.trim()
-                ? createWorkspaceRequest.configurationType
-                : 'Unknown configuration type'
-            )
-          )
-        );
-      }
+      // if (!validateCreateWorkspaceRequestConfigurationType(createWorkspaceRequest.configProvider)) {
+      //   return reject(
+      //     new Error(
+      //       configurationTypeDoesNotExist(
+      //         typeof createWorkspaceRequest.configProvider === 'string' &&
+      //           createWorkspaceRequest.configProvider.trim()
+      //           ? createWorkspaceRequest.configProvider
+      //           : 'Unknown configuration type'
+      //       )
+      //     )
+      //   );
+      // }
 
       // Getting configurationService
       let configurationService;
       try {
-        configurationService = getConfigurationService(createWorkspaceRequest.token, getConfigurationServiceClass(
-          createWorkspaceRequest.configurationType
-        ) as EXTERNAL_API.ConfigurationServiceClass);
+        configurationService = getConfigurationService(
+          createWorkspaceRequest.token,
+          configurationServiceItems.getProvider({
+            configProvider:
+              typeof createWorkspaceRequest.configProvider !== 'undefined'
+                ? createWorkspaceRequest.configProvider
+                : 'httpFile',
+          })
+        );
       } catch (error) {
-        return reject(new Error(configNotLoadedError));
+        return reject(new Error(configNotLoadedError(error)));
       }
 
       // Getting configuration and initializing Workspace

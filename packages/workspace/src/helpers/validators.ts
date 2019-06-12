@@ -1,5 +1,4 @@
 import { API } from '..';
-import { configurationTypes } from './const';
 
 export const validateWorkspaceConfig = (workspaceConfig: any): boolean => {
   const requiredKeys = ['name', 'services', 'components'];
@@ -15,9 +14,9 @@ export const validateCreateWorkspaceRequestToken = (createWorkspaceRequest: any)
   );
 };
 
-export const validateCreateWorkspaceRequestConfigurationType = (configurationType: any): boolean => {
-  return !(typeof configurationType !== 'undefined' && !Object.values(configurationTypes).includes(configurationType));
-};
+// export const validateCreateWorkspaceRequestConfigurationType = (configurationType: any): boolean => {
+//   return !(typeof configurationType !== 'undefined' && !Object.values(configurationTypes).includes(configurationType));
+// };
 
 export const validateRegisterServiceRequest = (registerServiceRequest: any): boolean => {
   return !(
