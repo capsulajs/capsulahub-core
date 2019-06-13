@@ -1,6 +1,6 @@
 {
   "name": "@capsulajs/capsulahub-core-renderer",
-  "version": "0.0.1-alpha.1",
+  "version": "0.0.1-alpha.2",
   "description": "A renderer package for CapsulaHub core services",
   "main": "dist/index.js",
   "module": "lib/index.js",
@@ -45,7 +45,7 @@
   },
   "dependencies": {
     "@babel/polyfill": "^7.4.4",
-    "@capsulajs/capsulahub-core-workspace": "^0.0.1-alpha.1",
+    "@capsulajs/capsulahub-core-workspace": "^0.0.1-alpha.2",
     "react": "^16.8.6",
     "react-dom": "^16.8.6"
   }

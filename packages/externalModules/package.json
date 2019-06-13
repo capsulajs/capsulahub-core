@@ -1,6 +1,6 @@
 {
   "name": "@capsulajs/capsulahub-core-external-modules",
-  "version": "0.0.1-alpha.0",
+  "version": "0.0.1-alpha.2",
   "description": "An external modules package for CapsulaHub core services",
   "main": "lib/index.js",
   "module": "lib/index.js",

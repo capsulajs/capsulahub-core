@@ -1,6 +1,6 @@
 {
   "name": "@capsulajs/capsulahub-core-workspace",
-  "version": "0.0.1-alpha.1",
+  "version": "0.0.1-alpha.2",
   "description": "A workspace package for CapsulaHub core services",
   "main": "dist/index.js",
   "module": "lib/index.js",
@@ -34,6 +34,6 @@
     "uuid": "^3.3.2"
   },
   "devDependencies": {
-    "@capsulajs/capsulahub-core-external-modules": "^0.0.1-alpha.0"
+    "@capsulajs/capsulahub-core-external-modules": "^0.0.1-alpha.2"
   }
 }
