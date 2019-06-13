@@ -1,4 +1,4 @@
-import { ConfigurationService, ConfigurationServiceHttp } from '@capsulajs/capsulajs-configuration-service';
+import { ConfigurationService, API as CONFIGURATION_SERVICE_API } from '@capsulajs/capsulajs-configuration-service';
 import { API } from '..';
 import * as INTERNAL_TYPES from './types';
 import {
@@ -9,8 +9,10 @@ import {
   getBootstrapComponentError,
 } from './const';
 
-export const getConfigurationService = (token: string): ConfigurationService<API.WorkspaceConfig> =>
-  new ConfigurationServiceHttp(token);
+export const getConfigurationService = (
+  token: string,
+  ConfigurationServiceClass: CONFIGURATION_SERVICE_API.ConfigurationProviderClass
+): ConfigurationService<API.WorkspaceConfig> => new ConfigurationServiceClass(token);
 
 export const dynamicImport = (path: string) => import(path).then((module) => module.default);
 
@@ -21,9 +23,9 @@ export const getModuleDynamically = <BootstrapResponse>(
 ): Promise<API.ModuleBootstrap<BootstrapResponse>> =>
   dynamicImport(path).catch((error) => {
     if (type === 'service') {
-      throw new Error(getLoadingServiceError(error, itemName));
+      throw getErrorWithModifiedMessage(error, getLoadingServiceError(error, itemName));
     } else {
-      throw new Error(getLoadingComponentError(error, itemName));
+      throw getErrorWithModifiedMessage(error, getLoadingComponentError(error, itemName));
     }
   });
 
@@ -49,7 +51,7 @@ export const initComponent = (
   )
     .then((bootstrap) =>
       bootstrap(workspace, componentData.config).catch((error) => {
-        throw new Error(getBootstrapComponentError(error, componentData.componentName));
+        throw getErrorWithModifiedMessage(error, getBootstrapComponentError(error, componentData.componentName));
       })
     )
     .then((WebComponent) => {
@@ -57,7 +59,7 @@ export const initComponent = (
       try {
         webComponent = bootstrapComponent(componentData.componentName, WebComponent);
       } catch (error) {
-        throw new Error(getInitComponentError(error, componentData.componentName));
+        throw getErrorWithModifiedMessage(error, getInitComponentError(error, componentData.componentName));
       }
       workspace.registerComponent({
         nodeId,
@@ -73,7 +75,7 @@ export const bootstrapServices = (workspace: API.Workspace, servicesConfig: API.
     servicesConfig.map((serviceConfig) => {
       return getModuleDynamically<void>(serviceConfig.path, 'service', serviceConfig.serviceName).then((bootstrap) =>
         bootstrap(workspace, serviceConfig.config).catch((error) => {
-          throw new Error(getBootstrapServiceError(error, serviceConfig.serviceName));
+          throw getErrorWithModifiedMessage(error, getBootstrapServiceError(error, serviceConfig.serviceName));
         })
       );
     })
@@ -88,4 +90,9 @@ export const initComponents = (
   return Promise.all(
     Object.keys(componentsConfig).map((nodeId: string) => initComponent(nodeId, componentsConfig, workspace, type))
   );
+};
+
+export const getErrorWithModifiedMessage = (error: Error, newMessage: string): Error => {
+  error.message = newMessage;
+  return error;
 };

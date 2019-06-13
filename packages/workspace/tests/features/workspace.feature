@@ -36,26 +36,26 @@ Scenario: Call components method returns a map of promises to each component loa
           |reference    |
 
 #4
-Scenario: Workspace is created with the correct configurationType
+Scenario: Workspace is created with the correct configProvider
     Given WorkspaceFactory instance with createWorkspace method
     And  Configuration for token 123 that includes service A and B and components 1 and 2
     And  Service A and service B include a bootstrap that calls registerService
-    When I run createWorkspace method with token 123 and with one of the following values for <configurationType>
-          |<configurationType>|
+    When I run createWorkspace method with token 123 and with one of the following values for <configProvider>
+          |<configProvider>   |
           | httpServer        |
-          | hardcoreServer    |
+          | scalecube         |
           | httpFile          |
           | localFile         |
           | localStorage      |
-    Then I expect workspace to be created with the correct <configurationType>
+    Then I expect workspace to be created with the correct <configProvider>
 
 #4.1
-Scenario: Call createWorkspace without providing configurationType should create workspace with default type of configuration provider
+Scenario: Call createWorkspace without providing configProvider should create workspace with default type of configuration provider
     Given WorkspaceFactory instance with createWorkspace method
     And  Configuration for token 123 that includes service A and B and components 1 and 2
     And  Service A and service B include a bootstrap that calls registerService
     And  "httpFile" is a default type of configuration provider
-    When I run createWorkspace method with token 123 and without providing configurationType
+    When I run createWorkspace method with token 123 and without providing configProvider
     Then I expect workspace to be created with "httpFile" configuration provider
 
 #______________________________________NEGATIVE______________________________________
@@ -193,27 +193,27 @@ Scenario: If scalecube error happens while registering a service, the promise fo
     Then I expect to receive an error with the name of the corresponding service
 
 #5
-Scenario: Call createWorkspace with providing non-existing configurationType is rejected with error
+Scenario: Call createWorkspace with providing non-existing configProvider is rejected with error
     Given WorkspaceFactory instance with createWorkspace method
     And  Configuration for token 123 that includes service A and B and components 1 and 2
     And  Service A and service B include a bootstrap that calls registerService
     And  Following types of configuration provider are available
-          |<configurationType>|
+          |<configProvider>   |
           | httpServer        |
-          | hardcoreServer    |
+          | scalecube         |
           | httpFile          |
           | localFile         |
           | localStorage      |
-    When I run createWorkspace method with token 123 and with non-existing <configurationType>
+    When I run createWorkspace method with token 123 and with non-existing <configProvider>
     Then I expect to receive an error
 
 #5.1
-Scenario: Call createWorkspace with an invalid configurationType is rejected with error
+Scenario: Call createWorkspace with an invalid configProvider is rejected with error
     Given WorkspaceFactory instance with createWorkspace method
     And  Configuration for token 123 that includes service A and B and components 1 and 2
     And  Service A and service B include a bootstrap that calls registerService
-    When I run createWorkspace method with token 123 with invalid values for <configurationType>
-        |<configurationType> |
+    When I run createWorkspace method with token 123 with invalid values for <configProvider>
+        |<configProvider> |
         |''        |
         |{}        |
         |{ test: 'test' }|

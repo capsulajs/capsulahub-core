@@ -2,7 +2,7 @@ export const configRepositoryName = 'workspace';
 
 export const configWrongFormatError = 'Workspace configuration does not have the correct format';
 
-export const configNotLoadedError = 'Workspace configuration can not be loaded';
+export const configNotLoadedError = (error: Error) => `Workspace configuration can not be loaded: ${error.message}`;
 
 export const createWorkspaceWrongRequestError = 'createWorkspace has been called with invalid token';
 

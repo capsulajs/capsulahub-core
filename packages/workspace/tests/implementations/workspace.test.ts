@@ -1,4 +1,5 @@
 import { take } from 'rxjs/operators';
+import * as configurationServiceItems from '@capsulajs/capsulajs-configuration-service';
 // @ts-ignore
 import serviceABootstrap from '@capsulajs/capsulahub-core-external-modules/src/services/serviceA';
 // @ts-ignore
@@ -25,6 +26,7 @@ import {
   serviceToRegisterMissingInConfigurationError,
   getBootstrapServiceError,
   getScalecubeCreationError,
+  configNotLoadedError,
 } from '../../src/helpers/const';
 import { mockBootstrapComponent, mockConfigurationService, mockGetModuleDynamically } from '../helpers/mocks';
 import baseConfigEntries, {
@@ -41,6 +43,11 @@ const repositoryNotFoundError = `Configuration repository ${configRepositoryName
 describe('Workspace tests', () => {
   applyPostMessagePolyfill();
   applyMessageChannelPolyfill();
+  const getConfigurationServiceClassSpy = jest.spyOn(configurationServiceItems, 'getProvider');
+
+  beforeEach(() => {
+    getConfigurationServiceClassSpy.mockClear();
+  });
 
   it('Call createWorkspace with a token with no configuration available is rejected with error', () => {
     expect.assertions(1);
@@ -72,7 +79,7 @@ describe('Workspace tests', () => {
   const invalidCreateWorkspaceRequest = [' ', {}, { test: 'test' }, [], ['test'], null, undefined, true, false, 0, -1];
 
   test.each(invalidCreateWorkspaceRequest)(
-    'Call createWorkspace with a token with invalid format is rejected with error',
+    'Call createWorkspace with a token with invalid format is rejected with error (%s)',
     (invalidToken) => {
       expect.assertions(1);
       const workspaceFactory = new WorkspaceFactory();
@@ -80,6 +87,26 @@ describe('Workspace tests', () => {
       return expect(workspaceFactory.createWorkspace({ token: invalidToken })).rejects.toEqual(
         new Error(createWorkspaceWrongRequestError)
       );
+    }
+  );
+
+  const invalidConfigurationTypes = [' ', {}, { test: 'test' }, [], ['test'], null, true, false, 0, -1];
+  test.each(invalidConfigurationTypes)(
+    'Call createWorkspace with an invalid configProvider is rejected with error (%s)',
+    (invalidConfigProvider) => {
+      expect.assertions(1);
+      const configurationServiceMock = {
+        entries: () => Promise.resolve({ entries: baseConfigEntries }),
+      };
+      mockConfigurationService(configurationServiceMock);
+      const workspaceFactory = new WorkspaceFactory();
+      const errorMessageFromConfigurationService = invalidConfigProvider
+        ? configurationServiceItems.messages.configProviderDoesNotExist
+        : configurationServiceItems.messages.getProviderInvalidRequest;
+      return expect(
+        // @ts-ignore
+        workspaceFactory.createWorkspace({ token: '123', configProvider: invalidConfigProvider })
+      ).rejects.toEqual(new Error(configNotLoadedError(new Error(errorMessageFromConfigurationService))));
     }
   );
 
@@ -453,4 +480,68 @@ describe('Workspace tests', () => {
       );
     }
   );
+
+  test.each`
+    configProvider                                                    | configurationServiceClassName
+    ${`${configurationServiceItems.configurationTypes.localStorage}`} | ${'ConfigurationServiceLocalStorage'}
+    ${`${configurationServiceItems.configurationTypes.localFile}`}    | ${'ConfigurationServiceFile'}
+    ${`${configurationServiceItems.configurationTypes.httpFile}`}     | ${'ConfigurationServiceHttpFile'}
+    ${`${configurationServiceItems.configurationTypes.scalecube}`}    | ${'ConfigurationServiceScalecube'}
+    ${`${configurationServiceItems.configurationTypes.httpServer}`}   | ${'ConfigurationServiceHttp'}
+  `(
+    'Workspace is created with the correct configurationType: $configurationType: $configurationServiceClassName',
+    async ({ configProvider, configurationServiceClassName }) => {
+      expect.assertions(1);
+      const configurationServiceMock = {
+        entries: () => Promise.resolve({ entries: baseConfigEntries }),
+      };
+      mockConfigurationService(configurationServiceMock);
+      mockGetModuleDynamically([
+        Promise.resolve(serviceABootstrap),
+        Promise.resolve(serviceBBootstrap),
+        Promise.resolve(gridComponentBootstrap),
+        Promise.resolve(requestFormComponentBootstrap),
+      ]);
+      mockBootstrapComponent();
+      const workspaceFactory = new WorkspaceFactory();
+      await workspaceFactory.createWorkspace({ token: '123', configProvider });
+      return expect(getConfigurationServiceClassSpy.mock.results[0].value.name).toBe(configurationServiceClassName);
+    }
+  );
+
+  it('Call createWorkspace without providing configurationType should create workspace with default type of configuration provider', async () => {
+    expect.assertions(1);
+    const configurationServiceMock = {
+      entries: () => Promise.resolve({ entries: baseConfigEntries }),
+    };
+    mockConfigurationService(configurationServiceMock);
+    mockGetModuleDynamically([
+      Promise.resolve(serviceABootstrap),
+      Promise.resolve(serviceBBootstrap),
+      Promise.resolve(gridComponentBootstrap),
+      Promise.resolve(requestFormComponentBootstrap),
+    ]);
+    mockBootstrapComponent();
+
+    const workspaceFactory = new WorkspaceFactory();
+    await workspaceFactory.createWorkspace({ token: '123' });
+    return expect(getConfigurationServiceClassSpy.mock.results[0].value.name).toBe('ConfigurationServiceHttpFile');
+  });
+
+  it('Call createWorkspace with providing non-existing configurationType is rejected with error', async () => {
+    expect.assertions(1);
+    const configurationServiceMock = {
+      entries: () => Promise.resolve({ entries: baseConfigEntries }),
+    };
+    mockConfigurationService(configurationServiceMock);
+
+    const wrongConfigurationType = 'wrongConfigurationType';
+    const workspaceFactory = new WorkspaceFactory();
+    return expect(
+      // @ts-ignore
+      workspaceFactory.createWorkspace({ token: '123', configProvider: wrongConfigurationType })
+    ).rejects.toEqual(
+      new Error(configNotLoadedError(new Error(configurationServiceItems.messages.configProviderDoesNotExist)))
+    );
+  });
 });

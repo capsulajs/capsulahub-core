@@ -6,7 +6,7 @@ export const validateWorkspaceConfig = (workspaceConfig: any): boolean => {
   return !requiredKeys.find((requiredKey) => !configKeys.includes(requiredKey));
 };
 
-export const validateCreateWorkspaceRequest = (createWorkspaceRequest: any): boolean => {
+export const validateCreateWorkspaceRequestToken = (createWorkspaceRequest: any): boolean => {
   return !(
     !createWorkspaceRequest.token ||
     typeof createWorkspaceRequest.token !== 'string' ||

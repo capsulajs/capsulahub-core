@@ -6,7 +6,7 @@ const utilsToMock: any = utils;
 
 export const mockConfigurationService = (configurationServiceMock: {
   entries: () => Promise<{ entries: Entity[] } | never>;
-}): void => {
+}) => {
   utilsToMock.getConfigurationService = jest.fn(() => {
     return configurationServiceMock;
   });

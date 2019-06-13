@@ -2,6 +2,7 @@
 .idea/
 dist/
 dist-example/
+public/
 node_modules/
 doc/
 lib/

@@ -1,33 +1,48 @@
+import * as configurationServiceItems from '@capsulajs/capsulajs-configuration-service';
 import { Entity } from '@capsulajs/capsulajs-configuration-service/lib/api/Entity';
 import { API } from './';
 import { Workspace } from './Workspace';
-import { bootstrapServices, getConfigurationService, initComponents } from './helpers/utils';
+import {
+  bootstrapServices,
+  getConfigurationService,
+  getErrorWithModifiedMessage,
+  initComponents,
+} from './helpers/utils';
 import {
   configNotLoadedError,
   configRepositoryName,
   configWrongFormatError,
   createWorkspaceWrongRequestError,
 } from './helpers/const';
-import { validateCreateWorkspaceRequest, validateWorkspaceConfig } from './helpers/validators';
+import { validateCreateWorkspaceRequestToken, validateWorkspaceConfig } from './helpers/validators';
 
 export default class WorkspaceFactory implements API.WorkspaceFactory {
   public createWorkspace(createWorkspaceRequest: API.CreateWorkspaceRequest): Promise<API.Workspace> {
     return new Promise((resolve, reject) => {
       // createWorkspaceRequest validation
-      if (!validateCreateWorkspaceRequest(createWorkspaceRequest)) {
+      if (!validateCreateWorkspaceRequestToken(createWorkspaceRequest)) {
         return reject(new Error(createWorkspaceWrongRequestError));
       }
 
       // Getting configurationService
-      let configurationService;
+      let configurationService: configurationServiceItems.ConfigurationService;
       try {
-        configurationService = getConfigurationService(createWorkspaceRequest.token);
+        configurationService = getConfigurationService(
+          createWorkspaceRequest.token,
+          configurationServiceItems.getProvider({
+            configProvider:
+              typeof createWorkspaceRequest.configProvider !== 'undefined'
+                ? createWorkspaceRequest.configProvider
+                : 'httpFile',
+          })
+        );
       } catch (error) {
-        return reject(new Error(configNotLoadedError));
+        reject(getErrorWithModifiedMessage(error, configNotLoadedError(error)));
       }
 
       // Getting configuration and initializing Workspace
-      return configurationService
+
+      return configurationService!
         .entries({ repository: configRepositoryName })
         .then((configuration: { entries: Entity[] }) => {
           // Preparing and validating formattedConfiguration
@@ -64,7 +79,9 @@ export default class WorkspaceFactory implements API.WorkspaceFactory {
               workspace.cleanEventListeners();
             });
         })
-        .catch((error) => reject(error));
+        .catch((error: Error) => {
+          reject(error);
+        });
     });
   }
 }
