@@ -11,8 +11,6 @@ import('http://localhost:7777/dist/index.js')
   })
   .then((createdWorkspace) => {
     workspace = createdWorkspace;
-    // @ts-ignore
-    window.workspace = createdWorkspace;
   })
   .then(() => {
     document.getElementById('root')!.innerHTML = '<web-grid></web-grid><web-request-form></web-request-form>';

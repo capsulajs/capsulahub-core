@@ -25,7 +25,7 @@ export default class WorkspaceFactory implements API.WorkspaceFactory {
       }
 
       // Getting configurationService
-      let configurationService: any;
+      let configurationService: configurationServiceItems.ConfigurationService;
       try {
         configurationService = getConfigurationService(
           createWorkspaceRequest.token,
