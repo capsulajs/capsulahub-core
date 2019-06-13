@@ -5,6 +5,7 @@ export default interface CreateWorkspaceRequest {
   token: string;
   /**
    * The type of configuration provider, that will be used to get configuration
+   * Possible values: "localFile","httpFile","scalecube","httpServer","localStorage"
    * @default "httpFile"
    */
   configProvider?: API.ConfigurationProvider;
