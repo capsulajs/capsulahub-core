@@ -1,4 +1,4 @@
-import { ConfigurationService } from '@capsulajs/capsulajs-configuration-service';
+import { ConfigurationService, API as CONFIGURATION_SERVICE_API } from '@capsulajs/capsulajs-configuration-service';
 import { API } from '..';
 import * as INTERNAL_TYPES from './types';
 import {
@@ -11,7 +11,7 @@ import {
 
 export const getConfigurationService = (
   token: string,
-  ConfigurationServiceClass: INTERNAL_TYPES.ConfigurationServiceClass
+  ConfigurationServiceClass: CONFIGURATION_SERVICE_API.ConfigurationProviderClass
 ): ConfigurationService<API.WorkspaceConfig> => new ConfigurationServiceClass(token);
 
 export const dynamicImport = (path: string) => import(path).then((module) => module.default);
