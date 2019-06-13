@@ -7,10 +7,12 @@ import('http://localhost:7777/dist/index.js')
   .then((module) => module.default)
   .then((WorkspaceFactory) => {
     const workspaceFactory = new WorkspaceFactory();
-    return workspaceFactory.createWorkspace({ token: 'localhost:3000/configuration' });
+    return workspaceFactory.createWorkspace({ token: 'http://localhost:3000/configuration' });
   })
   .then((createdWorkspace) => {
     workspace = createdWorkspace;
+    // @ts-ignore
+    window.workspace = createdWorkspace;
   })
   .then(() => {
     document.getElementById('root')!.innerHTML = '<web-grid></web-grid><web-request-form></web-request-form>';
@@ -29,4 +31,5 @@ import('http://localhost:7777/dist/index.js')
     const serviceResEl = document.createElement('h2');
     serviceResEl.innerText = greeting;
     document.getElementById('request-form')!.appendChild(serviceResEl);
-  });
+  })
+  .catch((error) => console.info('Error in creating Workspace', error));

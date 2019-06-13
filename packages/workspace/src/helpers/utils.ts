@@ -23,9 +23,9 @@ export const getModuleDynamically = <BootstrapResponse>(
 ): Promise<API.ModuleBootstrap<BootstrapResponse>> =>
   dynamicImport(path).catch((error) => {
     if (type === 'service') {
-      throw new Error(getLoadingServiceError(error, itemName));
+      throw getErrorWithModifiedMessage(error, getLoadingServiceError(error, itemName));
     } else {
-      throw new Error(getLoadingComponentError(error, itemName));
+      throw getErrorWithModifiedMessage(error, getLoadingComponentError(error, itemName));
     }
   });
 
@@ -51,7 +51,7 @@ export const initComponent = (
   )
     .then((bootstrap) =>
       bootstrap(workspace, componentData.config).catch((error) => {
-        throw new Error(getBootstrapComponentError(error, componentData.componentName));
+        throw getErrorWithModifiedMessage(error, getBootstrapComponentError(error, componentData.componentName));
       })
     )
     .then((WebComponent) => {
@@ -59,7 +59,7 @@ export const initComponent = (
       try {
         webComponent = bootstrapComponent(componentData.componentName, WebComponent);
       } catch (error) {
-        throw new Error(getInitComponentError(error, componentData.componentName));
+        throw getErrorWithModifiedMessage(error, getInitComponentError(error, componentData.componentName));
       }
       workspace.registerComponent({
         nodeId,
@@ -75,7 +75,7 @@ export const bootstrapServices = (workspace: API.Workspace, servicesConfig: API.
     servicesConfig.map((serviceConfig) => {
       return getModuleDynamically<void>(serviceConfig.path, 'service', serviceConfig.serviceName).then((bootstrap) =>
         bootstrap(workspace, serviceConfig.config).catch((error) => {
-          throw new Error(getBootstrapServiceError(error, serviceConfig.serviceName));
+          throw getErrorWithModifiedMessage(error, getBootstrapServiceError(error, serviceConfig.serviceName));
         })
       );
     })
@@ -90,4 +90,9 @@ export const initComponents = (
   return Promise.all(
     Object.keys(componentsConfig).map((nodeId: string) => initComponent(nodeId, componentsConfig, workspace, type))
   );
+};
+
+export const getErrorWithModifiedMessage = (error: Error, newMessage: string): Error => {
+  error.message = newMessage;
+  return error;
 };

@@ -2,7 +2,12 @@ import * as configurationServiceItems from '@capsulajs/capsulajs-configuration-s
 import { Entity } from '@capsulajs/capsulajs-configuration-service/lib/api/Entity';
 import { API } from './';
 import { Workspace } from './Workspace';
-import { bootstrapServices, getConfigurationService, initComponents } from './helpers/utils';
+import {
+  bootstrapServices,
+  getConfigurationService,
+  getErrorWithModifiedMessage,
+  initComponents,
+} from './helpers/utils';
 import {
   configNotLoadedError,
   configRepositoryName,
@@ -20,7 +25,7 @@ export default class WorkspaceFactory implements API.WorkspaceFactory {
       }
 
       // Getting configurationService
-      let configurationService;
+      let configurationService: any;
       try {
         configurationService = getConfigurationService(
           createWorkspaceRequest.token,
@@ -32,11 +37,12 @@ export default class WorkspaceFactory implements API.WorkspaceFactory {
           })
         );
       } catch (error) {
-        return reject(new Error(configNotLoadedError(error)));
+        reject(getErrorWithModifiedMessage(error, configNotLoadedError(error)));
       }
 
       // Getting configuration and initializing Workspace
-      return configurationService
+
+      return configurationService!
         .entries({ repository: configRepositoryName })
         .then((configuration: { entries: Entity[] }) => {
           // Preparing and validating formattedConfiguration
@@ -73,7 +79,9 @@ export default class WorkspaceFactory implements API.WorkspaceFactory {
               workspace.cleanEventListeners();
             });
         })
-        .catch((error) => reject(error));
+        .catch((error: Error) => {
+          reject(error);
+        });
     });
   }
 }

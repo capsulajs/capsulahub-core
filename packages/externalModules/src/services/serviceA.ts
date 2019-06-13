@@ -1,5 +1,5 @@
 const bootstrap = (WORKSPACE: any, SERVICE_CONFIG: any) => {
-  return new Promise(async (resolve) => {
+  return new Promise((resolve) => {
     class ServiceA {
       private message: string;
       constructor(message: string) {
